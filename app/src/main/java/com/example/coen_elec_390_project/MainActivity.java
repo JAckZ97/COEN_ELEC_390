@@ -1,6 +1,7 @@
 package com.example.coen_elec_390_project;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {

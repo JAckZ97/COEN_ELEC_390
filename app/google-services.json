@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "140185519293",
+    "firebase_url": "https://coen-elec-390-project.firebaseio.com",
+    "project_id": "coen-elec-390-project",
+    "storage_bucket": "coen-elec-390-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:140185519293:android:50664d0680e50c1704e3d4",
+        "android_client_info": {
+          "package_name": "com.example.coen_elec_390_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "140185519293-8k2s8af9pvp397resoef6j1rmsacqqso.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.coen_elec_390_project",
+            "certificate_hash": "467c63720957e00a8261ccd0b130ccf97e77a475"
+          }
+        },
+        {
+          "client_id": "140185519293-j83d2bes3igskt450qrbo2jhp4nebc0b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCYGP2tSt_Qk84Rl7JRUfJuCFHWdgN69E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "140185519293-j83d2bes3igskt450qrbo2jhp4nebc0b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
