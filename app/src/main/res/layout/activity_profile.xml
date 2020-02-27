@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="10dp">
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/name"
+        android:layout_marginTop="15dp"
+        android:id="@+id/profileName"
+        android:padding="10dp"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/last_name"
+        android:layout_marginTop="15dp"
+        android:id="@+id/profileLastName"
+        android:padding="10dp"/>
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/gender"
+        android:layout_marginTop="15dp"
+        android:id="@+id/profileGender"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/Height"
+        android:layout_marginTop="15dp"
+        android:id="@+id/profileHeight"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="@string/weight"
+        android:layout_marginTop="15dp"
+        android:id="@+id/profileWeight"
+        android:padding="10dp"/>
+
+
+</LinearLayout>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/states"
+        android:title="@string/states"
+        android:icon="@drawable/states"
+        android:orderInCategory="1"
+        />
+
+    <item
+        android:id="@+id/profile"
+        android:title="@string/profile"
+        android:icon="@drawable/profile"
+        android:orderInCategory="2"
+        />
+
+
+</menu>
