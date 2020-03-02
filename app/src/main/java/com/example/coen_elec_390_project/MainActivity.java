@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -16,29 +17,29 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(navListerner);
+        setUpBottomNavigatioNView();
     }
 
+    private void setUpBottomNavigatioNView() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()){
+                    case R.id.home:
+                        break;
 
-    private  BottomNavigationView.OnNavigationItemSelectedListener navListerner = new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    case R.id.profile:
+                        startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                        break;
 
-                    Fragment selectedFragment = null;
-
-                    switch (menuItem.getItemId()){
-                        case R.id.profile:
-                            selectedFragment = new ProfileActivity();
-                            break;
-                        case R.id.states:
-                            selectedFragment = new StatisticActivity();
-                            break;
-                    }
-
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectedFragment).commit();
-
-                    return true;
+                    case R.id.statistics:
+                        startActivity(new Intent(MainActivity.this, StatisticsActivity.class));
+                        break;
                 }
-     };
+
+                return false;
+            }
+        });
+    }
 }

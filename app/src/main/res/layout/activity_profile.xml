@@ -1,58 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:padding="10dp">
-
+    tools:context=".ProfileActivity">
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:hint="@string/name"
-        android:layout_marginTop="15dp"
-        android:id="@+id/profileName"
-        android:padding="10dp"/>
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:hint="Name"
+        android:id="@+id/name"/>
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:hint="@string/last_name"
-        android:layout_marginTop="15dp"
-        android:id="@+id/profileLastName"
-        android:padding="10dp"/>
-
+        android:layout_centerHorizontal="true"
+        android:hint="Last name"
+        android:id="@+id/lastname"
+        android:layout_below="@id/name"/>
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:hint="@string/gender"
-        android:layout_marginTop="15dp"
-        android:id="@+id/profileGender"
-        android:padding="10dp"/>
+        android:layout_centerHorizontal="true"
+        android:hint="Gender"
+        android:id="@+id/gender"
+        android:layout_below="@id/lastname"/>
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:hint="@string/Height"
-        android:layout_marginTop="15dp"
-        android:id="@+id/profileHeight"
-        android:padding="10dp"/>
+        android:layout_centerHorizontal="true"
+        android:hint="Height"
+        android:id="@+id/height"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/gender"/>
 
     <EditText
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:hint="Weight"
+    android:id="@+id/weight"
+    android:inputType="numberDecimal"
+    android:layout_below="@id/height"/>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="203dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_marginBottom="1dp"
+        android:text="Save"/>
+
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="203dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="1dp"
+        android:text="Edit"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/edittext_background"
-        android:hint="@string/weight"
-        android:layout_marginTop="15dp"
-        android:id="@+id/profileWeight"
-        android:padding="10dp"/>
-
-
-</LinearLayout>
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation_menu"
+        app:labelVisibilityMode="unlabeled"
+        app:itemIconTint="@color/colorBlack"/>
+</RelativeLayout>
