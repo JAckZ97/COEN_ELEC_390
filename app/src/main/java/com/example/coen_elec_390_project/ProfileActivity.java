@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileActivity extends AppCompatActivity {
     EditText name, lastname, gender, height, weight;
@@ -20,7 +21,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        setUpBottomNavigatioNView();
+        setUpBottomNavigationView();
 
         name = findViewById(R.id.name);
         lastname = findViewById(R.id.lastname);
@@ -60,7 +61,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpBottomNavigatioNView() {
+    private void setUpBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -75,6 +76,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                     case R.id.statistics:
                         startActivity(new Intent(ProfileActivity.this, StatisticsActivity.class));
+                        break;
+
+
+                    case R.id.logout:
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(ProfileActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }
 

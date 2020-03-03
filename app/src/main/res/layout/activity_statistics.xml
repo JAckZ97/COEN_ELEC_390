@@ -24,6 +24,6 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="unlabeled"
+        app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/colorBlack"/>
 </RelativeLayout>

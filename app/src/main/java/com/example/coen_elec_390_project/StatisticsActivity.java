@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -25,7 +26,7 @@ public class StatisticsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
-        setUpBottomNavigatioNView();
+        setUpBottomNavigationView();
 
         graph = findViewById(R.id.graph);
         series = new LineGraphSeries<>(getDataPoint());
@@ -61,7 +62,7 @@ public class StatisticsActivity extends AppCompatActivity {
         return dataPoints;
     }
 
-    private void setUpBottomNavigatioNView() {
+    private void setUpBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -76,6 +77,12 @@ public class StatisticsActivity extends AppCompatActivity {
                         break;
 
                     case R.id.statistics:
+                        break;
+
+
+                    case R.id.logout:
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(StatisticsActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }
 
