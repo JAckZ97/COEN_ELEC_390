@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:hint="Name"
+        android:id="@+id/name"/>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Last name"
+        android:id="@+id/lastname"
+        android:layout_below="@id/name"/>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Gender"
+        android:id="@+id/gender"
+        android:layout_below="@id/lastname"/>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Height"
+        android:id="@+id/height"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/gender"/>
+
+    <EditText
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:hint="Weight"
+    android:id="@+id/weight"
+    android:inputType="numberDecimal"
+    android:layout_below="@id/height"/>
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="203dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_marginBottom="1dp"
+        android:text="Save"/>
+
+    <Button
+        android:id="@+id/edit"
+        android:layout_width="203dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="1dp"
+        android:text="Edit"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?android:attr/windowBackground"
+        app:menu="@menu/navigation_menu"
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/colorBlack"/>
+</RelativeLayout>

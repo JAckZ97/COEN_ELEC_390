@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">COEN-ELEC-390-Project</string>
+    <string name="profile">profile</string>
+    <string name="states">states</string>
+    <string name="gender">Gender</string>
+    <string name="last_name">Last Name</string>
+    <string name="name">Name</string>
+    <string name="Height">height</string>
+    <string name="weight">weight</string>
 </resources>

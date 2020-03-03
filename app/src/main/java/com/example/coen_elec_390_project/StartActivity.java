@@ -51,5 +51,12 @@ public class StartActivity extends AppCompatActivity {
                 startActivity(new Intent(StartActivity.this, RegisterActivity.class));
             }
         });
+
+        guest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(StartActivity.this, MainActivity.class));
+            }
+        });
     }
 }
