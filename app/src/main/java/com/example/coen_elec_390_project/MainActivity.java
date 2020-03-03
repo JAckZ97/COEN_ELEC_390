@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.ParcelUuid;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean scanning;
 
     private Handler mHandler;
-    List<BluetoothDevice> listBluetoothDevice;
+    ArrayList<BluetoothDevice> listBluetoothDevice;
     private static final long SCAN_PERIOD = 10000;
     private BluetoothGattCallback gattCallback;
     private BluetoothGatt bluetoothGatt;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        listBluetoothDevice = new ArrayList<>();
+        mHandler = new Handler();
 
         bpm = findViewById(R.id.bpm);
 
@@ -74,9 +77,13 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         scanLeDevice(true);
-        if(listBluetoothDevice.size()==1){
-            bluetoothGatt = listBluetoothDevice.get(0).connectGatt(this, false, gattCallback);
+
+        bluetoothGatt = listBluetoothDevice.get(0).connectGatt(this, false, gattCallback);
+        if(bluetoothGatt.discoverServices()){
+            Log.e("bluetooth","coen390 message discovered service");
         }
+        else
+            Log.e("bluetooth","coen390 message no service");
 
     }
 
