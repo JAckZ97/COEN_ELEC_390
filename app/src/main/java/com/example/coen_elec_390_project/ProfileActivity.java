@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,6 +17,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProfileActivity extends AppCompatActivity {
     EditText name, gender, height, weight;
     Button save, edit;
+    Spinner genderSelect;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         name = findViewById(R.id.profileName);
         gender = findViewById(R.id.profileGender);
+        genderSelect = findViewById(R.id.profileSelectGender);
         height = findViewById(R.id.profileHeight);
         weight = findViewById(R.id.profileWeight);
         save = findViewById(R.id.save);
@@ -34,6 +37,9 @@ public class ProfileActivity extends AppCompatActivity {
         gender.setEnabled(false);
         height.setEnabled(false);
         weight.setEnabled(false);
+        genderSelect.setEnabled(false);
+        gender.setVisibility(View.VISIBLE);
+        genderSelect.setVisibility(View.INVISIBLE);
 
 
         save.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +49,10 @@ public class ProfileActivity extends AppCompatActivity {
                 gender.setEnabled(false);
                 height.setEnabled(false);
                 weight.setEnabled(false);
+                genderSelect.setEnabled(false);
+                gender.setVisibility(View.VISIBLE);
+                genderSelect.setVisibility(View.INVISIBLE);
+
 
             }
         });
@@ -54,6 +64,9 @@ public class ProfileActivity extends AppCompatActivity {
                 gender.setEnabled(true);
                 height.setEnabled(true);
                 weight.setEnabled(true);
+                genderSelect.setEnabled(true);
+                gender.setVisibility(View.INVISIBLE);
+                genderSelect.setVisibility(View.VISIBLE);
             }
         });
     }

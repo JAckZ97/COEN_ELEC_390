@@ -7,4 +7,9 @@
     <string name="name">Name</string>
     <string name="Height">height</string>
     <string name="weight">weight</string>
+    <string-array name="genderType">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
 </resources>

@@ -23,6 +23,15 @@
         android:id="@+id/profileGender"
         android:layout_below="@id/profileName"/>
 
+    <Spinner
+        android:id="@+id/profileSelectGender"
+        android:layout_width="310dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/profileName"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-1dp"
+        android:entries="@array/genderType"></Spinner>
+
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
@@ -30,7 +39,7 @@
         android:hint="Height"
         android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
-        android:layout_below="@id/profileGender"/>
+        android:layout_below="@id/profileSelectGender"/>
 
     <EditText
         android:layout_width="300dp"

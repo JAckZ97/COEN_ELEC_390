@@ -8,8 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,7 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText fullname, email, password, password2, gender, height, weight;
+    EditText fullname, email, password, password2, height, weight;
+    String selectGender;
+    Spinner gender;
     Button register;
     TextView txt_login;
 
@@ -49,6 +53,19 @@ public class RegisterActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
+        gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectGender=parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(RegisterActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
+                pd.dismiss();
+            }
+        });
+
         txt_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +81,7 @@ public class RegisterActivity extends AppCompatActivity {
                 pd.show();
 
                 String str_fullname = fullname.getText().toString();
-                String str_gender = gender.getText().toString();
+                String str_gender = selectGender;
                 String str_weight = weight.getText().toString();
                 String str_height = height.getText().toString();
                 String str_email = email.getText().toString();
@@ -107,7 +124,7 @@ public class RegisterActivity extends AppCompatActivity {
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("Id", userid);
                             hashMap.put("Fullname", fullname);
-                            hashMap.put("Gender", gender);
+                            hashMap.put("Gender", selectGender);
                             hashMap.put("Weight", weight);
                             hashMap.put("Height", height);
                             hashMap.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
