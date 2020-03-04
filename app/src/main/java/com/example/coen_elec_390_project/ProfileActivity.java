@@ -14,7 +14,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText name, lastname, gender, height, weight;
+    EditText name, gender, height, weight;
     Button save, edit;
 
     @Override
@@ -23,16 +23,14 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         setUpBottomNavigationView();
 
-        name = findViewById(R.id.name);
-        lastname = findViewById(R.id.lastname);
-        gender = findViewById(R.id.gender);
-        height = findViewById(R.id.height);
-        weight = findViewById(R.id.weight);
+        name = findViewById(R.id.profileName);
+        gender = findViewById(R.id.profileGender);
+        height = findViewById(R.id.profileHeight);
+        weight = findViewById(R.id.profileWeight);
         save = findViewById(R.id.save);
         edit = findViewById(R.id.edit);
 
         name.setEnabled(false);
-        lastname.setEnabled(false);
         gender.setEnabled(false);
         height.setEnabled(false);
         weight.setEnabled(false);
@@ -42,10 +40,10 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 name.setEnabled(false);
-                lastname.setEnabled(false);
                 gender.setEnabled(false);
                 height.setEnabled(false);
                 weight.setEnabled(false);
+
             }
         });
 
@@ -53,7 +51,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 name.setEnabled(true);
-                lastname.setEnabled(true);
                 gender.setEnabled(true);
                 height.setEnabled(true);
                 weight.setEnabled(true);

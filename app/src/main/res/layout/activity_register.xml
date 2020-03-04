@@ -28,6 +28,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/edittext_background"
+        android:hint="Gender"
+        android:layout_marginTop="15dp"
+        android:id="@+id/gender"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="Height"
+        android:layout_marginTop="15dp"
+        android:id="@+id/height"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
+        android:hint="Weight"
+        android:layout_marginTop="15dp"
+        android:id="@+id/weight"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/edittext_background"
         android:hint="Email"
         android:layout_marginTop="15dp"
         android:inputType="textEmailAddress"

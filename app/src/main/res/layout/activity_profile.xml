@@ -12,42 +12,35 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:hint="Name"
-        android:id="@+id/name"/>
-
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:hint="Last name"
-        android:id="@+id/lastname"
-        android:layout_below="@id/name"/>
+        android:hint="Full Name"
+        android:id="@+id/profileName"/>
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:hint="Gender"
-        android:id="@+id/gender"
-        android:layout_below="@id/lastname"/>
+        android:id="@+id/profileGender"
+        android:layout_below="@id/profileName"/>
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:hint="Height"
-        android:id="@+id/height"
+        android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
-        android:layout_below="@id/gender"/>
+        android:layout_below="@id/profileGender"/>
 
     <EditText
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:hint="Weight"
-    android:id="@+id/weight"
-    android:inputType="numberDecimal"
-    android:layout_below="@id/height"/>
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Weight"
+        android:id="@+id/profileWeight"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/profileHeight"/>
+
 
     <Button
         android:id="@+id/save"
