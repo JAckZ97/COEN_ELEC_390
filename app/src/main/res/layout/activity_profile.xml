@@ -12,25 +12,25 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:hint="Full Name"
-        android:id="@+id/profileName"/>
+        android:hint="Gender"
+        android:id="@+id/profileGender" />
+
+    <Spinner
+        android:id="@+id/profileSelectGender"
+        android:layout_width="304dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:entries="@array/genderType"></Spinner>
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:hint="Gender"
-        android:id="@+id/profileGender"
-        android:layout_below="@id/profileName"/>
+        android:hint="Full Name"
+        android:id="@+id/profileName"
+        android:layout_below="@id/profileGender"/>
 
-    <Spinner
-        android:id="@+id/profileSelectGender"
-        android:layout_width="310dp"
-        android:layout_height="40dp"
-        android:layout_below="@id/profileName"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="-1dp"
-        android:entries="@array/genderType"></Spinner>
 
     <EditText
         android:layout_width="300dp"
@@ -39,7 +39,7 @@
         android:hint="Height"
         android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
-        android:layout_below="@id/profileSelectGender"/>
+        android:layout_below="@id/profileName"/>
 
     <EditText
         android:layout_width="300dp"
