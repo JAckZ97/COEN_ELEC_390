@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +13,7 @@ import android.widget.Spinner;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,6 +25,7 @@ public class ProfileActivity extends AppCompatActivity {
     Button save, edit;
     Spinner genderSelect;
     DatabaseReference reff, reffname, reffgender, reffheight, reffweight;
+    FirebaseUser firebaseUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +49,9 @@ public class ProfileActivity extends AppCompatActivity {
         gender.setVisibility(View.VISIBLE);
         genderSelect.setVisibility(View.INVISIBLE);
 
-        reff = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3");
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -95,12 +98,16 @@ public class ProfileActivity extends AppCompatActivity {
                 gender.setVisibility(View.INVISIBLE);
                 genderSelect.setVisibility(View.VISIBLE);
 
-                reffname = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Fullname");
+                // TODO: hashmap
+                //      using one ref obj
+
+
+                reffname = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).child("Fullname");
 //                reffgender = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Gender");
 //                reffheight = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Height");
 //                reffweight = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Weight");
 
-                reffname.setValue("john");
+                    reffname.setValue("john");
 
 
             }
