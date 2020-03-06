@@ -52,6 +52,11 @@ public class StartActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
+                /*
+                if deviceName == esp32{
+                    ConnectThread BT_Thread = new ConnectThread(device);
+                }
+                 */
             }
         }
     };
@@ -92,6 +97,7 @@ public class StartActivity extends AppCompatActivity {
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
+        //Look for old devices
         Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
         if (pairedDevices.size() > 0) {
@@ -102,13 +108,20 @@ public class StartActivity extends AppCompatActivity {
             }
         }
 
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
         registerReceiver(receiver, filter);
 
-        Intent discoverableIntent =
-                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
+//        Intent discoverableIntent =
+//                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 500);
+//        startActivity(discoverableIntent);
+
+        bluetoothAdapter.startDiscovery();
     }
 
 
@@ -121,49 +134,52 @@ public class StartActivity extends AppCompatActivity {
     }
 
 
-    private class AcceptThread extends Thread {
-        private final BluetoothAdapter mmServerSocket;
+    private class ConnectThread extends Thread {
+        private final BluetoothSocket mmSocket;
+        private final BluetoothDevice mmDevice;
 
-        public AcceptThread() {
-            // Use a temporary object that is later assigned to mmServerSocket
-            // because mmServerSocket is final.
+        public ConnectThread(BluetoothDevice device) {
+            // Use a temporary object that is later assigned to mmSocket
+            // because mmSocket is final.
             BluetoothSocket tmp = null;
+            mmDevice = device;
+
             try {
-                // MY_UUID is the app's UUID string, also used by the client code.
-                tmp = bluetoothAdapter.listenUsingRfcommWithServiceRecord("", UUID.fromString(""));
+                // Get a BluetoothSocket to connect with the given BluetoothDevice.
+                // MY_UUID is the app's UUID string, also used in the server code.
+                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("1382f944-9af1-4e0e-b7ee-5cd77f585f40"));
             } catch (IOException e) {
-                Log.e(TAG, "Socket's listen() method failed", e);
+                Log.e("Socket tag", "Socket's create() method failed", e);
             }
-            mmServerSocket = tmp;
+            mmSocket = tmp;
         }
 
         public void run() {
-            BluetoothSocket socket = null;
-            // Keep listening until exception occurs or a socket is returned.
-            while (true) {
-                try {
-                    socket = mmServerSocket.accept();
-                } catch (IOException e) {
-                    Log.e(TAG, "Socket's accept() method failed", e);
-                    break;
-                }
+            // Cancel discovery because it otherwise slows down the connection.
+            bluetoothAdapter.cancelDiscovery();
 
-                if (socket != null) {
-                    // A connection was accepted. Perform work associated with
-                    // the connection in a separate thread.
-                    manageMyConnectedSocket(socket);
-                    mmServerSocket.close();
-                    break;
+            try {
+                // Connect to the remote device through the socket. This call blocks
+                // until it succeeds or throws an exception.
+                mmSocket.connect();
+            } catch (IOException connectException) {
+                // Unable to connect; close the socket and return.
+                try {
+                    mmSocket.close();
+                } catch (IOException closeException) {
+                    Log.e("Failed", "Could not close the client socket", closeException);
                 }
+                return;
             }
+            Log.e("socket succeed","Yes");
         }
 
-        // Closes the connect socket and causes the thread to finish.
+        // Closes the client socket and causes the thread to finish.
         public void cancel() {
             try {
-                mmServerSocket.close();
+                mmSocket.close();
             } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
+                Log.e("Failed closing", "Could not close the client socket", e);
             }
         }
     }
