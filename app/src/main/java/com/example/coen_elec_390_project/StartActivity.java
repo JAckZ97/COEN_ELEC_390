@@ -45,7 +45,6 @@ public class StartActivity extends AppCompatActivity {
     private BluetoothGatt bluetoothGatt;
 
     private final static int REQUEST_ENABLE_BT = 1;
-    private ScanCallback lescanCallback;
     private static final long SCAN_PERIOD = 100000;
 
     @Override
@@ -99,6 +98,9 @@ public class StartActivity extends AppCompatActivity {
 
         scanLeDevice(true);
 
+
+
+
         // Checks if Bluetooth is supported on the device.
 
 
@@ -138,8 +140,9 @@ public class StartActivity extends AppCompatActivity {
             ScanSettings scanSettings =
                     new ScanSettings.Builder().build();
             //mBluetoothLeScanner.startScan(scanFilters, scanSettings, scanCallback);
-            //while(listBluetoothDevice.size()==0)
             mBluetoothLeScanner.startScan(lescanCallback);
+            Log.e("list size","size -> "+listBluetoothDevice.size());
+
             scanning = true;
         } else {
             mBluetoothLeScanner.stopScan(lescanCallback);
@@ -155,7 +158,7 @@ public class StartActivity extends AppCompatActivity {
         mBluetoothLeScanner = bluetoothAdapter.getBluetoothLeScanner();
         scanning = false;
 
-        ScanCallback lescanCallback = new ScanCallback() {
+        lescanCallback = new ScanCallback() {
             @Override
             public void onScanResult(int callbackType, ScanResult result) {
                 super.onScanResult(callbackType, result);
