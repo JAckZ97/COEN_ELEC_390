@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,11 +22,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+
 public class ProfileActivity extends AppCompatActivity {
     EditText name, gender, height, weight;
-    Button save, edit;
+    Button save, edit, profileSaveButton;
     Spinner genderSelect;
-    DatabaseReference reff, reffname, reffgender, reffheight, reffweight;
+    String selectGender;
+    DatabaseReference reff;
     FirebaseUser firebaseUser;
 
     @Override
@@ -40,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
         weight = findViewById(R.id.profileWeight);
         save = findViewById(R.id.save);
         edit = findViewById(R.id.edit);
+        profileSaveButton = findViewById(R.id.profileSaveButton);
 
         name.setEnabled(false);
         gender.setEnabled(false);
@@ -48,10 +54,71 @@ public class ProfileActivity extends AppCompatActivity {
         genderSelect.setEnabled(false);
         gender.setVisibility(View.VISIBLE);
         genderSelect.setVisibility(View.INVISIBLE);
+        profileSaveButton.setVisibility(View.INVISIBLE);
 
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+        basicRead();
+
+
+        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectGender=parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+        profileSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                basicWrite();
+
+            }
+        });
+
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name.setEnabled(false);
+                gender.setEnabled(false);
+                height.setEnabled(false);
+                weight.setEnabled(false);
+                genderSelect.setEnabled(false);
+                gender.setVisibility(View.VISIBLE);
+                genderSelect.setVisibility(View.INVISIBLE);
+                profileSaveButton.setVisibility(View.INVISIBLE);
+
+                basicRead();
+
+            }
+        });
+
+        edit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                name.setEnabled(true);
+                gender.setEnabled(true);
+                height.setEnabled(true);
+                weight.setEnabled(true);
+                genderSelect.setEnabled(true);
+                gender.setVisibility(View.INVISIBLE);
+                genderSelect.setVisibility(View.VISIBLE);
+                profileSaveButton.setVisibility(View.VISIBLE);
+
+            }
+        });
+    }
+
+    public void basicRead(){
         reff.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -72,47 +139,26 @@ public class ProfileActivity extends AppCompatActivity {
                 // catch error
             }
         });
-
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                name.setEnabled(false);
-                gender.setEnabled(false);
-                height.setEnabled(false);
-                weight.setEnabled(false);
-                genderSelect.setEnabled(false);
-                gender.setVisibility(View.VISIBLE);
-                genderSelect.setVisibility(View.INVISIBLE);
-
-            }
-        });
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                name.setEnabled(true);
-                gender.setEnabled(true);
-                height.setEnabled(true);
-                weight.setEnabled(true);
-                genderSelect.setEnabled(true);
-                gender.setVisibility(View.INVISIBLE);
-                genderSelect.setVisibility(View.VISIBLE);
-
-                // TODO: hashmap
-                //      using one ref obj
-
-
-                reffname = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid()).child("Fullname");
-//                reffgender = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Gender");
-//                reffheight = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Height");
-//                reffweight = FirebaseDatabase.getInstance().getReference().child("Users").child("4CVTBgvTdOV5hJnY7783hrNKjOA3").child("Weight");
-
-                    reffname.setValue("john");
-
-
-            }
-        });
     }
+
+    private void basicWrite () {
+        String userid = firebaseUser.getUid();
+        String str_fullname = name.getText().toString();
+        String str_gender = selectGender;
+        String str_weight = weight.getText().toString();
+        String str_height = height.getText().toString();
+
+        HashMap<String, Object> updateresult = new HashMap<>();
+        updateresult.put("Id", userid);
+        updateresult.put("Fullname", str_fullname);
+        updateresult.put("Gender", str_gender);
+        updateresult.put("Weight", str_weight);
+        updateresult.put("Height", str_height);
+        updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
+
+        reff.setValue(updateresult);
+    }
+
 
 
     private void setUpBottomNavigationView() {

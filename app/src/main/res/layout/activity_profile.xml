@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigation"
         android:layout_marginBottom="1dp"
-        android:text="Save"/>
+        android:text="Display" />
 
     <Button
         android:id="@+id/edit"
@@ -78,4 +78,13 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/colorBlack"/>
+
+    <Button
+        android:id="@+id/profileSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="325dp"
+        android:text="Profile Save" />
 </RelativeLayout>
