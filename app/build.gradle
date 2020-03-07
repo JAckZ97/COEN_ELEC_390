@@ -32,6 +32,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.firebaseui:firebase-ui-database:0.4.0'
     implementation 'com.google.firebase:firebase-analytics:17.2.2' //might be an error
+    implementation 'com.google.firebase:firebase-database:19.2.1'
+
 
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
     implementation 'de.hdodenhof:circleimageview:2.2.0'
