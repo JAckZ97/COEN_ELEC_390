@@ -38,36 +38,25 @@ import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    TextView bpm;
+    static TextView bpm;
     private BluetoothAdapter bluetoothAdapter;
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
 
-    private Handler mHandler;
-    ArrayList<BluetoothDevice> listBluetoothDevice;
-    private static final long SCAN_PERIOD = 10000;
-    private BluetoothGattCallback gattCallback;
-    private BluetoothGatt bluetoothGatt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
-        listBluetoothDevice = new ArrayList<>();
-        mHandler = new Handler();
 
         bpm = findViewById(R.id.bpm);
-
         bpm.setText("180 bpm");
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
 
     }
-
-
-
 
     private void setUpBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
@@ -97,4 +86,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void  Update_bpm(String a){
+        if(bpm!=null)
+            bpm.setText(a);
+    }
 }

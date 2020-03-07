@@ -8,30 +8,80 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.TimeUnit;
+
 import android.os.Handler;
 
 public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
     private Handler handler; // handler that gets info from Bluetooth service
+    private BluetoothSocket socket;
+    private int size = 512
 
+    private double convert(){
+        double complex_list[] = {};
+        Complex real_list[] = new Complex[size];
+
+        for(int i = 0;i<size;i++){
+            real_list[i] = new Complex(complex_list[i],0);
+        }
+
+        Complex ylist[] = FFT.fft(real_list);
+        FFT.show(ylist, "result");
+
+        double mag[] = new double[size];
+        for(int i = 0;i<size;i++){
+            mag[i] = ylist[i].abs();
+        }
+        int Fs = 100;
+        double freq[] = new double[size];
+        for(int i = 0;i<size;i++){
+            freq[i] = (double)i*Fs/size;
+        }
+
+        int  local_min = 3;
+        double max = 0;
+        int index = 0;
+        for(int i = local_min;i<size/2;i++){
+            if(max < mag[i]){
+                max = mag[i];
+                index=i;
+            }
+
+
+        }
+
+        int heart_frequency[] = new int [size];
+        for(int i = 0;i<size;i++){
+            heart_frequency[i] = -1000;
+        }
+
+        return Math.round(freq[index]*60);
+    }
+
+    public MyBluetoothService(BluetoothSocket socket){
+        this.socket=socket;
+        handler = new Handler();
+        ConnectedThread mythread = new ConnectedThread();
+        mythread.start();
+    }
     // Defines several constants used when transmitting messages between the
     // service and the UI.
     private interface MessageConstants {
         public static final int MESSAGE_READ = 0;
         public static final int MESSAGE_WRITE = 1;
         public static final int MESSAGE_TOAST = 2;
-
         // ... (Add other message types here as needed.)
     }
 
     private class ConnectedThread extends Thread {
-        private final BluetoothSocket mmSocket;
         private final InputStream mmInStream;
         private final OutputStream mmOutStream;
         private byte[] mmBuffer; // mmBuffer store for the stream
 
-        public ConnectedThread(BluetoothSocket socket) {
-            mmSocket = socket;
+        public ConnectedThread() {
+
             InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
@@ -57,15 +107,24 @@ public class MyBluetoothService {
             int numBytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs.
+            int i = 0;
             while (true) {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
+                    String s = new String(mmBuffer, 0,numBytes);
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = handler.obtainMessage(
                             MessageConstants.MESSAGE_READ, numBytes, -1,
                             mmBuffer);
+                    Log.e("Tag","<Message> "+s);
                     readMsg.sendToTarget();
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(10);
+                    }
+                    catch (Exception e){
+
+                    }
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
@@ -99,10 +158,12 @@ public class MyBluetoothService {
         // Call this method from the main activity to shut down the connection.
         public void cancel() {
             try {
-                mmSocket.close();
+                socket.close();
             } catch (IOException e) {
                 Log.e(TAG, "Could not close the connect socket", e);
             }
         }
     }
+
+
 }

@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Set;
 import java.util.UUID;
 
@@ -42,8 +43,8 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
+
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
@@ -52,11 +53,14 @@ public class StartActivity extends AppCompatActivity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
-                /*
-                if deviceName == esp32{
-                    ConnectThread BT_Thread = new ConnectThread(device);
+
+                if(deviceName == "COEN390"){
+                    Log.e("Tag","FOUND ESP32 DEVICE USING BT");
+                    Log.e("Tag", "device address "+deviceHardwareAddress);
                 }
-                 */
+
+
+
             }
         }
     };
@@ -105,6 +109,14 @@ public class StartActivity extends AppCompatActivity {
             for (BluetoothDevice device : pairedDevices) {
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
+                Log.e("Tag", "device name " + deviceName);
+                Log.e("Tag", "device address " + deviceHardwareAddress);
+                if (deviceName.equalsIgnoreCase("COEN390") &&
+                        deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+                    ConnectThread mythread = new ConnectThread(device);
+                    MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
+                    break;
+                }
             }
         }
 
@@ -113,6 +125,7 @@ public class StartActivity extends AppCompatActivity {
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
 
         registerReceiver(receiver, filter);
 
@@ -128,15 +141,15 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
         // Don't forget to unregister the ACTION_FOUND receiver.
         unregisterReceiver(receiver);
     }
 
 
     private class ConnectThread extends Thread {
-        private final BluetoothSocket mmSocket;
         private final BluetoothDevice mmDevice;
+        private BluetoothSocket mmsocket;
+        private BluetoothSocket fallbackSocket;
 
         public ConnectThread(BluetoothDevice device) {
             // Use a temporary object that is later assigned to mmSocket
@@ -147,40 +160,54 @@ public class StartActivity extends AppCompatActivity {
             try {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.
-                tmp = device.createRfcommSocketToServiceRecord(UUID.fromString("1382f944-9af1-4e0e-b7ee-5cd77f585f40"));
+                UUID SERIAL_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
+                tmp = device.createRfcommSocketToServiceRecord(SERIAL_UUID);
             } catch (IOException e) {
                 Log.e("Socket tag", "Socket's create() method failed", e);
             }
-            mmSocket = tmp;
+            mmsocket = tmp;
         }
 
-        public void run() {
+        public BluetoothSocket tryconnect() {
             // Cancel discovery because it otherwise slows down the connection.
             bluetoothAdapter.cancelDiscovery();
-
             try {
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
-                mmSocket.connect();
-            } catch (IOException connectException) {
-                // Unable to connect; close the socket and return.
+                mmsocket.connect();
+                Log.e("","Connected");
+            } catch (IOException e) {
+                Log.e("",e.getMessage());
                 try {
-                    mmSocket.close();
-                } catch (IOException closeException) {
-                    Log.e("Failed", "Could not close the client socket", closeException);
+                    Class<?> clazz = mmsocket.getRemoteDevice().getClass();
+                    Class<?>[] paramTypes = new Class<?>[] {Integer.TYPE};
+
+                    Method m = clazz.getMethod("createRfcommSocket", paramTypes);
+                    Object[] params = new Object[] {Integer.valueOf(1)};
+
+                    fallbackSocket = (BluetoothSocket) m.invoke(mmsocket.getRemoteDevice(), params);
+                    fallbackSocket.connect();
                 }
-                return;
+                catch (Exception e2) {
+                    Log.e("", "Couldn't establish Bluetooth connection!");
+                }
             }
-            Log.e("socket succeed","Yes");
+            if(fallbackSocket==null){
+                return mmsocket;
+            }
+            else{
+                return fallbackSocket;
+            }
+
         }
 
         // Closes the client socket and causes the thread to finish.
         public void cancel() {
             try {
-                mmSocket.close();
+                mmsocket.close();
             } catch (IOException e) {
                 Log.e("Failed closing", "Could not close the client socket", e);
             }
         }
+
+
     }
 }
