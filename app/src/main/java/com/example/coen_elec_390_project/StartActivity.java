@@ -41,6 +41,45 @@ public class StartActivity extends AppCompatActivity {
             finish();
         }
 
+        bluetoothsetup();
+
+    }
+
+    private void bluetoothsetup(){
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        //Look for old devices
+        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+
+        if (pairedDevices.size() > 0) {
+            // There are paired devices. Get the name and address of each paired device.
+            for (BluetoothDevice device : pairedDevices) {
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                Log.e("Tag", "device name " + deviceName);
+                Log.e("Tag", "device address " + deviceHardwareAddress);
+                if (deviceName.equalsIgnoreCase("COEN390") &&
+                        deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+                    ConnectThread mythread = new ConnectThread(device);
+                    MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
+                    break;
+                }
+            }
+        }
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+
+        registerReceiver(receiver, filter);
+        bluetoothAdapter.startDiscovery();
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {
@@ -58,7 +97,6 @@ public class StartActivity extends AppCompatActivity {
                     Log.e("Tag","FOUND ESP32 DEVICE USING BT");
                     Log.e("Tag", "device address "+deviceHardwareAddress);
                 }
-
 
 
             }
@@ -95,46 +133,14 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
 
-        //Look for old devices
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-
-        if (pairedDevices.size() > 0) {
-            // There are paired devices. Get the name and address of each paired device.
-            for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-                Log.e("Tag", "device name " + deviceName);
-                Log.e("Tag", "device address " + deviceHardwareAddress);
-                if (deviceName.equalsIgnoreCase("COEN390") &&
-                        deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
-                    ConnectThread mythread = new ConnectThread(device);
-                    MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
-                    break;
-                }
-            }
-        }
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-
-        registerReceiver(receiver, filter);
 
 //        Intent discoverableIntent =
 //                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
 //        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 500);
 //        startActivity(discoverableIntent);
 
-        bluetoothAdapter.startDiscovery();
+
     }
 
 

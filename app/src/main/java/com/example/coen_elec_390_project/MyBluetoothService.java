@@ -8,7 +8,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
@@ -17,24 +20,24 @@ public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
     private Handler handler; // handler that gets info from Bluetooth service
     private BluetoothSocket socket;
-    private int size = 512
+    private int size = 256;
 
-    private double convert(){
-        double complex_list[] = {};
+    private int convert(ArrayList<Double> complex_list){
+
         Complex real_list[] = new Complex[size];
 
         for(int i = 0;i<size;i++){
-            real_list[i] = new Complex(complex_list[i],0);
+            real_list[i] = new Complex(complex_list.get(i),0);
         }
 
         Complex ylist[] = FFT.fft(real_list);
-        FFT.show(ylist, "result");
+        //FFT.show(ylist, "result");
 
         double mag[] = new double[size];
         for(int i = 0;i<size;i++){
             mag[i] = ylist[i].abs();
         }
-        int Fs = 100;
+        int Fs = 50;
         double freq[] = new double[size];
         for(int i = 0;i<size;i++){
             freq[i] = (double)i*Fs/size;
@@ -43,21 +46,18 @@ public class MyBluetoothService {
         int  local_min = 3;
         double max = 0;
         int index = 0;
-        for(int i = local_min;i<size/2;i++){
+
+        boolean first_encounter=false;
+
+        for(int i = local_min;i<size/4;i++){
             if(max < mag[i]){
                 max = mag[i];
                 index=i;
             }
-
-
         }
 
-        int heart_frequency[] = new int [size];
-        for(int i = 0;i<size;i++){
-            heart_frequency[i] = -1000;
-        }
-
-        return Math.round(freq[index]*60);
+        Log.e("Tag","The index with the right frequency is "+index);
+        return (int)Math.round(freq[index]*60);
     }
 
     public MyBluetoothService(BluetoothSocket socket){
@@ -103,7 +103,9 @@ public class MyBluetoothService {
         }
 
         public void run() {
-            mmBuffer = new byte[1024];
+            mmBuffer = new byte[2048];
+            ArrayList<Double> voltage_readings = new ArrayList<>();
+
             int numBytes; // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs.
@@ -113,18 +115,33 @@ public class MyBluetoothService {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
                     String s = new String(mmBuffer, 0,numBytes);
+                    String[] list_of_str = s.split(",");
+
+                    for(String s1:list_of_str){
+                        //Log.e("Tag","<Message> "+s1);
+                        if(voltage_readings.size()<size){
+                            voltage_readings.add(Double.valueOf(s1)-1.6);
+                        }
+                    }
+
+                    if(voltage_readings.size()==size){
+                        MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
+                        voltage_readings.clear();
+                    }
+
                     // Send the obtained bytes to the UI activity.
                     Message readMsg = handler.obtainMessage(
                             MessageConstants.MESSAGE_READ, numBytes, -1,
                             mmBuffer);
-                    Log.e("Tag","<Message> "+s);
                     readMsg.sendToTarget();
+                    /*
                     try {
                         TimeUnit.MILLISECONDS.sleep(10);
                     }
                     catch (Exception e){
 
                     }
+                    */
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
