@@ -1,0 +1,186 @@
+package com.example.coen_elec_390_project;
+
+import android.bluetooth.BluetoothSocket;
+import android.os.Bundle;
+import android.os.Message;
+import android.util.Log;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import android.os.Handler;
+
+public class MyBluetoothService {
+    private static final String TAG = "MY_APP_DEBUG_TAG";
+    private Handler handler; // handler that gets info from Bluetooth service
+    private BluetoothSocket socket;
+    private int size = 256;
+
+    private int convert(ArrayList<Double> complex_list){
+
+        Complex real_list[] = new Complex[size];
+
+        for(int i = 0;i<size;i++){
+            real_list[i] = new Complex(complex_list.get(i),0);
+        }
+
+        Complex ylist[] = FFT.fft(real_list);
+        //FFT.show(ylist, "result");
+
+        double mag[] = new double[size];
+        for(int i = 0;i<size;i++){
+            mag[i] = ylist[i].abs();
+        }
+        int Fs = 50;
+        double freq[] = new double[size];
+        for(int i = 0;i<size;i++){
+            freq[i] = (double)i*Fs/size;
+        }
+
+        int  local_min = 3;
+        double max = 0;
+        int index = 0;
+
+        boolean first_encounter=false;
+
+        for(int i = local_min;i<size/4;i++){
+            if(max < mag[i]){
+                max = mag[i];
+                index=i;
+            }
+        }
+
+        Log.e("Tag","The index with the right frequency is "+index);
+        return (int)Math.round(freq[index]*60);
+    }
+
+    public MyBluetoothService(BluetoothSocket socket){
+        this.socket=socket;
+        handler = new Handler();
+        ConnectedThread mythread = new ConnectedThread();
+        mythread.start();
+    }
+    // Defines several constants used when transmitting messages between the
+    // service and the UI.
+    private interface MessageConstants {
+        public static final int MESSAGE_READ = 0;
+        public static final int MESSAGE_WRITE = 1;
+        public static final int MESSAGE_TOAST = 2;
+        // ... (Add other message types here as needed.)
+    }
+
+    private class ConnectedThread extends Thread {
+        private final InputStream mmInStream;
+        private final OutputStream mmOutStream;
+        private byte[] mmBuffer; // mmBuffer store for the stream
+
+        public ConnectedThread() {
+
+            InputStream tmpIn = null;
+            OutputStream tmpOut = null;
+
+            // Get the input and output streams; using temp objects because
+            // member streams are final.
+            try {
+                tmpIn = socket.getInputStream();
+            } catch (IOException e) {
+                Log.e(TAG, "Error occurred when creating input stream", e);
+            }
+            try {
+                tmpOut = socket.getOutputStream();
+            } catch (IOException e) {
+                Log.e(TAG, "Error occurred when creating output stream", e);
+            }
+
+            mmInStream = tmpIn;
+            mmOutStream = tmpOut;
+        }
+
+        public void run() {
+            mmBuffer = new byte[2048];
+            ArrayList<Double> voltage_readings = new ArrayList<>();
+
+            int numBytes; // bytes returned from read()
+
+            // Keep listening to the InputStream until an exception occurs.
+            int i = 0;
+            while (true) {
+                try {
+                    // Read from the InputStream.
+                    numBytes = mmInStream.read(mmBuffer);
+                    String s = new String(mmBuffer, 0,numBytes);
+                    String[] list_of_str = s.split(",");
+
+                    for(String s1:list_of_str){
+                        //Log.e("Tag","<Message> "+s1);
+                        if(voltage_readings.size()<size){
+                            voltage_readings.add(Double.valueOf(s1)-1.6);
+                        }
+                    }
+
+                    if(voltage_readings.size()==size){
+                        MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
+                        voltage_readings.clear();
+                    }
+
+                    // Send the obtained bytes to the UI activity.
+                    Message readMsg = handler.obtainMessage(
+                            MessageConstants.MESSAGE_READ, numBytes, -1,
+                            mmBuffer);
+                    readMsg.sendToTarget();
+                    /*
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(10);
+                    }
+                    catch (Exception e){
+
+                    }
+                    */
+                } catch (IOException e) {
+                    Log.d(TAG, "Input stream was disconnected", e);
+                    break;
+                }
+            }
+        }
+
+        // Call this from the main activity to send data to the remote device.
+        public void write(byte[] bytes) {
+            try {
+                mmOutStream.write(bytes);
+
+                // Share the sent message with the UI activity.
+                Message writtenMsg = handler.obtainMessage(
+                        MessageConstants.MESSAGE_WRITE, -1, -1, mmBuffer);
+                writtenMsg.sendToTarget();
+            } catch (IOException e) {
+                Log.e(TAG, "Error occurred when sending data", e);
+
+                // Send a failure message back to the activity.
+                Message writeErrorMsg =
+                        handler.obtainMessage(MessageConstants.MESSAGE_TOAST);
+                Bundle bundle = new Bundle();
+                bundle.putString("toast",
+                        "Couldn't send data to the other device");
+                writeErrorMsg.setData(bundle);
+                handler.sendMessage(writeErrorMsg);
+            }
+        }
+
+        // Call this method from the main activity to shut down the connection.
+        public void cancel() {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not close the connect socket", e);
+            }
+        }
+    }
+
+
+}
