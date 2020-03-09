@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.jjoe64.graphview.DefaultLabelFormatter;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -63,6 +64,8 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -73,8 +76,15 @@ public class StatisticsActivity extends AppCompatActivity {
                         break;
 
                     case R.id.profile:
-                        startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
-                        break;
+                        if (user == null) {
+                            // User is signed in
+                            startActivity(new Intent(StatisticsActivity.this, StartActivity.class));
+                            break;
+                        } else {
+                            // No user is signed in
+                            startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                            break;
+                        }
 
                     case R.id.statistics:
                         break;

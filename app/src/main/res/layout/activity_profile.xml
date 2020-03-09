@@ -12,42 +12,44 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="100dp"
-        android:hint="Name"
-        android:id="@+id/name"/>
-
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:hint="Last name"
-        android:id="@+id/lastname"
-        android:layout_below="@id/name"/>
-
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:hint="Gender"
-        android:id="@+id/gender"
-        android:layout_below="@id/lastname"/>
+        android:id="@+id/profileGender" />
+
+    <Spinner
+        android:id="@+id/profileSelectGender"
+        android:layout_width="304dp"
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:entries="@array/genderType"></Spinner>
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Full Name"
+        android:id="@+id/profileName"
+        android:layout_below="@id/profileGender"/>
+
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:hint="Height"
-        android:id="@+id/height"
+        android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
-        android:layout_below="@id/gender"/>
+        android:layout_below="@id/profileName"/>
 
     <EditText
-    android:layout_width="300dp"
-    android:layout_height="wrap_content"
-    android:layout_centerHorizontal="true"
-    android:hint="Weight"
-    android:id="@+id/weight"
-    android:inputType="numberDecimal"
-    android:layout_below="@id/height"/>
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="Weight"
+        android:id="@+id/profileWeight"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/profileHeight"/>
+
 
     <Button
         android:id="@+id/save"
@@ -55,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigation"
         android:layout_marginBottom="1dp"
-        android:text="Save"/>
+        android:text="Display" />
 
     <Button
         android:id="@+id/edit"
@@ -76,4 +78,13 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/colorBlack"/>
+
+    <Button
+        android:id="@+id/profileSaveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="325dp"
+        android:text="Profile Save" />
 </RelativeLayout>

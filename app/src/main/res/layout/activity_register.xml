@@ -10,10 +10,12 @@
     android:padding="10dp"
     tools:context=".RegisterActivity">
 
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:src="@drawable/logo"/>
+
 
     <EditText
         android:layout_width="match_parent"
