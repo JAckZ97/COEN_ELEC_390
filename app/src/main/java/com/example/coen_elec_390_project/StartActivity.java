@@ -47,39 +47,42 @@ public class StartActivity extends AppCompatActivity {
 
     private void bluetoothsetup(){
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
+        if (bluetoothAdapter!=null){
+            if (!bluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
 
-        //Look for old devices
-        Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            //Look for old devices
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
 
-        if (pairedDevices.size() > 0) {
-            // There are paired devices. Get the name and address of each paired device.
-            for (BluetoothDevice device : pairedDevices) {
-                String deviceName = device.getName();
-                String deviceHardwareAddress = device.getAddress(); // MAC address
-                Log.e("Tag", "device name " + deviceName);
-                Log.e("Tag", "device address " + deviceHardwareAddress);
-                if (deviceName.equalsIgnoreCase("COEN390") &&
-                        deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
-                    ConnectThread mythread = new ConnectThread(device);
-                    MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
-                    break;
+            if (pairedDevices.size() > 0) {
+                // There are paired devices. Get the name and address of each paired device.
+                for (BluetoothDevice device : pairedDevices) {
+                    String deviceName = device.getName();
+                    String deviceHardwareAddress = device.getAddress(); // MAC address
+                    Log.e("Tag", "device name " + deviceName);
+                    Log.e("Tag", "device address " + deviceHardwareAddress);
+                    if (deviceName.equalsIgnoreCase("COEN390") &&
+                            deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+                        ConnectThread mythread = new ConnectThread(device);
+                        MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
+                        break;
+                    }
                 }
             }
+
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+            filter.addAction(BluetoothDevice.ACTION_FOUND);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+
+
+            registerReceiver(receiver, filter);
+            bluetoothAdapter.startDiscovery();
         }
 
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-
-        registerReceiver(receiver, filter);
-        bluetoothAdapter.startDiscovery();
     }
 
     private final BroadcastReceiver receiver = new BroadcastReceiver() {

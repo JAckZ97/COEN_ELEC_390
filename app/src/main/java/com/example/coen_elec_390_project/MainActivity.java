@@ -6,15 +6,7 @@ import androidx.fragment.app.Fragment;
 
 import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothGatt;
-import android.bluetooth.BluetoothGattCallback;
-import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
-import android.bluetooth.le.ScanCallback;
-import android.bluetooth.le.ScanFilter;
-import android.bluetooth.le.ScanResult;
-import android.bluetooth.le.ScanSettings;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,8 +32,8 @@ import java.util.List;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
-    TextView bpm;
     static TextView bpm;
+    static TextView zone;
     private BluetoothAdapter bluetoothAdapter;
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothLeScanner mBluetoothLeScanner;
@@ -52,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
-
         bpm = findViewById(R.id.bpm);
         bpm.setText("180 bpm");
         bpm.setBackgroundResource(R.drawable.ic_bpm);
@@ -99,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void  Update_bpm(String a){
-        if(bpm!=null)
+        if(bpm!=null) {
             bpm.setText(a);
+        }
     }
 }

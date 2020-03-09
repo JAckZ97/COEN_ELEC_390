@@ -20,7 +20,7 @@ public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
     private Handler handler; // handler that gets info from Bluetooth service
     private BluetoothSocket socket;
-    private int size = 256;
+    private int size = 512;
 
     private int convert(ArrayList<Double> complex_list){
 
@@ -37,7 +37,7 @@ public class MyBluetoothService {
         for(int i = 0;i<size;i++){
             mag[i] = ylist[i].abs();
         }
-        int Fs = 50;
+        int Fs = 100;
         double freq[] = new double[size];
         for(int i = 0;i<size;i++){
             freq[i] = (double)i*Fs/size;
@@ -49,7 +49,7 @@ public class MyBluetoothService {
 
         boolean first_encounter=false;
 
-        for(int i = local_min;i<size/4;i++){
+        for(int i = local_min;i<size/2;i++){
             if(max < mag[i]){
                 max = mag[i];
                 index=i;
@@ -57,6 +57,7 @@ public class MyBluetoothService {
         }
 
         Log.e("Tag","The index with the right frequency is "+index);
+        Log.e("Tag","The HR of index 7 is " + (int)Math.round(freq[index]*60));
         return (int)Math.round(freq[index]*60);
     }
 
@@ -113,6 +114,7 @@ public class MyBluetoothService {
             while (true) {
                 try {
                     // Read from the InputStream.
+
                     numBytes = mmInStream.read(mmBuffer);
                     String s = new String(mmBuffer, 0,numBytes);
                     String[] list_of_str = s.split(",");
@@ -125,6 +127,7 @@ public class MyBluetoothService {
                     }
 
                     if(voltage_readings.size()==size){
+                        Log.e("Tag","<Message> Got 1024 Data");
                         MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
                         voltage_readings.clear();
                     }
