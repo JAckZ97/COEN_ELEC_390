@@ -22,8 +22,10 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 import java.util.HashMap;
+
+
+// TODO: Register with signInAnonymously
 
 public class RegisterActivity extends AppCompatActivity {
     EditText fullname, email, password, password2;
@@ -104,9 +106,32 @@ public class RegisterActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
 
+//                else if (str_fullname.equals("guest")){
+//                    auth.signInAnonymously().
+//                            addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<AuthResult> task) {
+//                                    if (task.isSuccessful()) {
+//                                        // Sign in success, update UI with the signed-in user's information
+//                                        //Log.d(TAG, "signInAnonymously:success");
+//                                        FirebaseUser user = auth.getCurrentUser();
+//                                        
+//
+//                                    } else {
+//                                        // If sign in fails, display a message to the user.
+//
+//                                        Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+//
+//                                    }
+//                                }
+//                            });
+//                }
+
                 else {
                     register(str_fullname, str_email, str_password);
                 }
+
+
             }
         });
     }
