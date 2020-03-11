@@ -130,6 +130,7 @@ public class MyBluetoothService {
                         Log.e("Tag","<Message> Got 1024 Data");
                         MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
                         voltage_readings.clear();
+
                     }
 
                     // Send the obtained bytes to the UI activity.

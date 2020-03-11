@@ -82,6 +82,13 @@ public class StartActivity extends AppCompatActivity {
             registerReceiver(receiver, filter);
             bluetoothAdapter.startDiscovery();
         }
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receiver, filter);
+
 
     }
 
