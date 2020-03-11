@@ -1,20 +1,23 @@
-package com.example.coen_elec_390_project;
+package com.example.coen_elec_390_project.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
+import com.example.coen_elec_390_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -38,6 +41,7 @@ public class RegisterActivity extends AppCompatActivity {
     FirebaseAuth auth;
     DatabaseReference reference;
     ProgressDialog pd;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,15 +88,12 @@ public class RegisterActivity extends AppCompatActivity {
                 pd.show();
 
                 String str_fullname = fullname.getText().toString();
-//                String str_gender = selectGender;
-//                String str_weight = weight.getText().toString();
-//                String str_height = height.getText().toString();
                 String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
                 String str_password2 = password2.getText().toString();
 
                 if(TextUtils.isEmpty(str_fullname) || TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password) || TextUtils.isEmpty(str_password2)) {
-                    Toast.makeText(RegisterActivity.this, "All fields are required!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
 
@@ -106,29 +107,19 @@ public class RegisterActivity extends AppCompatActivity {
                     pd.dismiss();
                 }
 
-//                else if (str_fullname.equals("guest")){
-//                    auth.signInAnonymously().
-//                            addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                    if (task.isSuccessful()) {
-//                                        // Sign in success, update UI with the signed-in user's information
-//                                        //Log.d(TAG, "signInAnonymously:success");
-//                                        FirebaseUser user = auth.getCurrentUser();
-//                                        
-//
-//                                    } else {
-//                                        // If sign in fails, display a message to the user.
-//
-//                                        Toast.makeText(RegisterActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-//
-//                                    }
-//                                }
-//                            });
-//                }
+                else if(!checkforAt(str_email)) {
+                    Toast.makeText(RegisterActivity.this, "This is not a valid email", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                }
 
                 else {
-                    register(str_fullname, str_email, str_password);
+                    if(isNetworkConnected()) {
+                        registerOnline(str_fullname, str_email, str_password);
+                    }
+
+                    else {
+                        registerOffline(str_fullname, str_email, str_password);
+                    }
                 }
 
 
@@ -136,7 +127,24 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    public void register(final String fullname, String email, String password) {
+    private boolean checkforAt(String email) {
+        boolean hasAt = false;
+        for(int i = 0; i < email.length(); i++) {
+            if(email.charAt(i) == '@') {
+                hasAt = true;
+            }
+        }
+
+        return hasAt;
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
+
+    public void registerOnline(final String fullname, String email, String password) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -175,5 +183,17 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void registerOffline(final String fullname, String email, String password) {
+        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+
+        //databaseHelper.insertUser(new User(fullname, email, password));
+
+        pd.dismiss();
+        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        Toast.makeText(RegisterActivity.this, "register offline", Toast.LENGTH_SHORT).show();
     }
 }
