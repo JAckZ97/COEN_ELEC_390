@@ -78,15 +78,6 @@ public class StartActivity extends AppCompatActivity {
                     }
                 }
             }
-
-            IntentFilter filter = new IntentFilter();
-            filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-
-            registerReceiver(receiver, filter);
             bluetoothAdapter.startDiscovery();
         }
         IntentFilter filter = new IntentFilter();
@@ -150,13 +141,6 @@ public class StartActivity extends AppCompatActivity {
                 signInAnonimously();
             }
         });
-
-
-
-//        Intent discoverableIntent =
-//                new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 500);
-//        startActivity(discoverableIntent);
 
 
     }
