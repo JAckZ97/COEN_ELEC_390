@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.BLUETOOTH"/>
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -14,12 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StatisticsActivity"></activity>
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".StartActivity">
+        <activity android:name=".Activity.StatisticsActivity"></activity>
+        <activity android:name=".Activity.ProfileActivity" />
+        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.RegisterActivity" />
+        <activity android:name=".Activity.LoginActivity" />
+        <activity android:name=".Activity.StartActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

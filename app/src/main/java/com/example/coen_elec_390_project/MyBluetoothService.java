@@ -8,13 +8,11 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import android.os.Handler;
+
+import com.example.coen_elec_390_project.Activity.MainActivity;
 
 public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
