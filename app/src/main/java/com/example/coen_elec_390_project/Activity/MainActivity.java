@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
                         case R.id.logout:
                             FirebaseAuth.getInstance().signOut();
+                            //MyBluetoothService.cancel_service();
                             startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             break;
                     }

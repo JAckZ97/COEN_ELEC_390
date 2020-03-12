@@ -48,11 +48,11 @@ public class StartActivity extends AppCompatActivity {
             finish();
         }
 
-        bluetoothsetup();
 
     }
 
     private void bluetoothsetup(){
+        MyBluetoothService.initialized=true;
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter!=null){
             if (!bluetoothAdapter.isEnabled()) {
@@ -68,24 +68,21 @@ public class StartActivity extends AppCompatActivity {
                 for (BluetoothDevice device : pairedDevices) {
                     String deviceName = device.getName();
                     String deviceHardwareAddress = device.getAddress(); // MAC address
-                    Log.e("Tag", "device name " + deviceName);
-                    Log.e("Tag", "device address " + deviceHardwareAddress);
+                    Log.e("Tag", "<Message> device name " + deviceName);
+                    Log.e("Tag", "<Message> device address " + deviceHardwareAddress);
                     if (deviceName.equalsIgnoreCase("COEN390") &&
                             deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+                        Log.e("Tag", "<Message> connecting phase ");
                         ConnectThread mythread = new ConnectThread(device);
                         MyBluetoothService mbs = new MyBluetoothService(mythread.tryconnect());
+                        Log.e("Tag", "<Message> finished connecting ");
                         break;
                     }
                 }
             }
             bluetoothAdapter.startDiscovery();
         }
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(receiver, filter);
+
 
 
     }
@@ -102,8 +99,6 @@ public class StartActivity extends AppCompatActivity {
                 String deviceHardwareAddress = device.getAddress(); // MAC address
 
                 if(deviceName == "COEN390"){
-                    Log.e("Tag","FOUND ESP32 DEVICE USING BT");
-                    Log.e("Tag", "device address "+deviceHardwareAddress);
                 }
 
 
@@ -142,6 +137,14 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
+        if(!MyBluetoothService.initialized)
+            bluetoothsetup();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(receiver, filter);
 
     }
 

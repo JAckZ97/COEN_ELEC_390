@@ -19,7 +19,8 @@ public class MyBluetoothService {
     private Handler handler; // handler that gets info from Bluetooth service
     private BluetoothSocket socket;
     private int size = 512;
-
+    //public static ConnectedThread mythread;
+    public static boolean initialized = false;
     private int convert(ArrayList<Double> complex_list){
 
         Complex real_list[] = new Complex[size];
@@ -64,7 +65,9 @@ public class MyBluetoothService {
         handler = new Handler();
         ConnectedThread mythread = new ConnectedThread();
         mythread.start();
+        Log.e("Tag", "<Message> Bluetooth service initialization ");
     }
+
     // Defines several constants used when transmitting messages between the
     // service and the UI.
     private interface MessageConstants {
@@ -112,7 +115,6 @@ public class MyBluetoothService {
             while (true) {
                 try {
                     // Read from the InputStream.
-
                     numBytes = mmInStream.read(mmBuffer);
                     String s = new String(mmBuffer, 0,numBytes);
                     String[] list_of_str = s.split(",");
