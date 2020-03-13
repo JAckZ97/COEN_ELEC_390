@@ -1,7 +1,7 @@
 package com.example.coen_elec_390_project.Database;
 
 public class Config {
-    public static final String DATABASE_NAME = "local-users-db";
+    public static final String DATABASE_NAME = "local-user-db";
     public static final int DATABASE_VERSION = 1;
 
     /**User table*/

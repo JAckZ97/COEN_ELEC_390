@@ -8,13 +8,20 @@ import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     static TextView bpm;
@@ -33,9 +40,7 @@ public class MainActivity extends AppCompatActivity {
         bpm.setText("180 bpm");
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
-
     }
-
 
     private void setUpBottomNavigationView() {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -46,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     switch (menuItem.getItemId()){
                         case R.id.home:
+                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
                             break;
 
                         case R.id.profile:

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseReference reference;
     ProgressDialog pd;
     Context context;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         txt_login = findViewById(R.id.txt_login);
 
         auth = FirebaseAuth.getInstance();
+        databaseHelper = new DatabaseHelper(this);
 
 //        gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -86,6 +89,11 @@ public class RegisterActivity extends AppCompatActivity {
                 pd = new ProgressDialog(RegisterActivity.this);
                 pd.setMessage("Please wait...");
                 pd.show();
+
+                fullname.setText("987");
+                email.setText("987@gmail.com");
+                password.setText("qwerty");
+                password2.setText("qwerty");
 
                 String str_fullname = fullname.getText().toString();
                 String str_email = email.getText().toString();
@@ -186,14 +194,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerOffline(final String fullname, String email, String password) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        if(databaseHelper.checkIfExisting(email)) {
+            Toast.makeText(RegisterActivity.this, email, Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
 
-        //databaseHelper.insertUser(new User(fullname, email, password));
+        else {
+            databaseHelper.insertUser(new User(fullname, email, password));
 
-        pd.dismiss();
-        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        Toast.makeText(RegisterActivity.this, "register offline", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
     }
 }
