@@ -90,11 +90,6 @@ public class RegisterActivity extends AppCompatActivity {
                 pd.setMessage("Please wait...");
                 pd.show();
 
-                fullname.setText("987");
-                email.setText("987@gmail.com");
-                password.setText("qwerty");
-                password2.setText("qwerty");
-
                 String str_fullname = fullname.getText().toString();
                 String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
@@ -129,8 +124,6 @@ public class RegisterActivity extends AppCompatActivity {
                         registerOffline(str_fullname, str_email, str_password);
                     }
                 }
-
-
             }
         });
     }
@@ -195,7 +188,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void registerOffline(final String fullname, String email, String password) {
         if(databaseHelper.checkIfExisting(email)) {
-            Toast.makeText(RegisterActivity.this, email, Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
 
@@ -205,6 +198,7 @@ public class RegisterActivity extends AppCompatActivity {
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("email", email);
             startActivity(intent);
         }
     }

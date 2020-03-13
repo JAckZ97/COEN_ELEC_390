@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
         bpm = findViewById(R.id.bpm);
-        bpm.setText("180 bpm");
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
+        email = getIntent().getStringExtra("email");
     }
 
     private void setUpBottomNavigationView() {
@@ -49,13 +50,26 @@ public class MainActivity extends AppCompatActivity {
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    Intent intent;
+
                     switch (menuItem.getItemId()){
                         case R.id.home:
                             startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
                             break;
 
+                        case R.id.statistics:
+                            intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+
+                            break;
+
                         case R.id.profile:
-                            if (user == null) {
+                            intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            break;
+                            /**if (user == null) {
                                 // User is signed in
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
@@ -63,11 +77,7 @@ public class MainActivity extends AppCompatActivity {
                                 // No user is signed in
                                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
                                 break;
-                            }
-
-                        case R.id.statistics:
-                            startActivity(new Intent(MainActivity.this, StatisticsActivity.class));
-                            break;
+                            }*/
 
                         case R.id.logout:
                             FirebaseAuth.getInstance().signOut();

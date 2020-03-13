@@ -76,8 +76,13 @@ public class StatisticsActivity extends AppCompatActivity {
                         startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
                         break;
 
+                    case R.id.statistics:
+                        break;
+
                     case R.id.profile:
-                        if (user == null) {
+                        startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                        break;
+                        /**if (user == null) {
                             // User is signed in
                             startActivity(new Intent(StatisticsActivity.this, StartActivity.class));
                             break;
@@ -85,11 +90,7 @@ public class StatisticsActivity extends AppCompatActivity {
                             // No user is signed in
                             startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
                             break;
-                        }
-
-                    case R.id.statistics:
-                        break;
-
+                        }*/
 
                     case R.id.logout:
                         FirebaseAuth.getInstance().signOut();

@@ -11,8 +11,11 @@ import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,12 +29,14 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText name, gender, height, weight;
+    EditText fullname, height, weight;
     Button save, edit, profileSaveButton;
     Spinner genderSelect;
     String selectGender;
     DatabaseReference reff;
     FirebaseUser firebaseUser;
+    DatabaseHelper databaseHelper;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,25 +44,28 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         setUpBottomNavigationView();
 
-        name = findViewById(R.id.profileName);
-        gender = findViewById(R.id.profileGender);
-        genderSelect = findViewById(R.id.profileSelectGender);
+        fullname = findViewById(R.id.profileName);
         height = findViewById(R.id.profileHeight);
         weight = findViewById(R.id.profileWeight);
+        genderSelect = findViewById(R.id.profileSelectGender);
         save = findViewById(R.id.save);
         edit = findViewById(R.id.edit);
         profileSaveButton = findViewById(R.id.profileSaveButton);
 
-        name.setEnabled(false);
-        gender.setEnabled(false);
+        fullname.setEnabled(false);
         height.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
-        gender.setVisibility(View.VISIBLE);
-        genderSelect.setVisibility(View.INVISIBLE);
         profileSaveButton.setVisibility(View.INVISIBLE);
 
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        String email = getIntent().getStringExtra("email");
+
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+
+        fullname.setText(user.getFullname());
+
+        /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
         basicRead();
 
@@ -83,22 +91,19 @@ public class ProfileActivity extends AppCompatActivity {
                 basicWrite();
 
             }
-        });
+        });*/
 
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name.setEnabled(false);
-                gender.setEnabled(false);
+                fullname.setEnabled(false);
                 height.setEnabled(false);
                 weight.setEnabled(false);
                 genderSelect.setEnabled(false);
-                gender.setVisibility(View.VISIBLE);
-                genderSelect.setVisibility(View.INVISIBLE);
-                profileSaveButton.setVisibility(View.INVISIBLE);
+                //profileSaveButton.setVisibility(View.INVISIBLE);
 
-                basicRead();
+                //basicRead();
 
             }
         });
@@ -106,14 +111,11 @@ public class ProfileActivity extends AppCompatActivity {
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                name.setEnabled(true);
-                gender.setEnabled(true);
+                fullname.setEnabled(true);
                 height.setEnabled(true);
                 weight.setEnabled(true);
                 genderSelect.setEnabled(true);
-                gender.setVisibility(View.INVISIBLE);
-                genderSelect.setVisibility(View.VISIBLE);
-                profileSaveButton.setVisibility(View.VISIBLE);
+                //profileSaveButton.setVisibility(View.VISIBLE);
 
             }
         });
@@ -128,10 +130,9 @@ public class ProfileActivity extends AppCompatActivity {
                 String fileHeight = dataSnapshot.child("Height").getValue(String.class);
                 String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
 
-                name.setText(fileName);
+                fullname.setText(fileName);
                 height.setText(fileHeight);
                 weight.setText(fileWeight);
-                gender.setText(fileGender);
 
             }
 
@@ -144,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void basicWrite () {
         String userid = firebaseUser.getUid();
-        String str_fullname = name.getText().toString();
+        String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         String str_weight = weight.getText().toString();
         String str_height = height.getText().toString();
@@ -172,13 +173,12 @@ public class ProfileActivity extends AppCompatActivity {
                         startActivity(new Intent(ProfileActivity.this, MainActivity.class));
                         break;
 
-                    case R.id.profile:
-                        break;
-
                     case R.id.statistics:
                         startActivity(new Intent(ProfileActivity.this, StatisticsActivity.class));
                         break;
 
+                    case R.id.profile:
+                        break;
 
                     case R.id.logout:
                         FirebaseAuth.getInstance().signOut();

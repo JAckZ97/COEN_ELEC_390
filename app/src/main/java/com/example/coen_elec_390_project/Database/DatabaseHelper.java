@@ -73,7 +73,54 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    /**Function that returns all the user in the database*/
+    /**Fucntion that returns a user*/
+    public User getUser(String email) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        User user = new User();
+
+        String query = "SELECT * FROM " + Config.USER_TABLE_NAME + " WHERE " + Config.COLUMN_USER_EMAIL + " = '" + email + "'";
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    do {
+                        String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
+
+                        if(database_email.equals(email)) {
+                            user.setId(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_ID)));
+                            user.setFullname(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME)));
+                            user.setEmail(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL)));
+                            user.setPassword(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD)));
+
+                            return user;
+                        }
+                    } while(cursor.moveToNext());
+                }
+            }
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return user;
+    }
+
+    /**Function that returns a list of all the user in the database*/
     public List<User> getAllUsers() {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -119,28 +166,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean checkIfExisting(String email) {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = null;
-        boolean output = false;
+
         String query = "SELECT * FROM " + Config.USER_TABLE_NAME + " WHERE " + Config.COLUMN_USER_EMAIL + " = '" + email + "'";
 
         Log.d(TAG, query);
 
         try {
             cursor = db.rawQuery(query, null);
-            Log.d(TAG, "try");
-            if(cursor != null) {
-                Log.d(TAG, "if");
-                do {
-                    if(cursor.moveToFirst()) {
-                    }
-                    Log.d(TAG, "do");
-                    String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
-                    Log.d(TAG, "database " + database_email);
-                    Log.d(TAG, "email " + email);
 
-                    if(database_email.equals(email)) {
-                        output = true;
-                    }
-                } while(cursor.moveToNext());
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    do {
+                        String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
+
+                        if(database_email.equals(email)) {
+                            return true;
+                        }
+                    } while(cursor.moveToNext());
+                }
             }
         }
 
@@ -154,12 +197,52 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.close();
             }
 
-            Log.d(TAG, String.valueOf(output));
             db.close();
         }
 
+        return false;
+    }
 
-        return output;
+    /**Function that validate the password*/
+    public boolean checkPassword(String email, String password) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.USER_TABLE_NAME + " WHERE " + Config.COLUMN_USER_EMAIL + " = '" + email + "'";
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    do {
+                        String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
+                        String database_password = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD));
+
+                        if(database_email.equals(email) && database_password.equals(password)) {
+                            return true;
+                        }
+                    } while(cursor.moveToNext());
+                }
+            }
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return false;
     }
 
     @Override
