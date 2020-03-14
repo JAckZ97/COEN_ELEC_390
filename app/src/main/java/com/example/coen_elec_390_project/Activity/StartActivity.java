@@ -93,9 +93,16 @@ public class StartActivity extends AppCompatActivity {
             }
             if(!MyBluetoothService.success) {
                 requestLocationPermission();
+                IntentFilter filter = new IntentFilter();
+                filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+                filter.addAction(BluetoothDevice.ACTION_FOUND);
+                filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+                filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+                registerReceiver(receiver, filter);
                 if (!bluetoothAdapter.startDiscovery()){
                     Log.e("Tag", "<Message> Bluetooth Discovery failed!");
                 }
+
             }
 
 
@@ -161,12 +168,7 @@ public class StartActivity extends AppCompatActivity {
 
         if(!MyBluetoothService.initialized)
             bluetoothsetup();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(receiver, filter);
+
 
     }
 
@@ -204,7 +206,15 @@ public class StartActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         // Don't forget to unregister the ACTION_FOUND receiver.
-        unregisterReceiver(receiver);
+        try {
+            unregisterReceiver(receiver);
+            //Register or UnRegister your broadcast receiver here
+
+        } catch(IllegalArgumentException e) {
+
+            e.printStackTrace();
+        }
+
     }
 
     private class ConnectThread extends Thread {
