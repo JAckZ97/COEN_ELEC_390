@@ -116,13 +116,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    if(isNetworkConnected()) {
+                    registerOffline(str_fullname, str_email, str_password);
+                    /**if(isNetworkConnected()) {
                         registerOnline(str_fullname, str_email, str_password);
                     }
 
                     else {
                         registerOffline(str_fullname, str_email, str_password);
-                    }
+                    }*/
                 }
             }
         });

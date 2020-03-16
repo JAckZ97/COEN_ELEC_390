@@ -68,12 +68,14 @@ public class LoginActivity extends AppCompatActivity {
 
                 if(TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
                     Toast.makeText(LoginActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
                 }
 
                 else if(!checkforAt(str_email)) {
                     Toast.makeText(LoginActivity.this, "This is not a valid email", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
                 }
+
 
                 else {
                     if(isNetworkConnected()) {

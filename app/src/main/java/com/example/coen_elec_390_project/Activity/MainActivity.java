@@ -7,10 +7,12 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.Model.User;
@@ -30,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
-    String email;
+    public static String global_email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +42,14 @@ public class MainActivity extends AppCompatActivity {
         bpm = findViewById(R.id.bpm);
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
-        email = getIntent().getStringExtra("email");
+        if(global_email.equals(""))
+            global_email = getIntent().getStringExtra("email");
     }
 
     private void setUpBottomNavigationView() {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-            BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+            final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -59,34 +62,20 @@ public class MainActivity extends AppCompatActivity {
 
                         case R.id.statistics:
                             intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
-                            intent.putExtra("email", email);
                             startActivity(intent);
-
                             break;
 
                         case R.id.profile:
                             intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
-                            intent.putExtra("email", email);
                             startActivity(intent);
                             break;
-                            /**if (user == null) {
-                                // User is signed in
-                                startActivity(new Intent(MainActivity.this, StartActivity.class));
-                                break;
-                            } else {
-                                // No user is signed in
-                                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                                break;
-                            }*/
 
                         case R.id.logout:
-                            FirebaseAuth.getInstance().signOut();
-                            //MyBluetoothService.cancel_service();
                             startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                             break;
                     }
 
-                    return false;
+                    return true;
                 }
             });
     }
