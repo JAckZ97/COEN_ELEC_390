@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         bpm = findViewById(R.id.bpm);
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
-        if(global_email.equals(""))
+        //if(global_email.equals(""))
             global_email = getIntent().getStringExtra("email");
     }
 

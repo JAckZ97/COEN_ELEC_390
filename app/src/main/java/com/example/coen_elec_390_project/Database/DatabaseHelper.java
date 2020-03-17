@@ -6,17 +6,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.widget.Toast;
 
-import androidx.constraintlayout.solver.widgets.ConstraintWidgetGroup;
 
 import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -335,6 +335,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return Collections.emptyList();
     }
+
+    public List<Statistic> getStatisticsAfterStart(int userId, String startdate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE "/* + Config.COLUMN_STATISTIC_USER_ID + " = " + userId
+                + " AND "*/ + Config.COLUMN_STATISTIC_DATE + " > " + startdate;
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    List<Statistic> statistics = new ArrayList<>();
+
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
+                        int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        int perf_index = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
+                        int bpm = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_BPM));
+
+
+                        statistics.add(new Statistic(id, user_id, date, perf_index, bpm));
+                    } while(cursor.moveToNext());
+
+                    return statistics;
+                }
+            }
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
