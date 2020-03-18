@@ -116,13 +116,15 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    if(isNetworkConnected()) {
-                        registerOnline(str_fullname, str_email, str_password);
-                    }
+                    registerOffline(str_fullname, str_email, str_password);
 
-                    else {
-                        registerOffline(str_fullname, str_email, str_password);
-                    }
+//                    if(isNetworkConnected()) {
+//                        registerOnline(str_fullname, str_email, str_password);
+//                    }
+//
+//                    else {
+//                        registerOffline(str_fullname, str_email, str_password);
+//                    }
                 }
             }
         });
@@ -139,52 +141,52 @@ public class RegisterActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
-    public void registerOnline(final String fullname, String email, String password) {
-        auth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                            String userid = firebaseUser.getUid();
-
-                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userid);
-
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("Id", userid);
-                            hashMap.put("Fullname", fullname);
-                            hashMap.put("Gender", "");
-                            hashMap.put("Weight", "");
-                            hashMap.put("Height", "");
-                            hashMap.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
-
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()) {
-                                        pd.dismiss();
-                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                        startActivity(intent);
-                                    }
-                                }
-                            });
-                        }
-
-                        else {
-                            pd.dismiss();
-                            Toast.makeText(RegisterActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
-                            task.getException().printStackTrace();
-                        }
-                    }
-                });
-    }
+//    private boolean isNetworkConnected() {
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+//    }
+//
+//    public void registerOnline(final String fullname, String email, String password) {
+//        auth.createUserWithEmailAndPassword(email, password)
+//                .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
+//                    @Override
+//                    public void onComplete(@NonNull Task<AuthResult> task) {
+//                        if(task.isSuccessful()) {
+//                            FirebaseUser firebaseUser = auth.getCurrentUser();
+//                            String userid = firebaseUser.getUid();
+//
+//                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userid);
+//
+//                            HashMap<String, Object> hashMap = new HashMap<>();
+//                            hashMap.put("Id", userid);
+//                            hashMap.put("Fullname", fullname);
+//                            hashMap.put("Gender", "");
+//                            hashMap.put("Weight", "");
+//                            hashMap.put("Height", "");
+//                            hashMap.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
+//
+//                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
+//                                @Override
+//                                public void onComplete(@NonNull Task<Void> task) {
+//                                    if(task.isSuccessful()) {
+//                                        pd.dismiss();
+//                                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+//                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+//                                        startActivity(intent);
+//                                    }
+//                                }
+//                            });
+//                        }
+//
+//                        else {
+//                            pd.dismiss();
+//                            Toast.makeText(RegisterActivity.this, "You can't register with this email or password", Toast.LENGTH_SHORT).show();
+//                            task.getException().printStackTrace();
+//                        }
+//                    }
+//                });
+//    }
 
     public void registerOffline(final String fullname, String email, String password) {
         if(databaseHelper.checkIfExisting(email)) {

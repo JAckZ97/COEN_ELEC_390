@@ -37,6 +37,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_USER_EMAIL + " TEXT NOT NULL,"
                 + Config.COLUMN_USER_PASSWORD + " TEXT NOT NULL)";
 
+//                + Config.COLUMN_USER_AGE + " TEXT NOT NULL,"
+//                + Config.COLUMN_USER_WEIGHT + " TEXT NOT NULL,"
+//                + Config.COLUMN_USER_HEIGHT + " TEXT NOT NULL)";
+
         Log.d(TAG, CREATE_TABLE_USER);
 
         /**Execute the SQL query*/
@@ -54,6 +58,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
+//        contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
+//        contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
+//        contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
 
         /**We try to insert it*/
         try {
@@ -96,6 +103,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             user.setFullname(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME)));
                             user.setEmail(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL)));
                             user.setPassword(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD)));
+//                            user.setAge(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE)));
+//                            user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
+//                            user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
 
                             return user;
                         }
@@ -137,6 +147,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String fullname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME));
                         String email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
                         String password = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD));
+//                        String age = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE));
+//                        String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
+//                        String weight = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT));
 
                         users.add(new User(id, fullname, email, password));
                     } while(cursor.moveToNext());

@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,14 +31,16 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText fullname, height, weight;
-    Button save, edit, profileSaveButton;
+    EditText fullname, height, weight, age;
+    Button save, edit;
     Spinner genderSelect;
-    String selectGender;
-    DatabaseReference reff;
-    FirebaseUser firebaseUser;
     DatabaseHelper databaseHelper;
-    User user;
+    RadioButton cm, ft, kg, lb;
+    RadioGroup weightGroup, heightGroup;
+    //String selectGender;
+    //DatabaseReference reff;
+    //FirebaseUser firebaseUser;
+    //User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +51,21 @@ public class ProfileActivity extends AppCompatActivity {
         fullname = findViewById(R.id.profileName);
         height = findViewById(R.id.profileHeight);
         weight = findViewById(R.id.profileWeight);
+        age = findViewById(R.id.profileAge);
         genderSelect = findViewById(R.id.profileSelectGender);
         save = findViewById(R.id.save);
         edit = findViewById(R.id.edit);
-        profileSaveButton = findViewById(R.id.profileSaveButton);
+        cm = findViewById(R.id.heightCm);
+        ft = findViewById(R.id.heightFeet);
+        kg = findViewById(R.id.weightKG);
+        lb = findViewById(R.id.weightLB);
+        weightGroup = findViewById(R.id.weightRadioGroup);
+        heightGroup = findViewById(R.id.weightRadioGroup);
 
         fullname.setEnabled(false);
         height.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
-        profileSaveButton.setVisibility(View.INVISIBLE);
 
         String email = getIntent().getStringExtra("email");
 
@@ -64,6 +73,10 @@ public class ProfileActivity extends AppCompatActivity {
         User user = databaseHelper.getUser(email);
 
         fullname.setText(user.getFullname());
+
+        int checkWeightId = weightGroup.getCheckedRadioButtonId();
+        int checkHeightId = heightGroup.getCheckedRadioButtonId();
+
 
         /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -101,8 +114,7 @@ public class ProfileActivity extends AppCompatActivity {
                 height.setEnabled(false);
                 weight.setEnabled(false);
                 genderSelect.setEnabled(false);
-                //profileSaveButton.setVisibility(View.INVISIBLE);
-
+                age.setEnabled(false);
                 //basicRead();
 
             }
@@ -115,12 +127,13 @@ public class ProfileActivity extends AppCompatActivity {
                 height.setEnabled(true);
                 weight.setEnabled(true);
                 genderSelect.setEnabled(true);
-                //profileSaveButton.setVisibility(View.VISIBLE);
+                age.setEnabled(true);
 
             }
         });
     }
 
+    /**
     public void basicRead(){
         reff.addValueEventListener(new ValueEventListener() {
             @Override
@@ -159,9 +172,25 @@ public class ProfileActivity extends AppCompatActivity {
         updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
 
         reff.setValue(updateresult);
+    }*/
+
+
+    private void findRadioButton (int checkID){
+        switch (checkID){
+            case R.id.heightCm:
+                Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.heightFeet:
+                Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.weightKG:
+                Toast.makeText(ProfileActivity.this, "Selected kg", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.weightLB:
+                Toast.makeText(ProfileActivity.this, "Selected lb", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
-
-
 
     private void setUpBottomNavigationView() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
