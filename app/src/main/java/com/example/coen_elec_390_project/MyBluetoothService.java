@@ -56,8 +56,8 @@ public class MyBluetoothService {
             }
         }
 
-        Log.e("Tag","The index with the right frequency is "+index);
-        Log.e("Tag","The HR of index 7 is " + (int)Math.round(freq[index]*60));
+        Log.e("Tag","<FFT> The index with the right frequency is "+index);
+        Log.e("Tag","<FFT> The HR of index 7 is " + (int)Math.round(freq[index]*60));
         return (int)Math.round(freq[index]*60);
     }
 
@@ -128,7 +128,7 @@ public class MyBluetoothService {
                     }
 
                     if(voltage_readings.size()==size){
-                        Log.e("Tag","<Message> Got 1024 Data");
+                        Log.e("Tag","<DATACOM> Got 1024 Data");
                         MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
                         voltage_readings.clear();
 
