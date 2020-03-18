@@ -1,16 +1,23 @@
 package com.example.coen_elec_390_project.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +51,39 @@ public class MainActivity extends AppCompatActivity {
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
         //if(global_email.equals(""))
             global_email = getIntent().getStringExtra("email");
+        if(!MyBluetoothService.success){
+            bpm.setText("Sensor Disconnected");
+            showBTDialog();
+        }else{
+            bpm.setText("Your BPM value");
+        }
+    }
+
+
+    public void showBTDialog() {
+
+        final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+        final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
+
+        popDialog.setTitle("Paired Bluetooth Devices");
+        popDialog.setMessage("Please go to Settings -> Bluetooth -> Pair new device and pair your device.");
+        popDialog.setView(Viewlayout);
+        popDialog.setPositiveButton("Understood",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        try{
+                            dialog.dismiss();
+                        }catch (Exception e){
+                            Log.e("Tag","<Message> Failed creating bond with chosen bt device");
+                        }
+
+                    }
+                });
+
+        // Create popup and show
+        popDialog.create();
+        popDialog.show();
     }
 
     private void setUpBottomNavigationView() {
