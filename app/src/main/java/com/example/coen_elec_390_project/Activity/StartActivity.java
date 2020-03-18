@@ -74,8 +74,6 @@ public class StartActivity extends AppCompatActivity {
             showBTDialog();
         }
 
-
-
     }
 
     private void bluetoothsetup(){
