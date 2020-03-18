@@ -23,6 +23,7 @@
         android:layout_marginTop="15dp"
         android:inputType="textEmailAddress"
         android:id="@+id/email"
+        android:maxLines="1"
         android:padding="10dp"/>
 
     <EditText
@@ -33,6 +34,7 @@
         android:layout_marginTop="15dp"
         android:inputType="textPassword"
         android:id="@+id/password"
+        android:maxLines="1"
         android:padding="10dp"/>
 
     <Button

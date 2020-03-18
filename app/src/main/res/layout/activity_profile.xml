@@ -7,49 +7,49 @@
     android:layout_height="match_parent"
     tools:context=".Activity.ProfileActivity">
 
-    <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
-        android:hint="Gender"
-        android:id="@+id/profileGender" />
-
     <Spinner
         android:id="@+id/profileSelectGender"
-        android:layout_width="304dp"
-        android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
+        android:layout_width="300dp"
+        android:layout_height="40dp"
         android:layout_marginTop="100dp"
-        android:entries="@array/genderType"></Spinner>
+        android:layout_centerHorizontal="true"
+        android:entries="@array/genderType"
+        android:background="@drawable/edittext_background"/>
 
     <EditText
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:hint="Full Name"
         android:id="@+id/profileName"
-        android:layout_below="@id/profileGender"/>
-
+        android:layout_width="300dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/profileSelectGender"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/edittext_background"
+        android:hint="Full Name"
+        android:padding="10dp" />
 
     <EditText
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_height="40dp"
         android:hint="Height"
         android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
-        android:layout_below="@id/profileName"/>
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/profileName"
+        android:background="@drawable/edittext_background"
+        android:padding="10dp"/>
 
     <EditText
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_height="40dp"
         android:hint="Weight"
         android:id="@+id/profileWeight"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
         android:inputType="numberDecimal"
-        android:layout_below="@id/profileHeight"/>
-
+        android:layout_below="@id/profileHeight"
+        android:background="@drawable/edittext_background"
+        android:padding="10dp"/>
 
     <Button
         android:id="@+id/save"
@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigation"
         android:layout_marginBottom="1dp"
-        android:text="Display" />
+        android:text="save" />
 
     <Button
         android:id="@+id/edit"
