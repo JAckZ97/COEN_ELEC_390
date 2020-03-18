@@ -10,7 +10,7 @@ android:layout_height="match_parent">
 <ListView
     android:id="@+id/BTList"
     android:layout_width="fill_parent"
-    android:layout_height="200dp" >
+    android:layout_height="20dp" >
 
 </ListView>
 

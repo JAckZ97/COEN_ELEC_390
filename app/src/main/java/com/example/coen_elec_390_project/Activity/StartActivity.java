@@ -68,6 +68,14 @@ public class StartActivity extends AppCompatActivity {
             finish();
         }
 
+        if(!MyBluetoothService.initialized)
+            bluetoothsetup();
+        if(!MyBluetoothService.success){
+            showBTDialog();
+        }
+
+
+
     }
 
     private void bluetoothsetup(){
@@ -105,10 +113,8 @@ public class StartActivity extends AppCompatActivity {
                 filter.addAction(BluetoothDevice.ACTION_FOUND);
                 filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
                 filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+                filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST);
                 registerReceiver(receiver, filter);
-                if (!bluetoothAdapter.startDiscovery()){
-                    Log.e("Tag", "<Message> Bluetooth Discovery failed!");
-                }
 
             }
 
@@ -124,8 +130,6 @@ public class StartActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
@@ -138,22 +142,6 @@ public class StartActivity extends AppCompatActivity {
                     }
                 }
 
-            }
-
-            if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                if(device.getBondState() == BluetoothDevice.BOND_BONDED){
-                    bluetoothsetup();
-                }
-            }
-
-            if(BluetoothDevice.ACTION_PAIRING_REQUEST.equals(action))
-            {
-                BluetoothDevice bluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                bluetoothDevice.setPin(BLE_PIN.getBytes());
-                Log.e(TAG,"Auto-entering pin: " + BLE_PIN);
-                bluetoothDevice.createBond();
-                Log.e(TAG,"pin entered and request sent...");
             }
         }
     };
@@ -189,8 +177,7 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-        if(!MyBluetoothService.initialized)
-            bluetoothsetup();
+
 
 
     }
@@ -255,7 +242,7 @@ public class StartActivity extends AppCompatActivity {
                 // Get a BluetoothSocket to connect with the given BluetoothDevice.
                 // MY_UUID is the app's UUID string, also used in the server code.
                 UUID SERIAL_UUID = UUID.fromString("6E400001-B5A3-F393-E0A9-E50E24DCCA9E");
-                tmp = device.createRfcommSocketToServiceRecord(SERIAL_UUID);
+                tmp = device.createInsecureRfcommSocketToServiceRecord(SERIAL_UUID);
             } catch (IOException e) {
                 Log.e("Socket tag", "Socket's create() method failed", e);
             }
@@ -331,57 +318,24 @@ public class StartActivity extends AppCompatActivity {
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
 
-        popDialog.setTitle("Paired Bluetooth Devices");
+        popDialog.setTitle("Pair your Bluetooth Devices");
+        popDialog.setMessage("Please go to Settings -> Bluetooth -> Pair new device, to pair your sensor device.");
         popDialog.setView(Viewlayout);
 
-        // create the arrayAdapter that contains the BTDevices, and set it to a ListView
-
-        BTArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        myListView = (ListView) Viewlayout.findViewById(R.id.BTList);
-        // get paired devices
-
-        // put it's one to the adapter
-        for (BluetoothDevice device : mybtlist)
-            BTArrayAdapter.add(device.getName() + "\n" + device.getAddress());
-        myListView.setAdapter(BTArrayAdapter);
-
-        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id){
-                chosenbtdevice=mybtlist.get(position);
-                try{
-                    //createBond(chosenbtdevice);
-                    Log.e("Tag","<Message> Creating bound");
-                }catch (Exception e){
-                    Log.e("Tag","<Message> Failed creating bond with chosen bt device");
-                }
-
-            }
-        });
-        // Button OK
-        popDialog.setPositiveButton("Pair",
+        popDialog.setPositiveButton("Understood",
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        chosenbtdevice.createBond();
-                        MyBluetoothService.initialized=true;
-                        Log.e("Tag","<Message> Connecting,should cancel discovery");
-                        mythread = new ConnectThread(chosenbtdevice);
-                        mbs = new MyBluetoothService(mythread.tryconnect());
-                        dialog.dismiss();
+                        try{
+                            dialog.dismiss();
+                        }catch (Exception e){
+                            Log.e("Tag","<Message> Failed creating bond with chosen bt device");
+                        }
+
                     }
                 });
 
-        // Create popup and show
         popDialog.create();
         popDialog.show();
     }
 
-    public boolean createBond(BluetoothDevice btDevice) throws Exception {
-        Log.e("Tag","<Message> creating bound");
-        Class class1 = Class.forName("android.bluetooth.BluetoothDevice");
-        Method createBondMethod = class1.getMethod("createBond");
-        Boolean returnValue = (Boolean) createBondMethod.invoke(btDevice);
-        btDevice.getClass().getMethod("setPairingConfirmation", boolean.class).invoke(btDevice, true);
-        return returnValue.booleanValue();
-    }
 }
