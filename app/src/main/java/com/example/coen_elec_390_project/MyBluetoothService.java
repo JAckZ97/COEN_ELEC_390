@@ -20,6 +20,7 @@ public class MyBluetoothService {
     private BluetoothSocket socket;
     private int size = 512;
     //public static ConnectedThread mythread;
+    public static boolean success = false;
     public static boolean initialized = false;
     private int convert(ArrayList<Double> complex_list){
 
@@ -55,8 +56,8 @@ public class MyBluetoothService {
             }
         }
 
-        Log.e("Tag","The index with the right frequency is "+index);
-        Log.e("Tag","The HR of index 7 is " + (int)Math.round(freq[index]*60));
+        Log.e("Tag","<FFT> The index with the right frequency is "+index);
+        Log.e("Tag","<FFT> The HR of index 7 is " + (int)Math.round(freq[index]*60));
         return (int)Math.round(freq[index]*60);
     }
 
@@ -65,7 +66,6 @@ public class MyBluetoothService {
         handler = new Handler();
         ConnectedThread mythread = new ConnectedThread();
         mythread.start();
-        Log.e("Tag", "<Message> Bluetooth service initialization ");
     }
 
     // Defines several constants used when transmitting messages between the
@@ -92,12 +92,12 @@ public class MyBluetoothService {
             try {
                 tmpIn = socket.getInputStream();
             } catch (IOException e) {
-                Log.e(TAG, "Error occurred when creating input stream", e);
+                Log.e(TAG, "<Message> Error occurred when creating input stream", e);
             }
             try {
                 tmpOut = socket.getOutputStream();
             } catch (IOException e) {
-                Log.e(TAG, "Error occurred when creating output stream", e);
+                Log.e(TAG, "<Message> Error occurred when creating output stream", e);
             }
 
             mmInStream = tmpIn;
@@ -116,6 +116,7 @@ public class MyBluetoothService {
                 try {
                     // Read from the InputStream.
                     numBytes = mmInStream.read(mmBuffer);
+                    success=true;
                     String s = new String(mmBuffer, 0,numBytes);
                     String[] list_of_str = s.split(",");
 
@@ -127,7 +128,7 @@ public class MyBluetoothService {
                     }
 
                     if(voltage_readings.size()==size){
-                        Log.e("Tag","<Message> Got 1024 Data");
+                        Log.e("Tag","<DATACOM> Got 1024 Data");
                         MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
                         voltage_readings.clear();
 
@@ -147,7 +148,7 @@ public class MyBluetoothService {
                     }
                     */
                 } catch (IOException e) {
-                    Log.d(TAG, "Input stream was disconnected", e);
+                    Log.d(TAG, "<Message> Input stream was disconnected", e);
                     break;
                 }
             }
@@ -181,7 +182,7 @@ public class MyBluetoothService {
             try {
                 socket.close();
             } catch (IOException e) {
-                Log.e(TAG, "Could not close the connect socket", e);
+                Log.e(TAG, "<Message> Could not close the connect socket", e);
             }
         }
     }
