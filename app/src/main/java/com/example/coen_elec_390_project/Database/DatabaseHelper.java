@@ -36,7 +36,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_USER_FULLNAME + " TEXT NOT NULL,"
                 + Config.COLUMN_USER_EMAIL + " TEXT NOT NULL,"
                 + Config.COLUMN_USER_PASSWORD + " TEXT NOT NULL)";
-
 //                + Config.COLUMN_USER_AGE + " TEXT NOT NULL,"
 //                + Config.COLUMN_USER_WEIGHT + " TEXT NOT NULL,"
 //                + Config.COLUMN_USER_HEIGHT + " TEXT NOT NULL)";
@@ -48,6 +47,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Log.d(TAG, "User database created");
     }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+        // Drop older table if existed, all data will be gone
+        db.execSQL("DROP TABLE IF EXISTS "+ Config.USER_TABLE_NAME);
+
+        //recreate the table
+        onCreate(db);
+    }
+
 
     public long insertUser(User user) {
         long id = -1;
@@ -258,8 +268,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return false;
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 }

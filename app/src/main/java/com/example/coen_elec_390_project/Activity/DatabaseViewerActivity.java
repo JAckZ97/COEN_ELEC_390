@@ -28,7 +28,6 @@ public class DatabaseViewerActivity extends AppCompatActivity {
     protected void loadListView() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         List<User> users = databaseHelper.getAllUsers();
-
         ArrayList<String> usersListText = new ArrayList<>();
 
         for(int i = 0; i < users.size(); i++) {

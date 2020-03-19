@@ -115,6 +115,11 @@ public class ProfileActivity extends AppCompatActivity {
                 weight.setEnabled(false);
                 genderSelect.setEnabled(false);
                 age.setEnabled(false);
+                cm.setEnabled(false);
+                ft.setEnabled(false);
+                kg.setEnabled(false);
+                lb.setEnabled(false);
+
                 //basicRead();
 
             }
@@ -128,6 +133,10 @@ public class ProfileActivity extends AppCompatActivity {
                 weight.setEnabled(true);
                 genderSelect.setEnabled(true);
                 age.setEnabled(true);
+                cm.setEnabled(true);
+                ft.setEnabled(true);
+                kg.setEnabled(true);
+                lb.setEnabled(true);
 
             }
         });

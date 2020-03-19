@@ -23,6 +23,7 @@ public class StatisticsActivity extends AppCompatActivity {
     GraphView graph;
     LineGraphSeries<DataPoint> series;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
         graph.getGridLabelRenderer().setHumanRounding(false);
+
+        email = getIntent().getStringExtra("email");
     }
 
     private DataPoint[] getDataPoint() {
@@ -71,7 +74,9 @@ public class StatisticsActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
                 switch (menuItem.getItemId()){
+
                     case R.id.home:
                         startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
                         break;
@@ -80,7 +85,9 @@ public class StatisticsActivity extends AppCompatActivity {
                         break;
 
                     case R.id.profile:
-                        startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
                         /**if (user == null) {
                             // User is signed in

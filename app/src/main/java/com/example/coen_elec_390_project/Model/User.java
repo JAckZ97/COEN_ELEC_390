@@ -13,17 +13,6 @@ public class User {
 
     }
 
-//    public User(int id, String fullname, String email, String password, String age, String height, String weight) {
-//        this.id = id;
-//        this.fullname = fullname;
-//        this.email = email;
-//        this.password = password;
-//        this.age = age;
-//        this.height = height;
-//        this.weight = weight;
-//
-//    }
-
     public User(int id, String fullname, String email, String password) {
         this.id = id;
         this.fullname = fullname;
@@ -36,6 +25,25 @@ public class User {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
+    }
+
+    public User(int id, String fullname, String email, String password, String age, String height, String weight) {
+        this.id = id;
+        this.fullname = fullname;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
+    }
+
+    public User(String fullname, String email, String password, String age, String height, String weight) {
+        this.fullname = fullname;
+        this.email = email;
+        this.password = password;
+        this.age = age;
+        this.height = height;
+        this.weight = weight;
     }
 
     public int getId() {

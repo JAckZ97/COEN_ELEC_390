@@ -22,7 +22,7 @@ import com.example.coen_elec_390_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -38,8 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
 //    Spinner gender;
     Button register;
     TextView txt_login;
+    String age, height, weight = null;
 
-    FirebaseAuth auth;
+//    FirebaseAuth auth;
     DatabaseReference reference;
     ProgressDialog pd;
     Context context;
@@ -60,7 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         txt_login = findViewById(R.id.txt_login);
 
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
         databaseHelper = new DatabaseHelper(this);
 
 //        gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
