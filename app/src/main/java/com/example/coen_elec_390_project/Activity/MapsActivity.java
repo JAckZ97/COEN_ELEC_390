@@ -98,21 +98,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-//        mMap = googleMap;
-//        // Add a marker in Sydney, Australia, and move the camera.
-//        LatLng montreal = new LatLng(45.508888, -73.561668);
-//        mMap.addMarker(new MarkerOptions().position(montreal).title("Marker in Montreal"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(montreal));
-//        mMap = googleMap;
-//
-//        LatLng calymayor = new LatLng(45.508888, -73.561668);
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(calymayor));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(calymayor, 15));
-//
-//        PolylineOptions polylineOptions = new PolylineOptions();
-//        polylineOptions.color(Color.CYAN);
-//        polylineOptions.width(4);
-//        gpsTrack = mMap.addPolyline(polylineOptions);
+        mMap = googleMap;
+
+        PolylineOptions polylineOptions = new PolylineOptions();
+        polylineOptions.color(Color.CYAN);
+        polylineOptions.width(4);
+        gpsTrack = mMap.addPolyline(polylineOptions);
 //
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //            // TODO: Consider calling
@@ -129,9 +120,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.e("Tag","<Map> "+"Current location:\n" + currentlocation);
         LatLng latLng= new LatLng(currentlocation.getLatitude(),currentlocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here");
-        googleMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
-        googleMap.addMarker(markerOptions);
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
+        mMap.addMarker(markerOptions);
     }
 
 
