@@ -78,7 +78,9 @@ public class StatisticsActivity extends AppCompatActivity {
                 switch (menuItem.getItemId()){
 
                     case R.id.home:
-                        startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:

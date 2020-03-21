@@ -8,6 +8,7 @@ public class User {
     private String age;
     private String weight;
     private String height;
+    private String gender;
 
     public User() {
 
@@ -27,7 +28,7 @@ public class User {
         this.password = password;
     }
 
-    public User(int id, String fullname, String email, String password, String age, String height, String weight) {
+    public User(int id, String fullname, String email, String password, String gender, String age, String height, String weight) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -35,15 +36,25 @@ public class User {
         this.age = age;
         this.height = height;
         this.weight = weight;
+        this.gender = gender;
     }
 
-    public User(String fullname, String email, String password, String age, String height, String weight) {
+    public User(String fullname, String email, String password, String gender, String age, String height, String weight) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
         this.age = age;
         this.height = height;
         this.weight = weight;
+        this.gender = gender;
+    }
+
+    public User(String fullname, String gender, String age, String weight, String height) {
+        this.fullname = fullname;
+        this.age = age;
+        this.weight = weight;
+        this.height = height;
+        this.gender = gender;
     }
 
     public int getId() {
@@ -84,6 +95,14 @@ public class User {
 
     public void setAge(String age) {
         this.age = age;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     public String getWeight() {

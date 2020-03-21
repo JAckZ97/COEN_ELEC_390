@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

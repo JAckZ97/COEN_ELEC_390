@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     TextView txt_signup;
 
-    FirebaseAuth auth;
+//    FirebaseAuth auth;
     ProgressDialog pd;
     DatabaseHelper databaseHelper;
 
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         txt_signup = findViewById(R.id.txt_signup);
 
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
         databaseHelper = new DatabaseHelper(this);
 
         txt_signup.setOnClickListener(new View.OnClickListener() {

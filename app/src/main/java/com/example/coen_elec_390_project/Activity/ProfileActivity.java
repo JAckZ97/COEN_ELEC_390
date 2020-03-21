@@ -37,7 +37,8 @@ public class ProfileActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     RadioButton cm, ft, kg, lb;
     RadioGroup weightGroup, heightGroup;
-    //String selectGender;
+    String email;
+    String selectGender;
     //DatabaseReference reff;
     //FirebaseUser firebaseUser;
     //User user;
@@ -67,16 +68,26 @@ public class ProfileActivity extends AppCompatActivity {
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
 
-        String email = getIntent().getStringExtra("email");
-
-        databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(email);
-
-        fullname.setText(user.getFullname());
-
         int checkWeightId = weightGroup.getCheckedRadioButtonId();
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
 
+        email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+        fullname.setText(user.getFullname());
+
+        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectGender=parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -120,6 +131,7 @@ public class ProfileActivity extends AppCompatActivity {
                 kg.setEnabled(false);
                 lb.setEnabled(false);
 
+                readProfile();
                 //basicRead();
 
             }
@@ -137,6 +149,8 @@ public class ProfileActivity extends AppCompatActivity {
                 ft.setEnabled(true);
                 kg.setEnabled(true);
                 lb.setEnabled(true);
+
+                writeProfile();
 
             }
         });
@@ -183,6 +197,32 @@ public class ProfileActivity extends AppCompatActivity {
         reff.setValue(updateresult);
     }*/
 
+    private void readProfile(){
+        String email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+        fullname.setText(user.getFullname());
+
+        //gender
+
+        age.setText(user.getAge());
+        height.setText(user.getHeight());
+        weight.setText(user.getWeight());
+    }
+
+    private void writeProfile(){
+        String str_fullname = fullname.getText().toString();
+        String str_gender = selectGender;
+        String str_age = age.getText().toString();
+        String str_weight = weight.getText().toString();
+        String str_height = height.getText().toString();
+
+        String email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        //User user = databaseHelper.getUser(email);
+        databaseHelper.insertUser(new User(str_fullname, str_gender, str_age, str_weight, str_height));
+
+    }
 
     private void findRadioButton (int checkID){
         switch (checkID){
@@ -206,13 +246,18 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
                 switch (menuItem.getItemId()){
                     case R.id.home:
-                        startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:
-                        startActivity(new Intent(ProfileActivity.this, StatisticsActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, StatisticsActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.profile:

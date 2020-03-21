@@ -39,7 +39,6 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
 //        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 //
 //        // redirect if user is not null
@@ -47,8 +46,6 @@ public class StartActivity extends AppCompatActivity {
 //            startActivity(new Intent(StartActivity.this, MainActivity.class));
 //            finish();
 //        }
-
-
     }
 
     private void bluetoothsetup(){

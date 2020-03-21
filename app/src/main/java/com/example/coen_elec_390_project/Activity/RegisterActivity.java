@@ -38,13 +38,13 @@ public class RegisterActivity extends AppCompatActivity {
 //    Spinner gender;
     Button register;
     TextView txt_login;
-    String age, height, weight = null;
 
 //    FirebaseAuth auth;
     DatabaseReference reference;
     ProgressDialog pd;
     Context context;
     DatabaseHelper databaseHelper;
+    String age, height, weight, gender = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +96,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String str_password = password.getText().toString();
                 String str_password2 = password2.getText().toString();
 
+
                 if(TextUtils.isEmpty(str_fullname) || TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password) || TextUtils.isEmpty(str_password2)) {
                     Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
@@ -117,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    registerOffline(str_fullname, str_email, str_password);
+                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight);
 
 //                    if(isNetworkConnected()) {
 //                        registerOnline(str_fullname, str_email, str_password);
@@ -189,15 +190,14 @@ public class RegisterActivity extends AppCompatActivity {
 //                });
 //    }
 
-    public void registerOffline(final String fullname, String email, String password) {
+    public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight) {
         if(databaseHelper.checkIfExisting(email)) {
             Toast.makeText(RegisterActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
 
         else {
-            databaseHelper.insertUser(new User(fullname, email, password));
-
+            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight));
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

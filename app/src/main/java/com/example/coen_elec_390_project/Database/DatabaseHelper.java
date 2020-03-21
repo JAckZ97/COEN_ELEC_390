@@ -35,10 +35,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " (" + Config.COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Config.COLUMN_USER_FULLNAME + " TEXT NOT NULL,"
                 + Config.COLUMN_USER_EMAIL + " TEXT NOT NULL,"
-                + Config.COLUMN_USER_PASSWORD + " TEXT NOT NULL)";
-//                + Config.COLUMN_USER_AGE + " TEXT NOT NULL,"
-//                + Config.COLUMN_USER_WEIGHT + " TEXT NOT NULL,"
-//                + Config.COLUMN_USER_HEIGHT + " TEXT NOT NULL)";
+                + Config.COLUMN_USER_PASSWORD + " TEXT NOT NULL,"
+                + Config.COLUMN_USER_GENDER + " TEXT,"
+                + Config.COLUMN_USER_AGE + " TEXT,"
+                + Config.COLUMN_USER_WEIGHT + " TEXT,"
+                + Config.COLUMN_USER_HEIGHT + " TEXT)";
 
         Log.d(TAG, CREATE_TABLE_USER);
 
@@ -68,9 +69,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
-//        contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
-//        contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
-//        contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
+        contentValues.putNull(Config.COLUMN_USER_GENDER);
+        contentValues.putNull(Config.COLUMN_USER_AGE);
+        contentValues.putNull(Config.COLUMN_USER_HEIGHT);
+        contentValues.putNull(Config.COLUMN_USER_WEIGHT);
 
         /**We try to insert it*/
         try {
@@ -89,6 +91,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return id;
     }
+
+    public long updateProfile(User user) {
+        long id = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        /**We put the value from the user into the database*/
+        contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
+//        contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
+//        contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
+        contentValues.put(Config.COLUMN_USER_GENDER, user.getGender());
+        contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
+        contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
+        contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
+
+        /**We try to insert it*/
+        try {
+            id = db.update(Config.USER_TABLE_NAME, contentValues, Config.COLUMN_USER_ID + "= ?" ,null);
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        /**We close the database*/
+        finally {
+            db.close();
+        }
+
+        return id;
+    }
+
 
     /**Fucntion that returns a user*/
     public User getUser(String email) {
@@ -113,9 +148,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             user.setFullname(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME)));
                             user.setEmail(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL)));
                             user.setPassword(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD)));
-//                            user.setAge(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE)));
-//                            user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
-//                            user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
+                            user.setGender(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_GENDER)));
+                            user.setAge(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE)));
+                            user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
+                            user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
 
                             return user;
                         }
@@ -157,11 +193,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String fullname = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME));
                         String email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
                         String password = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD));
-//                        String age = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE));
-//                        String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
-//                        String weight = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT));
+                        String gender = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_GENDER));
+                        String age = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE));
+                        String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
+                        String weight = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT));
 
-                        users.add(new User(id, fullname, email, password));
+                        users.add(new User(id, fullname, email, password, gender, age, height, weight));
                     } while(cursor.moveToNext());
 
                     return users;
