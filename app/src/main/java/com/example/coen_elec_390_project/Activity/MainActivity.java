@@ -19,6 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+//-------
+import android.widget.EditText;
+//-------
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
@@ -41,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
     private boolean scanning;
     public static String global_email = "";
 
+    //-----------
+    EditText weight, met, duration;
+    TextView resulttext;
+    String calculation;
+    //-----------
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         }else{
             bpm.setText("Your BPM value");
         }
+
+        //-----------
+        weight = findViewById(R.id.weight);
+        met = findViewById(R.id.met);
+        duration = findViewById(R.id.duration);
+        resulttext = findViewById(R.id.result);
+        //-----------
     }
 
 
@@ -125,4 +141,28 @@ public class MainActivity extends AppCompatActivity {
             bpm.setText(a);
         }
     }
+
+
+
+
+    //-----------
+
+    public void calculateTotalCaloriesBurned(View view) {
+
+        String S1 = weight.getText().toString();
+        String S2 = met.getText().toString();
+        String S3 = duration.getText().toString();
+
+        double weightValue = Float.parseFloat(S1);
+        double metValue = Float.parseFloat(S2);
+        double durationValue = Float.parseFloat(S3);
+
+        double cb = ((weightValue * metValue * 3.5) / (200)) * (durationValue);
+
+        calculation = "Total Calories Burned:nn" + cb + "nCal";
+
+        resulttext.setText(calculation);
+    }
+
+    //-----------
 }
