@@ -44,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private Boolean isChecked = false;
     private Boolean isStart = false;
 
+    private int counter=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,10 +61,18 @@ public class MainActivity extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPreBPM();
+                if (counter%2==0){
+                    getPreBPM();
+                    counter++;
+                }
+                else{
+                    getPostBPM();
+                    counter = 0;
+                }
             }
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         });
+
         //post Workout Switch
         aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -83,8 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 double restHR = preBPM;
                 double maxHR= postBPM;
 
-
-
                 if(restHR!=0 && maxHR !=0){
                     performanceIndex =  (15.3 * (maxHR/restHR));
                     Toast.makeText(getApplicationContext(), "Your Performance Index for this Workout is: "+ String.valueOf(performanceIndex), Toast.LENGTH_LONG).show();
@@ -96,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-
 
     private void setUpBottomNavigationView() {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -136,8 +143,6 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-
-
     protected void getPreBPM(){
         preBPM=0;
         int[] array1 = new int[]{85, 90, 78, 82, 84, 87, 88, 91, 92, 90, 87, 84, 85, 86, 89, 76, 89, 79, 87, 84};
@@ -166,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         }
         postBPM = sumbpm / array2.length;
         Toast.makeText(getApplicationContext(), postBPM + " BPM", Toast.LENGTH_LONG).show();
-
 
     }
 
