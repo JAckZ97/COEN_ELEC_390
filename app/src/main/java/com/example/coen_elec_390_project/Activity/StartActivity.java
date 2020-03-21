@@ -63,10 +63,10 @@ public class StartActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // redirect if user is not null
-        if(firebaseUser != null) {
-            startActivity(new Intent(StartActivity.this, MainActivity.class));
-            finish();
-        }
+//        if(firebaseUser != null) {
+//            startActivity(new Intent(StartActivity.this, MainActivity.class));
+//            finish();
+//        }
 
         if(!MyBluetoothService.initialized)
             bluetoothsetup();

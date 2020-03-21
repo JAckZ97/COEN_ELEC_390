@@ -1,25 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <fragment
+        android:id="@+id/map_activity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/map_activity"
-        tools:context="Activity.MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        tools:context="Activity.MapsActivity" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"
-        />
+        app:menu="@menu/navigation_menu" />
 
-</LinearLayout>
+</FrameLayout>
