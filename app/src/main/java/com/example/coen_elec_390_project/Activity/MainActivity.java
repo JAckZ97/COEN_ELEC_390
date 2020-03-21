@@ -25,6 +25,7 @@ import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -96,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent;
 
                     switch (menuItem.getItemId()){
+                        case R.id.map:
+                            startActivity(new Intent(MainActivity.this, MapsActivity.class));
+                            break;
+
                         case R.id.home:
                             startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
                             break;

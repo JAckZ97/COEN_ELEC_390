@@ -8,6 +8,8 @@
     android:background="@drawable/gradient_background"
     tools:context=".Activity.MainActivity">
 
+
+
     <TextView
         android:id="@+id/bpm"
         android:layout_width="350dp"
@@ -29,6 +31,5 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/colorBlack"/>
+        app:labelVisibilityMode="labeled"/>
 </RelativeLayout>
