@@ -8,17 +8,46 @@
     android:background="@drawable/gradient_background"
     tools:context=".Activity.MainActivity">
 
+    <Button
+        android:id="@+id/recordingbutton"
+        style="@android:style/Widget.Material.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/switch1"
+        android:layout_alignParentEnd="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="129dp"
+        android:backgroundTint="#7CB342"
+        android:text="Start Recording" />
+
+    <TextView
+        android:id="@+id/editText2"
+        android:layout_width="105dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="15dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Post-Test"
+        android:textAlignment="viewEnd"
+        android:textSize="20sp" />
+
     <TextView
         android:id="@+id/bpm"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="50dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="19dp"
         android:background="@drawable/edittext_background"
         android:fontFamily="monospace"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="10dp"
         android:textSize="50dp" />
 
@@ -31,4 +60,50 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/colorBlack"/>
+
+    <Switch
+        android:id="@+id/switch1"
+        android:layout_width="130dp"
+        android:layout_height="43dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="12dp"
+        android:layout_toStartOf="@+id/editText2"
+        android:buttonTint="#8E24AA"
+        android:gravity="center_horizontal"
+        android:shadowColor="#3949AB"
+        android:switchMinWidth="120dp"
+        android:switchPadding="0dp"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/editText"
+        android:layout_width="84dp"
+        android:layout_height="41dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="12dp"
+        android:layout_toStartOf="@+id/switch1"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Pre-Test"
+        android:textAlignment="viewStart"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/performancebutton"
+        style="@android:style/Widget.Material.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/recordingbutton"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="86dp"
+        android:layout_marginTop="29dp"
+        android:backgroundTint="#7CB342"
+        android:text="Show My Performance Index" />
+
 </RelativeLayout>
