@@ -2,6 +2,7 @@ package com.example.coen_elec_390_project.Database;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -9,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.widget.Toast;
+import android.content.Intent;
 
 import androidx.constraintlayout.solver.widgets.ConstraintWidgetGroup;
 
@@ -108,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         /**We try to insert it*/
         try {
-            id = db.update(Config.USER_TABLE_NAME, contentValues, Config.COLUMN_USER_ID + "= ?" ,null);
+            id = db.update(Config.USER_TABLE_NAME, contentValues, null ,null);
         }
 
         catch (SQLiteException e) {

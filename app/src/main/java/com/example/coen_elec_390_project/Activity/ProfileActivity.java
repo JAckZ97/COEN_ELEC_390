@@ -39,6 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
     RadioGroup weightGroup, heightGroup;
     String email;
     String selectGender;
+    Intent intent;
     //DatabaseReference reff;
     //FirebaseUser firebaseUser;
     //User user;
@@ -65,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         fullname.setEnabled(false);
         height.setEnabled(false);
+        age.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
 
@@ -75,6 +77,9 @@ public class ProfileActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         User user = databaseHelper.getUser(email);
         fullname.setText(user.getFullname());
+        age.setText(user.getAge());
+        height.setText(user.getHeight());
+        weight.setText(user.getWeight());
 
         genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -131,6 +136,7 @@ public class ProfileActivity extends AppCompatActivity {
                 kg.setEnabled(false);
                 lb.setEnabled(false);
 
+                writeProfile();
                 readProfile();
                 //basicRead();
 
@@ -150,7 +156,7 @@ public class ProfileActivity extends AppCompatActivity {
                 kg.setEnabled(true);
                 lb.setEnabled(true);
 
-                writeProfile();
+//               writeProfile();
 
             }
         });
@@ -204,7 +210,7 @@ public class ProfileActivity extends AppCompatActivity {
         fullname.setText(user.getFullname());
 
         //gender
-
+        
         age.setText(user.getAge());
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
@@ -217,10 +223,9 @@ public class ProfileActivity extends AppCompatActivity {
         String str_weight = weight.getText().toString();
         String str_height = height.getText().toString();
 
-        String email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
-        //User user = databaseHelper.getUser(email);
-        databaseHelper.insertUser(new User(str_fullname, str_gender, str_age, str_weight, str_height));
+        User user = databaseHelper.getUser(email);
+        databaseHelper.updateProfile(new User(str_fullname, str_gender, str_age, str_weight, str_height));
 
     }
 
@@ -264,7 +269,7 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
 
                     case R.id.logout:
-                        FirebaseAuth.getInstance().signOut();
+//                        FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(ProfileActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }
