@@ -64,7 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
         /**Execute the SQL query*/
-       db.execSQL(CREATE_TABLE_STATISTIC);
+        db.execSQL(CREATE_TABLE_STATISTIC);
 
         Log.d(TAG, "Statistic database created");
     }

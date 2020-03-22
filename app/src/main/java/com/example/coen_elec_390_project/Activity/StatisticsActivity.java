@@ -62,7 +62,8 @@ public class StatisticsActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
-        user = databaseHelper.getUser(MainActivity.global_email);
+        email = getIntent().getStringExtra("email");
+        user = databaseHelper.getUser(email);
         dateSelection = findViewById(R.id.dateSelection);
 
         dateSelection.setOnClickListener(new View.OnClickListener() {
@@ -139,7 +140,7 @@ public class StatisticsActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
         graph.getGridLabelRenderer().setHumanRounding(false);
 
-        email = getIntent().getStringExtra("email");
+
     }
 
     public void receiveStartEndDate(String start, String end) {

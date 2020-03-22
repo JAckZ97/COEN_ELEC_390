@@ -79,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
         //if(global_email.equals(""))
-            global_email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("email");
+        Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
             if(!MyBluetoothService.understood)
@@ -174,7 +175,6 @@ public class MainActivity extends AppCompatActivity {
                     Intent intent;
                     databaseHelper = new DatabaseHelper(MainActivity.this);
                     User user = databaseHelper.getUser(email);
-
                     switch (menuItem.getItemId()){
                         case R.id.home:
                             startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
@@ -185,10 +185,12 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
+                                Log.e("Tag","<MAIN> entering statistic");
                                 intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
                                 intent.putExtra("email", email);
                                 startActivity(intent);
-                                break;}
+                                break;
+                            }
 
                         case R.id.profile:
 
@@ -199,11 +201,8 @@ public class MainActivity extends AppCompatActivity {
                                 intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
                                 intent.putExtra("email", email);
                                 startActivity(intent);
-                                break;}
-                        
-                            intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
-                            startActivity(intent);
-                            break;
+                                break;
+                            }
 
                         case R.id.logout:
                             startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
