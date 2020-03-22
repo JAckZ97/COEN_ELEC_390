@@ -3,15 +3,23 @@ package com.example.coen_elec_390_project.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.le.BluetoothLeScanner;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,7 +41,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LocationListener {
     static TextView bpm;
     static TextView zone;
     private BluetoothAdapter bluetoothAdapter;
@@ -41,12 +49,61 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
     public static String global_email = "";
+    int average_speed = 0;
+    int speed_sum = 0;
+    int counter = 0;
+    Button start,stop;
+    boolean check = false;
+    LocationManager lm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+
+        start.findViewById(R.id.start);
+        stop.findViewById(R.id.stop);
+
+        start.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                check=true;
+                start.setEnabled(false);
+                stop.setEnabled(true);
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                start.setEnabled(true);
+                stop.setEnabled(false);
+                check=false;
+            }
+        });
+
+       if(check) {
+           this.onLocationChanged(null);
+       }
+
+
+
+
+
         bpm = findViewById(R.id.bpm);
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -129,5 +186,47 @@ public class MainActivity extends AppCompatActivity {
         if(bpm!=null) {
             bpm.setText(a);
         }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        TextView speed_txt = (TextView) this.findViewById(R.id.speed);
+
+        if(location == null){
+
+            speed_txt.setText("-- km/hr");
+
+           /* average_speed = 0;
+            speed_sum= 0;
+            counter = 0;*/
+        }
+        else{
+
+            float nCurrentspeed=location.getSpeed();
+            speed_sum +=nCurrentspeed;
+            counter +=1;
+            average_speed = speed_sum/counter;
+
+            speed_txt.setText( "Your current speed is "+(double)(+nCurrentspeed*3.6f) + " km/hr");
+            if(!check){speed_txt.setText("Your average speed is: " + average_speed);}
+
+        }
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 }
