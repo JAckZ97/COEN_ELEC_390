@@ -77,7 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(email);
+        final User user = databaseHelper.getUser(email);
         fullname.setText(user.getFullname());
         age.setText(user.getAge());
         height.setText(user.getHeight());
@@ -144,7 +144,7 @@ public class ProfileActivity extends AppCompatActivity {
                 kg.setEnabled(false);
                 lb.setEnabled(false);
 
-                writeProfile();
+                writeProfile(user);
                 readProfile();
 //                basicRead();
             }
@@ -225,15 +225,21 @@ public class ProfileActivity extends AppCompatActivity {
         findRadioButtonWeight(checkWeightId);
     }
 
-    private void writeProfile() {
+    private void writeProfile(User user) {
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         String str_age = age.getText().toString();
         String str_weight = weight.getText().toString();
         String str_height = height.getText().toString();
 
+        user.setFullname(str_fullname);
+        user.setGender(str_gender);
+        user.setAge(str_age);
+        user.setWeight(str_weight);
+        user.setHeight(str_height);
+
         databaseHelper = new DatabaseHelper(this);
-        databaseHelper.updateProfile(new User(str_fullname, str_gender, str_age, str_weight, str_height));
+        databaseHelper.updateProfile(user);
     }
 
     private int genderGenerate (String selectGender){

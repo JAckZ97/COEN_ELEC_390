@@ -6,7 +6,7 @@ public class Config {
 
     /**User table*/
     public static final String USER_TABLE_NAME = "user";
-    public static final String COLUMN_USER_ID = "id";
+    public static final String COLUMN_USER_ID = "_id";
     public static final String COLUMN_USER_FULLNAME = "fullname";
     public static final String COLUMN_USER_EMAIL = "email";
     public static final String COLUMN_USER_PASSWORD = "password";

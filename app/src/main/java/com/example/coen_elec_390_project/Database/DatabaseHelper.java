@@ -96,33 +96,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public long updateProfile(User user) {
         long id = -1;
+        long id2 = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
         /**We put the value from the user into the database*/
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
-//        contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
-//        contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
+        contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
+        contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
         contentValues.put(Config.COLUMN_USER_GENDER, user.getGender());
         contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
         contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
         contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
 
         // TODO: FIX UPDATE METHOD:
-        //  https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase#update(java.lang.String,%20android.content.ContentValues,%20java.lang.String,%20java.lang.String%5B%5D)
+        //  https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase#update
+        //  (java.lang.String,%20android.content.ContentValues,%20java.lang.String,%20java.lang.String%5B%5D)
 
-        String[] args = {String.valueOf(user.getEmail())};
+        String[] args = {String.valueOf(user.getId())};
         /**We try to insert it*/
         try {
 //            not works, don't know why
 //            id = db.update(Config.USER_TABLE_NAME, contentValues, "email=?",args);
 
 //            it will update the all user in database when "whereClause" set to null
-            id = db.update(Config.USER_TABLE_NAME, contentValues, null,null);
+            db.beginTransaction();
+            id = db.update(Config.USER_TABLE_NAME, contentValues, Config.COLUMN_USER_ID+" LIKE ?",args);
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
 
         catch (SQLiteException e) {
-            Log.d(TAG, "Exception: " + e);
+            Log.d(TAG, "<DB> Exception: " + e);
             Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
         }
 
@@ -152,7 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 if(cursor.moveToFirst()) {
                     do {
                         String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
-
+                        Log.e("Tag","<DB> email "+database_email);
                         if(database_email.equals(email)) {
                             user.setId(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_ID)));
                             user.setFullname(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FULLNAME)));
