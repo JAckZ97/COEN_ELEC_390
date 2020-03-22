@@ -22,7 +22,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity {
@@ -32,17 +34,18 @@ public class MainActivity extends AppCompatActivity {
     private final static int REQUEST_ENABLE_BT = 1;
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
-    private Switch aSwitch;
+    //private Switch aSwitch;
     protected Button button1;
     protected Button button2;
     private int preBPM;
     private int postBPM;
-    //static int bpmrecording;
-    private double bpmrecording;
+    static int recording;
+    static double bpmrecording;
     private int sumbpm=0;
     private double performanceIndex;
-    private Boolean isChecked = false;
-    private Boolean isStart = false;
+    private int counter=0;
+    static ArrayList<Integer> recordings = new ArrayList<Integer>();
+   // static int[] array1[] = new int[][];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,47 +56,60 @@ public class MainActivity extends AppCompatActivity {
         bpm.setText("180 bpm");
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
+
         button1 = (Button) findViewById(R.id.recordingbutton);
-        button2 = (Button) findViewById(R.id.performancebutton);
-        aSwitch = (Switch) findViewById(R.id.switch1);
+        //button2 = (Button) findViewById(R.id.performancebutton);
+        //aSwitch = (Switch) findViewById(R.id.switch1);
+
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPreBPM();
+
+                switch (counter){
+                    case 0:
+                        getPreBPM();
+                        button1.setText("Post-Workout Measurement Start");
+                        break;
+
+                    case 1:
+                        getPostBPM();
+                        button1.setText("Show Performance Index");
+                        break;
+
+                    case 2:
+                        getPerformanceIndex(preBPM, postBPM);
+
+                }
+
+
+
+                /*if(counter%2==0){
+                    getPreBPM();
+                    counter++;
+                    button1.setText("Post-Workout Measurement Start");
+                }
+                else{
+                    getPostBPM();
+                    counter=0;
+                }*/
             }
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         });
-        //post Workout Switch
-        aSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                button1.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        getPostBPM();
-                    }
-                });
-            }
-        });
 
 
-        button2.setOnClickListener(new View.OnClickListener() {
+
+        // Performance Index Calculation and Toast
+        /*button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 double restHR = preBPM;
                 double maxHR= postBPM;
-
-
-
                 if(restHR!=0 && maxHR !=0){
                     performanceIndex =  (15.3 * (maxHR/restHR));
                     Toast.makeText(getApplicationContext(), "Your Performance Index for this Workout is: "+ String.valueOf(performanceIndex), Toast.LENGTH_LONG).show();
                 }
             }
-        });
-
-
-
+        });*/
 
     }
 
@@ -136,45 +152,67 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-
-
     protected void getPreBPM(){
         preBPM=0;
-        int[] array1 = new int[]{85, 90, 78, 82, 84, 87, 88, 91, 92, 90, 87, 84, 85, 86, 89, 76, 89, 79, 87, 84};
+        recordings.add(recording);
+        int div=0;
+        //int[] array1 = new int[]{85, 90, 78, 82, 84, 87, 88, 91, 92, 90, 87, 84, 85, 86, 89, 76, 89, 79, 87, 84};
 
-        for (int i = 0; i <= array1.length - 1; i++) {
-
-            bpmrecording = array1[i];
+        for (int i = 0; i <= recordings.size() - 1; i++) {
+            bpmrecording = recordings.get(i);
             if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 55) ;
             sumbpm += bpmrecording;
+            div++;
         }
-        preBPM = sumbpm / array1.length;
-        Toast.makeText(getApplicationContext(), preBPM + " BPM prebpm", Toast.LENGTH_LONG).show();
 
+        //preBPM = sumbpm / recordings.size();
+        preBPM = sumbpm / div;
+        Toast.makeText(getApplicationContext(), preBPM + " BPM <pre>", Toast.LENGTH_SHORT).show();
 
+        recordings.clear();
+        sumbpm=0;
+        counter++;
     }
 
     protected void getPostBPM(){
         postBPM=0;
-        int[] array2 = new int[]{111, 119, 128, 132, 111, 112, 118, 1117, 115, 111, 114, 118, 110, 109, 132, 122, 121, 125, 113, 109};
-        sumbpm=0;
-        for (int i = 0; i <= array2.length - 1; i++) {
+        recordings.add(recording);
+        int div =0;
+        //int[] array2 = new int[]{111, 119, 128, 132, 111, 112, 118, 1117, 115, 111, 114, 118, 110, 109, 132, 122, 121, 125, 113, 109};
 
-            bpmrecording = array2[i];
+        for (int i = 0; i <= recordings.size() - 1; i++) {
+            bpmrecording = recordings.get(i);
             if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 55) ;
             sumbpm += bpmrecording;
+            div++;
         }
-        postBPM = sumbpm / array2.length;
-        Toast.makeText(getApplicationContext(), postBPM + " BPM", Toast.LENGTH_LONG).show();
 
+        //postBPM = sumbpm / recordings.size();
+        postBPM = sumbpm / div;
+        Toast.makeText(getApplicationContext(), postBPM + " BPM <post>", Toast.LENGTH_SHORT).show();
+
+        recordings.clear();
+        sumbpm=0;
+        counter++;
+    }
+
+    protected void getPerformanceIndex(int pre, int post){
+        if(pre!=0 && post !=0){
+            performanceIndex =  (15.3 * (post/pre));
+            Toast.makeText(getApplicationContext(), "Your Performance Index for this Workout is: "+ performanceIndex, Toast.LENGTH_LONG).show();
+            //TODO Send Performance Index to DB.
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Some Measurements were Missing, Try again next time", Toast.LENGTH_LONG).show();
+        }
+        counter=0;
 
     }
 
     public static void  Update_bpm(String a){
         if(bpm!=null) {
             bpm.setText(a);
-            //bpmrecording = Integer.parseInt(a);
-
+            recording = Integer.parseInt(a);
         }
     }
 
