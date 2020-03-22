@@ -102,13 +102,6 @@ public class MainActivity extends AppCompatActivity {
                         counter++;
                         //timestamp seconds since epoch
                         break;
-        //-----------
-        weight = findViewById(R.id.weight);
-        met = findViewById(R.id.met);
-        duration = findViewById(R.id.duration);
-        resulttext = findViewById(R.id.result);
-        //-----------
-    }
 
                     case 1:
                         //new timestamp - oldtimestamp (duration of a session in seconds)
@@ -120,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                         while(recordings.size()<10 && MyBluetoothService.success);
                         if(MyBluetoothService.success)
                             getPostBPM();
-                        double index = getperformanceindex(preBPM,postBPM)
+                        double index = getperformanceindex(preBPM,postBPM);
                         button1.setText("Show Performance Index");
                         counter++;
                         //getperformance index
@@ -138,7 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-            Intent intent = new Intent(getApplicationContext(),MainActivity.class);
         });
 
     }
@@ -261,7 +253,8 @@ public class MainActivity extends AppCompatActivity {
         if(pre!=0 && post !=0) {
             return (15.3 * (post / pre));
         }
-
+        else
+            return 0;
     }
 
     public static void  Update_bpm(String a){
