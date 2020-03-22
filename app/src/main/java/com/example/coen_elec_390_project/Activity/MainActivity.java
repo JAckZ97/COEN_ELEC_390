@@ -176,9 +176,12 @@ public class MainActivity extends AppCompatActivity {
                     databaseHelper = new DatabaseHelper(MainActivity.this);
                     User user = databaseHelper.getUser(email);
                     switch (menuItem.getItemId()){
+                        /*
                         case R.id.home:
                             startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
                             break;
+
+                         */
 
                         case R.id.statistics:
                             if (user.getEmail()== null) {
