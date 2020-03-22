@@ -108,9 +108,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
         contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
 
+        // TODO: FIX UPDATE METHOD:
+        //  https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase#update(java.lang.String,%20android.content.ContentValues,%20java.lang.String,%20java.lang.String%5B%5D)
+
+        String[] args = {String.valueOf(user.getEmail())};
         /**We try to insert it*/
         try {
-            id = db.update(Config.USER_TABLE_NAME, contentValues, null ,null);
+//            not works, don't know why
+//            id = db.update(Config.USER_TABLE_NAME, contentValues, "email=?",args);
+
+//            it will update the all user in database when "whereClause" set to null
+            id = db.update(Config.USER_TABLE_NAME, contentValues, null,null);
         }
 
         catch (SQLiteException e) {

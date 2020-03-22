@@ -28,7 +28,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -41,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     String email;
     String selectGender;
     ProgressDialog pd;
+    ProgressDialog newPd;
     //DatabaseReference reff;
     //FirebaseUser firebaseUser;
     //User user;
@@ -65,7 +65,6 @@ public class ProfileActivity extends AppCompatActivity {
         weightGroup = findViewById(R.id.weightRadioGroup);
         heightGroup = findViewById(R.id.weightRadioGroup);
 
-
         fullname.setEnabled(false);
         height.setEnabled(false);
         age.setEnabled(false);
@@ -79,12 +78,18 @@ public class ProfileActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
         User user = databaseHelper.getUser(email);
-//        genderSelect.setSelection(genderGenerate(user.getGender()));
-        genderSelect.setSelection(2);
         fullname.setText(user.getFullname());
         age.setText(user.getAge());
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
+
+        // set gender spinner and catch error
+        if(user.getGender() == null){
+            genderSelect.setSelection(2);
+        }
+        else {
+            genderSelect.setSelection(genderGenerate(user.getGender()));
+        }
 
         genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -141,8 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
 
                 writeProfile();
                 readProfile();
-                //basicRead();
-
+//                basicRead();
             }
         });
 
@@ -160,7 +164,6 @@ public class ProfileActivity extends AppCompatActivity {
                 lb.setEnabled(true);
 
 //               writeProfile();
-
             }
         });
     }
@@ -220,10 +223,9 @@ public class ProfileActivity extends AppCompatActivity {
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
         findRadioButtonHeight(checkHeightId);
         findRadioButtonWeight(checkWeightId);
-
     }
 
-    private void writeProfile(){
+    private void writeProfile() {
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         String str_age = age.getText().toString();
@@ -265,17 +267,17 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void findRadioButtonHeight (int checkID){
-        pd = new ProgressDialog(ProfileActivity.this);
+        newPd = new ProgressDialog(ProfileActivity.this);
         switch (checkID){
             case R.id.heightCm:
                 Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
                 cm.setChecked(true);
-                pd.dismiss();
+                newPd.dismiss();
                 break;
             case R.id.heightFeet:
                 Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
                 cm.setChecked(true);
-                pd.dismiss();
+                newPd.dismiss();
                 break;
         }
     }
