@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -42,6 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseReference reference;
     ProgressDialog pd;
     Context context;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class RegisterActivity extends AppCompatActivity {
         txt_login = findViewById(R.id.txt_login);
 
         auth = FirebaseAuth.getInstance();
+        databaseHelper = new DatabaseHelper(this);
 
 //        gender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 //            @Override
@@ -113,16 +116,15 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    if(isNetworkConnected()) {
+                    registerOffline(str_fullname, str_email, str_password);
+                    /**if(isNetworkConnected()) {
                         registerOnline(str_fullname, str_email, str_password);
                     }
 
                     else {
                         registerOffline(str_fullname, str_email, str_password);
-                    }
+                    }*/
                 }
-
-
             }
         });
     }
@@ -186,14 +188,19 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerOffline(final String fullname, String email, String password) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(context);
+        if(databaseHelper.checkIfExisting(email)) {
+            Toast.makeText(RegisterActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
 
-        //databaseHelper.insertUser(new User(fullname, email, password));
+        else {
+            databaseHelper.insertUser(new User(fullname, email, password));
 
-        pd.dismiss();
-        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        Toast.makeText(RegisterActivity.this, "register offline", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("email", email);
+            startActivity(intent);
+        }
     }
 }
