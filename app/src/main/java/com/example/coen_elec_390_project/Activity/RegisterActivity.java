@@ -45,6 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
     Context context;
     DatabaseHelper databaseHelper;
     String age, height, weight, gender = null;
+    int weightUnit, heightUnit = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +119,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight);
+                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
 
 //                    if(isNetworkConnected()) {
 //                        registerOnline(str_fullname, str_email, str_password);
@@ -190,14 +191,14 @@ public class RegisterActivity extends AppCompatActivity {
 //                });
 //    }
 
-    public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight) {
+    public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight, int heightUnit, int weightUnit) {
         if(databaseHelper.checkIfExisting(email)) {
             Toast.makeText(RegisterActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
 
         else {
-            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight));
+            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight, heightUnit, weightUnit));
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

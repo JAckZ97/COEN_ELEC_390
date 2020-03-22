@@ -40,7 +40,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_USER_GENDER + " TEXT,"
                 + Config.COLUMN_USER_AGE + " TEXT,"
                 + Config.COLUMN_USER_WEIGHT + " TEXT,"
-                + Config.COLUMN_USER_HEIGHT + " TEXT)";
+                + Config.COLUMN_USER_HEIGHT + " TEXT,"
+                + Config.COLUMN_USER_HEIGHT_UNIT + " INTEGER,"
+                + Config.COLUMN_USER_WEIGHT_UNIT + " INTEGER)";
 
         Log.d(TAG, CREATE_TABLE_USER);
 
@@ -74,6 +76,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.putNull(Config.COLUMN_USER_AGE);
         contentValues.putNull(Config.COLUMN_USER_HEIGHT);
         contentValues.putNull(Config.COLUMN_USER_WEIGHT);
+        contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, 1);
+        contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, 1);
 
         /**We try to insert it*/
         try {
@@ -95,7 +99,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public long updateProfile(User user) {
         long id = -1;
-        long id2 = -1;
+//        long id2 = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
 
@@ -107,6 +111,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
         contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
         contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
+        contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, user.getHeightUnit());
+        contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, user.getWeightUnit());
 
         // TODO: FIX UPDATE METHOD:
         //  https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase#update
@@ -165,6 +171,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             user.setAge(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE)));
                             user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
                             user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
+                            user.setHeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT_UNIT)));
+                            user.setWeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT_UNIT)));
 
                             return user;
                         }
@@ -210,8 +218,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String age = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE));
                         String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
                         String weight = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT));
+                        int heightUnit = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT_UNIT));
+                        int weightUnit = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT_UNIT));
 
-                        users.add(new User(id, fullname, email, password, gender, age, height, weight));
+                        users.add(new User(id, fullname, email, password, gender, age, height, weight, heightUnit, weightUnit));
+//                        users.add(new User(id, fullname, email, password, gender, age, height, weight));
                     } while(cursor.moveToNext());
 
                     return users;

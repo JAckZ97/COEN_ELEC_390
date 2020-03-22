@@ -74,8 +74,6 @@ public class ProfileActivity extends AppCompatActivity {
         ft.setEnabled(false);
         kg.setEnabled(false);
         lb.setEnabled(false);
-        kg.setChecked(true);
-        cm.setChecked(true);
 
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
@@ -84,6 +82,11 @@ public class ProfileActivity extends AppCompatActivity {
         age.setText(user.getAge());
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
+
+        if(user.getHeightUnit()==1){ kg.setChecked(true); }
+        else{ lb.setChecked(true); }
+        if(user.getWeightUnit()==1){ cm.setChecked(true); }
+        else{ ft.setChecked(true); }
 
         // set gender spinner and catch error
         if(user.getGender() == null){
@@ -211,23 +214,33 @@ public class ProfileActivity extends AppCompatActivity {
         reff.setValue(updateresult);
     }*/
 
+    // TODO: heightUnit cm: 1/ ft: 0
+    //       weightUnit kg: 1/ lb: 0
+
     private void readProfile(){
         String email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
         User user = databaseHelper.getUser(email);
+
         fullname.setText(user.getFullname());
         genderSelect.setSelection(genderGenerate(user.getGender()));
         age.setText(user.getAge());
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
 
-        int checkWeightId = weightGroup.getCheckedRadioButtonId();
-        int checkHeightId = heightGroup.getCheckedRadioButtonId();
-        findRadioButtonHeight(checkHeightId);
-        findRadioButtonWeight(checkWeightId);
+        if(user.getHeightUnit()==1){
+            kg.setChecked(true); }
+        else{
+            lb.setChecked(true); }
+        if(user.getWeightUnit()==1){
+            cm.setChecked(true); }
+        else{
+            ft.setChecked(true); }
     }
 
+
     private void writeProfile(User user) {
+
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         String str_age = age.getText().toString();
@@ -240,8 +253,43 @@ public class ProfileActivity extends AppCompatActivity {
         user.setWeight(str_weight);
         user.setHeight(str_height);
 
+        int checkWeightId = weightGroup.getCheckedRadioButtonId();
+        int checkHeightId = heightGroup.getCheckedRadioButtonId();
+//        findRadioButtonHeight(checkHeightId);
+//        findRadioButtonWeight(checkWeightId);
+
+        switch (checkWeightId){
+            case R.id.weightKG:
+                kg.setChecked(true);
+                user.setWeightUnit(1);
+
+                break;
+            case R.id.weightLB:
+                lb.setChecked(true);
+                user.setWeightUnit(0);
+
+                break;
+        }
+
+        switch (checkHeightId){
+            case R.id.heightCm:
+                cm.setChecked(true);
+                user.setHeightUnit(1);
+
+                break;
+            case R.id.heightFeet:
+                ft.setChecked(true);
+                user.setHeightUnit(0);
+
+                break;
+        }
+
+
         databaseHelper = new DatabaseHelper(this);
         databaseHelper.updateProfile(user);
+
+
+
     }
 
     private int genderGenerate (String selectGender){
@@ -260,32 +308,52 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void findRadioButtonWeight (int checkID){
         pd = new ProgressDialog(ProfileActivity.this);
+        String email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+
         switch (checkID){
             case R.id.weightKG:
                 Toast.makeText(ProfileActivity.this, "Selected kg", Toast.LENGTH_SHORT).show();
                 kg.setChecked(true);
                 pd.dismiss();
+
+                user.setWeightUnit(1);
+
                 break;
             case R.id.weightLB:
                 Toast.makeText(ProfileActivity.this, "Selected lb", Toast.LENGTH_SHORT).show();
                 lb.setChecked(true);
                 pd.dismiss();
+
+                user.setWeightUnit(0);
+
                 break;
         }
     }
 
     private void findRadioButtonHeight (int checkID){
         newPd = new ProgressDialog(ProfileActivity.this);
+        String email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+
         switch (checkID){
             case R.id.heightCm:
                 Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
                 cm.setChecked(true);
                 newPd.dismiss();
+
+                user.setHeightUnit(1);
+
                 break;
             case R.id.heightFeet:
                 Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
                 ft.setChecked(true);
                 newPd.dismiss();
+
+                user.setHeightUnit(0);
+
                 break;
         }
     }

@@ -39,7 +39,9 @@ public class DatabaseViewerActivity extends AppCompatActivity {
             temp += users.get(i).getGender()+"\n";
             temp += users.get(i).getAge()+"\n";
             temp += users.get(i).getHeight()+"\n";
-            temp += users.get(i).getWeight();
+            temp += users.get(i).getWeight()+"\n";
+            temp += users.get(i).getHeightUnit()+"\n";
+            temp += users.get(i).getWeightUnit();
 
             usersListText.add(temp);
         }
