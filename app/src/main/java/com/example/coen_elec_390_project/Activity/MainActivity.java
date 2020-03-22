@@ -44,10 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private int sumbpm=0;
     private double performanceIndex;
     private int counter=0;
+    private static boolean listen_pre_bpm = false;
+    private static boolean listen_post_bpm = false;
     static ArrayList<Integer> recordings = new ArrayList<Integer>();
    // static int[] array1[] = new int[][];
 
-    private int counter=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,17 +70,40 @@ public class MainActivity extends AppCompatActivity {
 
                 switch (counter){
                     case 0:
-                        getPreBPM();
+                        listen_pre_bpm=true;
+                        while(recordings.size()<10 && MyBluetoothService.success);
+                        button1.setText("Getting your BPM");
+                        if(MyBluetoothService.success)
+                            getPreBPM();
                         button1.setText("Post-Workout Measurement Start");
+                        counter++;
+                        //timestamp seconds since epoch
                         break;
 
                     case 1:
-                        getPostBPM();
+                        //new timestamp - oldtimestamp (duration of a session in seconds)
+                        //call calories function()
+                        //write calories burned to database with current user
+
+
+                        listen_post_bpm=true;
+                        while(recordings.size()<10 && MyBluetoothService.success);
+                        if(MyBluetoothService.success)
+                            getPostBPM();
+                        double index = getperformanceindex(preBPM,postBPM)
                         button1.setText("Show Performance Index");
+                        counter++;
+                        //getperformance index
+                        //write performance index to database with current user
                         break;
 
                     case 2:
-                        getPerformanceIndex(preBPM, postBPM);
+                        if(MyBluetoothService.success)
+                            displayPerformanceindex(preBPM, postBPM);
+                        button1.setText("Start Recording");
+                        counter=0;
+                        break;
+
 
                 }
 
@@ -155,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void getPreBPM(){
         preBPM=0;
-        recordings.add(recording);
+
         int div=0;
         //int[] array1 = new int[]{85, 90, 78, 82, 84, 87, 88, 91, 92, 90, 87, 84, 85, 86, 89, 76, 89, 79, 87, 84};
 
@@ -172,12 +196,11 @@ public class MainActivity extends AppCompatActivity {
 
         recordings.clear();
         sumbpm=0;
-        counter++;
     }
 
     protected void getPostBPM(){
         postBPM=0;
-        recordings.add(recording);
+
         int div =0;
         //int[] array2 = new int[]{111, 119, 128, 132, 111, 112, 118, 1117, 115, 111, 114, 118, 110, 109, 132, 122, 121, 125, 113, 109};
 
@@ -194,10 +217,9 @@ public class MainActivity extends AppCompatActivity {
 
         recordings.clear();
         sumbpm=0;
-        counter++;
     }
 
-    protected void getPerformanceIndex(int pre, int post){
+    protected void displayPerformanceindex(int pre, int post){
         if(pre!=0 && post !=0){
             performanceIndex =  (15.3 * (post/pre));
             Toast.makeText(getApplicationContext(), "Your Performance Index for this Workout is: "+ performanceIndex, Toast.LENGTH_LONG).show();
@@ -206,7 +228,13 @@ public class MainActivity extends AppCompatActivity {
         else{
             Toast.makeText(getApplicationContext(), "Some Measurements were Missing, Try again next time", Toast.LENGTH_LONG).show();
         }
-        counter=0;
+
+    }
+
+    protected double getperformanceindex(int pre, int post){
+        if(pre!=0 && post !=0) {
+            return (15.3 * (post / pre));
+        }
 
     }
 
@@ -214,7 +242,10 @@ public class MainActivity extends AppCompatActivity {
         if(bpm!=null) {
             bpm.setText(a);
             //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
-            recording = Integer.parseInt(a);
+            if(listen_pre_bpm || listen_post_bpm) {
+                recording = Integer.parseInt(a);
+                recordings.add(recording);
+            }
         }
     }
 
