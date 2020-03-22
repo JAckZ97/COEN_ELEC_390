@@ -70,7 +70,9 @@ public class StartActivity extends AppCompatActivity {
 
         if(!MyBluetoothService.initialized)
             bluetoothsetup();
-        if(!MyBluetoothService.success){
+        if(!MyBluetoothService.success && !MyBluetoothService.understood){
+            Log.e("Tag","<BT> was here");
+            MyBluetoothService.understood=true;
             showBTDialog();
         }
 
@@ -132,13 +134,13 @@ public class StartActivity extends AppCompatActivity {
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
                 mybtlist.add(device);
-                if(deviceName!=null && !found) {
-                    if (deviceName.equalsIgnoreCase("COEN390") && deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
-                        Log.e("Tag", "<Message> Found esp32");
-                        found=true;
-                        showBTDialog();
-                    }
-                }
+//                if(deviceName!=null && !found) {
+//                    if (deviceName.equalsIgnoreCase("COEN390") && deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+//                        Log.e("Tag", "<Message> Found esp32");
+//                        found=true;
+//                        showBTDialog();
+//                    }
+//                }
 
             }
         }

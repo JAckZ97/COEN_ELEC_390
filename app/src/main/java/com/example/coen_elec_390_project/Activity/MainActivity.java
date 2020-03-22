@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
             global_email = getIntent().getStringExtra("email");
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
-            showBTDialog();
+            if(!MyBluetoothService.understood)
+                showBTDialog();
         }else{
             bpm.setText("Your BPM value");
         }

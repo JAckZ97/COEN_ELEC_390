@@ -22,6 +22,7 @@ public class MyBluetoothService {
     //public static ConnectedThread mythread;
     public static boolean success = false;
     public static boolean initialized = false;
+    public static boolean understood = false;
     private int convert(ArrayList<Double> complex_list){
 
         Complex real_list[] = new Complex[size];
