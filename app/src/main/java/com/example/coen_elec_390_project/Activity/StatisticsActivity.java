@@ -11,13 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.DialogFragment.DateSelectionFragment;
 import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
@@ -43,6 +42,7 @@ public class StatisticsActivity extends AppCompatActivity {
     private static final String TAG = "StatisticsActivity";
     GraphView graph;
     LineGraphSeries<DataPoint> series;
+    String email;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
     DatabaseHelper databaseHelper;
     ListView statisticsListView;
@@ -136,6 +136,10 @@ public class StatisticsActivity extends AppCompatActivity {
             }
         });*/
 
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        graph.getGridLabelRenderer().setHumanRounding(false);
+
+        email = getIntent().getStringExtra("email");
     }
 
     public void receiveStartEndDate(String start, String end) {
@@ -204,24 +208,43 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
+                databaseHelper = new DatabaseHelper(StatisticsActivity.this);
+                User user = databaseHelper.getUser(email);
+
                 switch (menuItem.getItemId()){
+
                     case R.id.home:
-                        startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:
                         break;
 
                     case R.id.profile:
-                        startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
-                        break;
-
+//                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+//                        intent.putExtra("email", email);
+//                        startActivity(intent);
+//                        break;
+                        if (user.getEmail()== null) {
+                            // User is signed in
+                            startActivity(new Intent(StatisticsActivity.this, StartActivity.class));
+                            break;
+                        } else {
+                            // No user is signed in
+                            intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            break;
+                        }
 
                     case R.id.logout:
                         startActivity(new Intent(StatisticsActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

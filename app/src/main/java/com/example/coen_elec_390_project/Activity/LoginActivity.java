@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
     Button login;
     TextView txt_signup;
 
-    FirebaseAuth auth;
+//    FirebaseAuth auth;
     ProgressDialog pd;
     DatabaseHelper databaseHelper;
 
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         txt_signup = findViewById(R.id.txt_signup);
 
-        auth = FirebaseAuth.getInstance();
+//        auth = FirebaseAuth.getInstance();
         databaseHelper = new DatabaseHelper(this);
 
         txt_signup.setOnClickListener(new View.OnClickListener() {
@@ -76,9 +76,20 @@ public class LoginActivity extends AppCompatActivity {
                     pd.dismiss();
                 }*/
 
+                else {
+                    loginOffline(str_email, str_password);
 
+//                    if(isNetworkConnected()) {
+//                        loginOnline(str_email, str_password);
+//                    }
+//
+//                    else {
+//                        loginOffline(str_email, str_password);
+//                    }
+                }
+                /*
                // else {
-                    loginOffline("gabriel.juteau7@gmail.com", "123456");
+                    //loginOffline("gabriel.juteau7@gmail.com", "123456");
                     //loginOffline(str_email, str_password);
                     /**if(isNetworkConnected()) {
                         loginOnline(str_email, str_password);
@@ -88,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                         loginOffline(str_email, str_password);
                     }*/
                // }
+                */
 
             }
         });
@@ -104,43 +116,43 @@ public class LoginActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }
-
-    public void loginOnline(String str_email, String str_password) {
-        auth.signInWithEmailAndPassword(str_email, str_password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
-
-                    reference.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            pd.dismiss();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                            pd.dismiss();
-                        }
-                    });
-                }
-
-                else {
-                    pd.dismiss();
-                    Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
+//    private boolean isNetworkConnected() {
+//        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+//    }
+//
+//    public void loginOnline(String str_email, String str_password) {
+//        auth.signInWithEmailAndPassword(str_email, str_password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if(task.isSuccessful()) {
+//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
+//
+//                    reference.addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                            pd.dismiss();
+//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent);
+//                            finish();
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError databaseError) {
+//                            pd.dismiss();
+//                        }
+//                    });
+//                }
+//
+//                else {
+//                    pd.dismiss();
+//                    Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
 
     public void loginOffline(String str_email, String str_password) {
         if (databaseHelper.checkIfExisting(str_email)) {

@@ -3,14 +3,18 @@ package com.example.coen_elec_390_project.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,18 +30,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity {
-    EditText fullname, height, weight;
-    Button save, edit, profileSaveButton;
+    EditText fullname, height, weight, age;
+    Button save, edit;
     Spinner genderSelect;
-    String selectGender;
-    DatabaseReference reff;
-    FirebaseUser firebaseUser;
     DatabaseHelper databaseHelper;
-    User user;
+    RadioButton cm, ft, kg, lb;
+    RadioGroup weightGroup, heightGroup;
+    String email;
+    String selectGender;
+    ProgressDialog pd;
+    ProgressDialog newPd;
+    //DatabaseReference reff;
+    //FirebaseUser firebaseUser;
+    //User user;
+    private boolean user_editting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +57,61 @@ public class ProfileActivity extends AppCompatActivity {
         fullname = findViewById(R.id.profileName);
         height = findViewById(R.id.profileHeight);
         weight = findViewById(R.id.profileWeight);
+        age = findViewById(R.id.profileAge);
         genderSelect = findViewById(R.id.profileSelectGender);
         save = findViewById(R.id.save);
         edit = findViewById(R.id.edit);
-        profileSaveButton = findViewById(R.id.profileSaveButton);
+        cm = findViewById(R.id.heightCm);
+        ft = findViewById(R.id.heightFeet);
+        kg = findViewById(R.id.weightKG);
+        lb = findViewById(R.id.weightLB);
+        weightGroup = findViewById(R.id.weightRadioGroup);
+        heightGroup = findViewById(R.id.heightRadioGroup);
 
         fullname.setEnabled(false);
         height.setEnabled(false);
+        age.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
-        profileSaveButton.setVisibility(View.INVISIBLE);
+      
+        cm.setEnabled(false);
+        ft.setEnabled(false);
+        kg.setEnabled(false);
+        lb.setEnabled(false);
 
+        email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(MainActivity.global_email);
-
+        final User user = databaseHelper.getUser(email);
+      
         fullname.setText(user.getFullname());
+        age.setText(user.getAge());
+        height.setText(user.getHeight());
+        weight.setText(user.getWeight());
+
+        if(user.getHeightUnit()==1){ kg.setChecked(true); lb.setChecked(false);}
+        else{ lb.setChecked(true); kg.setChecked(false);}
+        if(user.getWeightUnit()==1){ cm.setChecked(true); ft.setChecked(false);}
+        else{ ft.setChecked(true); cm.setChecked(false);}
+
+        // set gender spinner and catch error
+        if(user.getGender() == null){
+            genderSelect.setSelection(2);
+        }
+        else {
+            genderSelect.setSelection(genderGenerate(user.getGender()));
+        }
+
+        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectGender=parent.getSelectedItem().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -92,7 +141,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });*/
 
-
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,10 +148,19 @@ public class ProfileActivity extends AppCompatActivity {
                 height.setEnabled(false);
                 weight.setEnabled(false);
                 genderSelect.setEnabled(false);
-                //profileSaveButton.setVisibility(View.INVISIBLE);
+                age.setEnabled(false);
+                cm.setEnabled(false);
+                ft.setEnabled(false);
+                kg.setEnabled(false);
+                lb.setEnabled(false);
 
-                //basicRead();
+                if(user_editting){
+                    writeProfile(user);
+                    readProfile();
+                    user_editting=false;
+                }
 
+//                basicRead();
             }
         });
 
@@ -114,12 +171,18 @@ public class ProfileActivity extends AppCompatActivity {
                 height.setEnabled(true);
                 weight.setEnabled(true);
                 genderSelect.setEnabled(true);
-                //profileSaveButton.setVisibility(View.VISIBLE);
-
+                age.setEnabled(true);
+                cm.setEnabled(true);
+                ft.setEnabled(true);
+                kg.setEnabled(true);
+                lb.setEnabled(true);
+                user_editting=true;
+//               writeProfile();
             }
         });
     }
 
+    /**
     public void basicRead(){
         reff.addValueEventListener(new ValueEventListener() {
             @Override
@@ -158,13 +221,103 @@ public class ProfileActivity extends AppCompatActivity {
         updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
 
         reff.setValue(updateresult);
+    }*/
+
+    // TODO: heightUnit cm: 1/ ft: 0
+    //       weightUnit kg: 1/ lb: 0
+
+    private void readProfile(){
+        String email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        User user = databaseHelper.getUser(email);
+
+        fullname.setText(user.getFullname());
+        genderSelect.setSelection(genderGenerate(user.getGender()));
+        age.setText(user.getAge());
+        height.setText(user.getHeight());
+        weight.setText(user.getWeight());
+
+        if(user.getWeightUnit()==1){
+            kg.setChecked(true); }
+        else{
+            lb.setChecked(true); }
+
+        if(user.getHeightUnit()==1){
+            cm.setChecked(true); }
+        else{
+            ft.setChecked(true); }
     }
 
-    public static void setCheckable(BottomNavigationView view, boolean checkable) {
-        final Menu menu = view.getMenu();
 
-        for(int i =0; i < menu.size(); i++)
-            menu.getItem(i).setCheckable(false);
+    private void writeProfile(User user) {
+
+        String str_fullname = fullname.getText().toString();
+        String str_gender = selectGender;
+        String str_age = age.getText().toString();
+        String str_weight = weight.getText().toString();
+        String str_height = height.getText().toString();
+
+        user.setFullname(str_fullname);
+        user.setGender(str_gender);
+        user.setAge(str_age);
+        user.setWeight(str_weight);
+        user.setHeight(str_height);
+
+        int checkWeightId = weightGroup.getCheckedRadioButtonId();
+        int checkHeightId = heightGroup.getCheckedRadioButtonId();
+
+
+        switch (checkWeightId){
+            case R.id.weightKG:
+                kg.setChecked(true);
+                lb.setChecked(false);
+                user.setWeightUnit(1);
+                //Log.e("Tag","<PROFILE> kg checked");
+
+                break;
+            case R.id.weightLB:
+                lb.setChecked(true);
+                kg.setChecked(false);
+                user.setWeightUnit(0);
+                //Log.e("Tag","<PROFILE> lb checked");
+                break;
+        }
+
+        switch (checkHeightId){
+            case R.id.heightCm:
+                cm.setChecked(true);
+                ft.setChecked(false);
+                user.setHeightUnit(1);
+                //Log.e("Tag","<PROFILE> cm checked");
+                break;
+            case R.id.heightFeet:
+                ft.setChecked(true);
+                cm.setChecked(false);
+                user.setHeightUnit(0);
+                //Log.e("Tag","<PROFILE> ft checked");
+                break;
+        }
+
+        //Log.e("Tag","<PROFILE> Weight unit "+ user.getWeightUnit());
+        //Log.e("Tag","<PROFILE> Height unit "+ user.getHeightUnit());
+
+        databaseHelper = new DatabaseHelper(this);
+        databaseHelper.updateProfile(user);
+
+    }
+
+    private int genderGenerate (String selectGender){
+        switch (selectGender){
+            case "Male":
+                return 0;
+
+            case "Female":
+                return 1;
+
+            case "Other":
+                return 2;
+        }
+        return 2;
     }
 
     private void setUpBottomNavigationView() {
@@ -172,20 +325,25 @@ public class ProfileActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
                 switch (menuItem.getItemId()){
                     case R.id.home:
-                        startActivity(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:
-                        startActivity(new Intent(ProfileActivity.this, StatisticsActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, StatisticsActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.profile:
                         break;
 
                     case R.id.logout:
-                        FirebaseAuth.getInstance().signOut();
+//                        FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(ProfileActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }
