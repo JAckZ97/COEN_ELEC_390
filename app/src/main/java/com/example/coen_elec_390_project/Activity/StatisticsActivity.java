@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
     private static final String TAG = "StatisticsActivity";
@@ -86,10 +87,12 @@ public class StatisticsActivity extends AppCompatActivity {
 
         /**TO TEST IF THE GRAPH WHEN THERE IS A LOT OF POINTS*/
         Calendar calendar = Calendar.getInstance();
+        Random randomobj = new Random();
         for(int i = 0; i < 50; i++) {
             calendar.set(2020, 03 ,i);
             String str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, i));
+            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, randomobj.nextDouble()*100));
+            Log.e("Tag","<STAT> "+randomobj.nextDouble());
         }
 
 
@@ -152,7 +155,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "BPM: " + statistics.get(i).getBpm();
+            temp += "Speed: " + statistics.get(i).getSpeed();
 
             /**String str_date = statistics.get(i).getDate();
             String[] date_array = str_date.split("/");
@@ -186,7 +189,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "BPM: " + statistics.get(i).getBpm();
+            temp += "speed: " + statistics.get(i).getSpeed();
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;

@@ -17,5 +17,5 @@ public class Config {
     public static final String COLUMN_STATISTIC_USER_ID = "userId";
     public static final String COLUMN_STATISTIC_DATE = "date";
     public static final String COLUMN_STATISTIC_PERF_INDEX= "perfIndex";
-    public static final String COLUMN_STATISTIC_BPM = "bpm";
+    public static final String COLUMN_STATISTIC_SPEED = "speed";
 }

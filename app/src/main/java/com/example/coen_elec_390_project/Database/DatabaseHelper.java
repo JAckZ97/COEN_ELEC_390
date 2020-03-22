@@ -51,7 +51,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_STATISTIC_USER_ID + " INTEGER,"
                 + Config.COLUMN_STATISTIC_DATE + " TEXT NOT NULL,"
                 + Config.COLUMN_STATISTIC_PERF_INDEX + " INTEGER,"
-                + Config.COLUMN_STATISTIC_BPM + " INTEGER)";
+                + Config.COLUMN_STATISTIC_SPEED + " REAL)";
 
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
@@ -272,7 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_STATISTIC_USER_ID, statistic.getUser_id());
         contentValues.put(Config.COLUMN_STATISTIC_DATE, statistic.getDate());
         contentValues.put(Config.COLUMN_STATISTIC_PERF_INDEX, statistic.getPerformance_index());
-        contentValues.put(Config.COLUMN_STATISTIC_BPM, statistic.getBpm());
+        contentValues.put(Config.COLUMN_STATISTIC_SPEED, statistic.getSpeed());
 
         /**We try to insert it*/
         try {
@@ -310,9 +310,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
                         String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
                         int perf_index = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
-                        int bpm = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_BPM));
+                        double speed = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
 
-                        statistics.add(new Statistic(id, user_id, date, perf_index, bpm));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed));
                     } while(cursor.moveToNext());
 
                     return statistics;
@@ -357,10 +357,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
                         String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
                         int perf_index = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
-                        int bpm = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_BPM));
+                        double speed = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
 
 
-                        statistics.add(new Statistic(id, user_id, date, perf_index, bpm));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed));
                     } while(cursor.moveToNext());
 
                     return statistics;

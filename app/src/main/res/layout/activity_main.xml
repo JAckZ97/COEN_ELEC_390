@@ -18,7 +18,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="128dp"
         android:layout_marginEnd="135dp"
-        android:layout_marginBottom="42dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/edittext_background"
         android:gravity="fill_vertical"
         android:text="Start Recording" />
 
@@ -26,13 +27,15 @@
         android:id="@+id/bpm"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_above="@+id/bottomNavigation"
+        android:layout_above="@+id/recordingbutton"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="31dp"
-        android:layout_marginBottom="117dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="0dp"
+
         android:background="@drawable/edittext_background"
+
         android:fontFamily="monospace"
         android:gravity="center_horizontal"
         android:padding="10dp"
@@ -45,8 +48,7 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="labeled"
-        app:itemIconTint="@color/colorBlack"/>
+        app:labelVisibilityMode="labeled"/>
 
 </RelativeLayout>
 
