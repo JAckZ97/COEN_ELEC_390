@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     static ArrayList<Integer> recordings = new ArrayList<Integer>();
    // static int[] array1[] = new int[][];
 
+    private int counter=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
         });*/
 
     }
-
 
     private void setUpBottomNavigationView() {
             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
