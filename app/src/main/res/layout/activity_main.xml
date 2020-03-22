@@ -8,17 +8,33 @@
     android:background="@drawable/gradient_background"
     tools:context=".Activity.MainActivity">
 
+    <Button
+        android:id="@+id/recordingbutton"
+        style="@android:style/Widget.Material.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="63dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="135dp"
+        android:layout_marginBottom="42dp"
+        android:gravity="fill_vertical"
+        android:text="Start Recording" />
+
     <TextView
         android:id="@+id/bpm"
         android:layout_width="350dp"
         android:layout_height="350dp"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="50dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="117dp"
         android:background="@drawable/edittext_background"
         android:fontFamily="monospace"
-        android:gravity="center"
+        android:gravity="center_horizontal"
         android:padding="10dp"
         android:textSize="50dp" />
 
@@ -29,88 +45,8 @@
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
         app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="labeled" />
-
-
-
-
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_centerHorizontal="true"
-        android:text="Weight"
-        android:textSize="15dp" />
-
-
-    <EditText
-        android:id="@+id/weight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="4dp"
-        android:ems="6"
-        android:textAlignment="center" />
-
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="47dp"
-        android:layout_centerHorizontal="true"
-        android:text="MET of activity"
-        android:textSize="15dp" />
-
-
-    <EditText
-        android:id="@+id/met"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="49dp"
-        android:ems="6"
-        android:textAlignment="center" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="91dp"
-        android:layout_centerHorizontal="true"
-        android:text="Duration of activity"
-        android:textSize="15dp" />
-
-
-    <EditText
-        android:id="@+id/duration"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="93dp"
-        android:ems="6"
-        android:textAlignment="center" />
-
-
-    <Button
-        android:id="@+id/calculate_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="140dp"
-        android:onClick="calculateTotalCaloriesBurned"
-        android:textSize="13dp"
-        android:text="Calculate Calories" />
-
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Calories Burned"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="550dp"
-        android:textSize="23dp" />
+        app:labelVisibilityMode="labeled"
+        app:itemIconTint="@color/colorBlack"/>
 
 </RelativeLayout>
-
 
