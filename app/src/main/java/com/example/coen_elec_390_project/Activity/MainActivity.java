@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
     public static void  Update_bpm(String a){
         if(bpm!=null) {
             bpm.setText(a);
+            //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
             recording = Integer.parseInt(a);
         }
     }
