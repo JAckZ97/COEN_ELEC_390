@@ -3,6 +3,7 @@ package com.example.coen_elec_390_project.Activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -39,7 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
     RadioGroup weightGroup, heightGroup;
     String email;
     String selectGender;
-    Intent intent;
+    ProgressDialog pd;
     //DatabaseReference reff;
     //FirebaseUser firebaseUser;
     //User user;
@@ -64,18 +65,22 @@ public class ProfileActivity extends AppCompatActivity {
         weightGroup = findViewById(R.id.weightRadioGroup);
         heightGroup = findViewById(R.id.weightRadioGroup);
 
+
         fullname.setEnabled(false);
         height.setEnabled(false);
         age.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
-
-        int checkWeightId = weightGroup.getCheckedRadioButtonId();
-        int checkHeightId = heightGroup.getCheckedRadioButtonId();
+        cm.setEnabled(false);
+        ft.setEnabled(false);
+        kg.setEnabled(false);
+        lb.setEnabled(false);
 
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
         User user = databaseHelper.getUser(email);
+//        genderSelect.setSelection(genderGenerate(user.getGender()));
+        genderSelect.setSelection(2);
         fullname.setText(user.getFullname());
         age.setText(user.getAge());
         height.setText(user.getHeight());
@@ -90,7 +95,6 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -121,7 +125,6 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });*/
-
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,12 +211,16 @@ public class ProfileActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         User user = databaseHelper.getUser(email);
         fullname.setText(user.getFullname());
-
-        //gender
-        
+        genderSelect.setSelection(genderGenerate(user.getGender()));
         age.setText(user.getAge());
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
+
+        int checkWeightId = weightGroup.getCheckedRadioButtonId();
+        int checkHeightId = heightGroup.getCheckedRadioButtonId();
+        findRadioButtonHeight(checkHeightId);
+        findRadioButtonWeight(checkWeightId);
+
     }
 
     private void writeProfile(){
@@ -224,24 +231,51 @@ public class ProfileActivity extends AppCompatActivity {
         String str_height = height.getText().toString();
 
         databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(email);
         databaseHelper.updateProfile(new User(str_fullname, str_gender, str_age, str_weight, str_height));
-
     }
 
-    private void findRadioButton (int checkID){
+    private int genderGenerate (String selectGender){
+        switch (selectGender){
+            case "Male":
+                return 0;
+
+            case "Female":
+                return 1;
+
+            case "Other":
+                return 2;
+        }
+        return 2;
+    }
+
+    private void findRadioButtonWeight (int checkID){
+        pd = new ProgressDialog(ProfileActivity.this);
         switch (checkID){
-            case R.id.heightCm:
-                Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.heightFeet:
-                Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.weightKG:
                 Toast.makeText(ProfileActivity.this, "Selected kg", Toast.LENGTH_SHORT).show();
+                kg.setChecked(true);
+                pd.dismiss();
                 break;
             case R.id.weightLB:
                 Toast.makeText(ProfileActivity.this, "Selected lb", Toast.LENGTH_SHORT).show();
+                lb.setChecked(true);
+                pd.dismiss();
+                break;
+        }
+    }
+
+    private void findRadioButtonHeight (int checkID){
+        pd = new ProgressDialog(ProfileActivity.this);
+        switch (checkID){
+            case R.id.heightCm:
+                Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
+                cm.setChecked(true);
+                pd.dismiss();
+                break;
+            case R.id.heightFeet:
+                Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
+                cm.setChecked(true);
+                pd.dismiss();
                 break;
         }
     }
