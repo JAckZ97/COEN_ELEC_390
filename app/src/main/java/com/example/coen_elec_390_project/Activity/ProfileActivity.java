@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -44,6 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
     //DatabaseReference reff;
     //FirebaseUser firebaseUser;
     //User user;
+    private boolean user_editting = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +65,7 @@ public class ProfileActivity extends AppCompatActivity {
         kg = findViewById(R.id.weightKG);
         lb = findViewById(R.id.weightLB);
         weightGroup = findViewById(R.id.weightRadioGroup);
-        heightGroup = findViewById(R.id.weightRadioGroup);
+        heightGroup = findViewById(R.id.heightRadioGroup);
 
         fullname.setEnabled(false);
         height.setEnabled(false);
@@ -83,10 +85,10 @@ public class ProfileActivity extends AppCompatActivity {
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
 
-        if(user.getHeightUnit()==1){ kg.setChecked(true); }
-        else{ lb.setChecked(true); }
-        if(user.getWeightUnit()==1){ cm.setChecked(true); }
-        else{ ft.setChecked(true); }
+        if(user.getHeightUnit()==1){ kg.setChecked(true); lb.setChecked(false);}
+        else{ lb.setChecked(true); kg.setChecked(false);}
+        if(user.getWeightUnit()==1){ cm.setChecked(true); ft.setChecked(false);}
+        else{ ft.setChecked(true); cm.setChecked(false);}
 
         // set gender spinner and catch error
         if(user.getGender() == null){
@@ -149,8 +151,12 @@ public class ProfileActivity extends AppCompatActivity {
                 kg.setEnabled(false);
                 lb.setEnabled(false);
 
-                writeProfile(user);
-                readProfile();
+                if(user_editting){
+                    writeProfile(user);
+                    readProfile();
+                    user_editting=false;
+                }
+
 //                basicRead();
             }
         });
@@ -167,7 +173,7 @@ public class ProfileActivity extends AppCompatActivity {
                 ft.setEnabled(true);
                 kg.setEnabled(true);
                 lb.setEnabled(true);
-
+                user_editting=true;
 //               writeProfile();
             }
         });
@@ -228,11 +234,12 @@ public class ProfileActivity extends AppCompatActivity {
         height.setText(user.getHeight());
         weight.setText(user.getWeight());
 
-        if(user.getHeightUnit()==1){
+        if(user.getWeightUnit()==1){
             kg.setChecked(true); }
         else{
             lb.setChecked(true); }
-        if(user.getWeightUnit()==1){
+
+        if(user.getHeightUnit()==1){
             cm.setChecked(true); }
         else{
             ft.setChecked(true); }
@@ -255,35 +262,45 @@ public class ProfileActivity extends AppCompatActivity {
 
         int checkWeightId = weightGroup.getCheckedRadioButtonId();
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
+
+
 //        findRadioButtonHeight(checkHeightId);
 //        findRadioButtonWeight(checkWeightId);
-
+        //Log.e("Tag","<PROFILE> weight id" + checkWeightId);
+        //Log.e("Tag","<PROFILE> height id" + checkHeightId);
         switch (checkWeightId){
             case R.id.weightKG:
                 kg.setChecked(true);
+                lb.setChecked(false);
                 user.setWeightUnit(1);
+                //Log.e("Tag","<PROFILE> kg checked");
 
                 break;
             case R.id.weightLB:
                 lb.setChecked(true);
+                kg.setChecked(false);
                 user.setWeightUnit(0);
-
+                //Log.e("Tag","<PROFILE> lb checked");
                 break;
         }
 
         switch (checkHeightId){
             case R.id.heightCm:
                 cm.setChecked(true);
+                ft.setChecked(false);
                 user.setHeightUnit(1);
-
+                //Log.e("Tag","<PROFILE> cm checked");
                 break;
             case R.id.heightFeet:
                 ft.setChecked(true);
+                cm.setChecked(false);
                 user.setHeightUnit(0);
-
+                //Log.e("Tag","<PROFILE> ft checked");
                 break;
         }
 
+        //Log.e("Tag","<PROFILE> Weight unit "+ user.getWeightUnit());
+        //Log.e("Tag","<PROFILE> Height unit "+ user.getHeightUnit());
 
         databaseHelper = new DatabaseHelper(this);
         databaseHelper.updateProfile(user);
