@@ -74,6 +74,8 @@ public class ProfileActivity extends AppCompatActivity {
         ft.setEnabled(false);
         kg.setEnabled(false);
         lb.setEnabled(false);
+        kg.setChecked(true);
+        cm.setChecked(true);
 
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
@@ -282,7 +284,7 @@ public class ProfileActivity extends AppCompatActivity {
                 break;
             case R.id.heightFeet:
                 Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
-                cm.setChecked(true);
+                ft.setChecked(true);
                 newPd.dismiss();
                 break;
         }

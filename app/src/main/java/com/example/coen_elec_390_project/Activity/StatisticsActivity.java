@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +26,7 @@ public class StatisticsActivity extends AppCompatActivity {
     LineGraphSeries<DataPoint> series;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String email;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,13 +71,16 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
+                databaseHelper = new DatabaseHelper(StatisticsActivity.this);
+                User user = databaseHelper.getUser(email);
+
                 switch (menuItem.getItemId()){
 
                     case R.id.home:
@@ -87,19 +93,21 @@ public class StatisticsActivity extends AppCompatActivity {
                         break;
 
                     case R.id.profile:
-                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
-                        intent.putExtra("email", email);
-                        startActivity(intent);
-                        break;
-                        /**if (user == null) {
+//                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+//                        intent.putExtra("email", email);
+//                        startActivity(intent);
+//                        break;
+                        if (user.getEmail()== null) {
                             // User is signed in
                             startActivity(new Intent(StatisticsActivity.this, StartActivity.class));
                             break;
                         } else {
                             // No user is signed in
-                            startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                            intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                            intent.putExtra("email", email);
+                            startActivity(intent);
                             break;
-                        }*/
+                        }
 
                     case R.id.logout:
                         FirebaseAuth.getInstance().signOut();

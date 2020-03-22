@@ -11,7 +11,6 @@ import android.os.strictmode.SqliteObjectLeakedViolation;
 import android.util.Log;
 import android.widget.Toast;
 import android.content.Intent;
-
 import androidx.constraintlayout.solver.widgets.ConstraintWidgetGroup;
 
 import com.example.coen_elec_390_project.Model.User;
@@ -114,11 +113,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         //  (java.lang.String,%20android.content.ContentValues,%20java.lang.String,%20java.lang.String%5B%5D)
 
         String[] args = {String.valueOf(user.getId())};
-        /**We try to insert it*/
+        /**We try to update it*/
         try {
 //            not works, don't know why
 //            id = db.update(Config.USER_TABLE_NAME, contentValues, "email=?",args);
-
 //            it will update the all user in database when "whereClause" set to null
             db.beginTransaction();
             id = db.update(Config.USER_TABLE_NAME, contentValues, Config.COLUMN_USER_ID+" LIKE ?",args);

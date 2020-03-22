@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
     String email;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Intent intent;
+                    databaseHelper = new DatabaseHelper(MainActivity.this);
+                    User user = databaseHelper.getUser(email);
 
                     switch (menuItem.getItemId()){
                         case R.id.home:
@@ -58,26 +61,26 @@ public class MainActivity extends AppCompatActivity {
                             break;
 
                         case R.id.statistics:
-                            intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
-                            intent.putExtra("email", email);
-                            startActivity(intent);
 
-                            break;
-
-                        case R.id.profile:
-                            intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
-                            intent.putExtra("email", email);
-                            startActivity(intent);
-                            break;
-                            /**if (user == null) {
-                                // User is signed in
+                            if (user.getEmail()== null) {
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
-                                // No user is signed in
-                                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                                intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                                intent.putExtra("email", email);
+                                startActivity(intent);
+                                break;}
+
+                        case R.id.profile:
+
+                            if (user.getEmail()== null) {
+                                startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
-                            }*/
+                            } else {
+                                intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                                intent.putExtra("email", email);
+                                startActivity(intent);
+                                break;}
 
                         case R.id.logout:
                             FirebaseAuth.getInstance().signOut();
