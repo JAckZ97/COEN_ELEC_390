@@ -264,10 +264,6 @@ public class ProfileActivity extends AppCompatActivity {
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
 
 
-//        findRadioButtonHeight(checkHeightId);
-//        findRadioButtonWeight(checkWeightId);
-        //Log.e("Tag","<PROFILE> weight id" + checkWeightId);
-        //Log.e("Tag","<PROFILE> height id" + checkHeightId);
         switch (checkWeightId){
             case R.id.weightKG:
                 kg.setChecked(true);
@@ -305,8 +301,6 @@ public class ProfileActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         databaseHelper.updateProfile(user);
 
-
-
     }
 
     private int genderGenerate (String selectGender){
@@ -321,58 +315,6 @@ public class ProfileActivity extends AppCompatActivity {
                 return 2;
         }
         return 2;
-    }
-
-    private void findRadioButtonWeight (int checkID){
-        pd = new ProgressDialog(ProfileActivity.this);
-        String email = getIntent().getStringExtra("email");
-        databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(email);
-
-        switch (checkID){
-            case R.id.weightKG:
-                Toast.makeText(ProfileActivity.this, "Selected kg", Toast.LENGTH_SHORT).show();
-                kg.setChecked(true);
-                pd.dismiss();
-
-                user.setWeightUnit(1);
-
-                break;
-            case R.id.weightLB:
-                Toast.makeText(ProfileActivity.this, "Selected lb", Toast.LENGTH_SHORT).show();
-                lb.setChecked(true);
-                pd.dismiss();
-
-                user.setWeightUnit(0);
-
-                break;
-        }
-    }
-
-    private void findRadioButtonHeight (int checkID){
-        newPd = new ProgressDialog(ProfileActivity.this);
-        String email = getIntent().getStringExtra("email");
-        databaseHelper = new DatabaseHelper(this);
-        User user = databaseHelper.getUser(email);
-
-        switch (checkID){
-            case R.id.heightCm:
-                Toast.makeText(ProfileActivity.this, "Selected cm", Toast.LENGTH_SHORT).show();
-                cm.setChecked(true);
-                newPd.dismiss();
-
-                user.setHeightUnit(1);
-
-                break;
-            case R.id.heightFeet:
-                Toast.makeText(ProfileActivity.this, "Selected ft", Toast.LENGTH_SHORT).show();
-                ft.setChecked(true);
-                newPd.dismiss();
-
-                user.setHeightUnit(0);
-
-                break;
-        }
     }
 
     private void setUpBottomNavigationView() {
