@@ -66,14 +66,15 @@ public class LoginActivity extends AppCompatActivity {
                 String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
 
-                if(TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
+                /*if(TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
                     Toast.makeText(LoginActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
                 }
 
                 else if(!checkforAt(str_email)) {
                     Toast.makeText(LoginActivity.this, "This is not a valid email", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
-                }
+                }*/
 
                 else {
                     loginOffline(str_email, str_password);
@@ -86,6 +87,19 @@ public class LoginActivity extends AppCompatActivity {
 //                        loginOffline(str_email, str_password);
 //                    }
                 }
+                /*
+               // else {
+                    //loginOffline("gabriel.juteau7@gmail.com", "123456");
+                    //loginOffline(str_email, str_password);
+                    /**if(isNetworkConnected()) {
+                        loginOnline(str_email, str_password);
+                    }
+
+                    else {
+                        loginOffline(str_email, str_password);
+                    }*/
+               // }
+                */
 
             }
         });

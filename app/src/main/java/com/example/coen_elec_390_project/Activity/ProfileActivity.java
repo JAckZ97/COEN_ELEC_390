@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
         age.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
+      
         cm.setEnabled(false);
         ft.setEnabled(false);
         kg.setEnabled(false);
@@ -80,6 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(this);
         final User user = databaseHelper.getUser(email);
+      
         fullname.setText(user.getFullname());
         age.setText(user.getAge());
         height.setText(user.getHeight());
@@ -318,7 +321,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -345,7 +348,7 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
                 }
 
-                return false;
+                return true;
             }
         });
     }

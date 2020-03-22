@@ -1,7 +1,7 @@
 package com.example.coen_elec_390_project.Model;
 
 public class User {
-    private int id;
+    private Integer id;
     private String fullname;
     private String email;
     private String password;
@@ -16,26 +16,6 @@ public class User {
 
     }
 
-//    public User(int id, String fullname, String email, String password, String gender, String age, String height, String weight) {
-//        this.id = id;
-//        this.fullname = fullname;
-//        this.email = email;
-//        this.password = password;
-//        this.age = age;
-//        this.height = height;
-//        this.weight = weight;
-//        this.gender = gender;
-//    }
-//
-//    public User(String fullname, String email, String password, String gender, String age, String height, String weight) {
-//        this.fullname = fullname;
-//        this.email = email;
-//        this.password = password;
-//        this.age = age;
-//        this.height = height;
-//        this.weight = weight;
-//        this.gender = gender;
-//    }
 
     public User(int id, String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit) {
         this.id = id;
@@ -78,11 +58,11 @@ public class User {
         this.weightUnit = weightUnit;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
