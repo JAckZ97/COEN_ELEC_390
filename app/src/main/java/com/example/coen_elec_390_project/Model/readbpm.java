@@ -1,5 +1,6 @@
 package com.example.coen_elec_390_project.Model;
 
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Activity.MainActivity;
@@ -26,7 +27,7 @@ public class readbpm implements Runnable {
 
         for (int i = 0; i <= recordings.size() - 1; i++) {
             bpmrecording = recordings.get(i);
-            if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 55) ;
+            if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 30) ;
             sumbpm += bpmrecording;
             div++;
         }
@@ -71,6 +72,7 @@ public class readbpm implements Runnable {
                 getPostBPM();
             }
         }
+        Log.e("Tag","<BPM> thread end");
         MainActivity.lock=false;
     }
 }
