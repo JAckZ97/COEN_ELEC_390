@@ -162,6 +162,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         //write performance index to database with current user
                         check=false;
                         average_speed=continuous_average_speed;
+                        Log.e("Tag","case 1");
                         break;
 
                     case 2:
@@ -169,6 +170,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             displayPerformanceindex(preBPM, postBPM);
                         button1.setText("Start Recording");
                         counter=0;
+                        Log.e("Tag","case 2");
                         break;
 
 
@@ -358,12 +360,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else{
 
             float Currentspeed=location.getSpeed();
-            speed_sum = speed_sum+Currentspeed;
-            speed_counter =speed_counter+1;
+            speed_sum = Currentspeed;
+            speed_counter++;
             continuous_average_speed = speed_sum/speed_counter;
 
             speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
-            if(!check){speed_txt.setText("Your average speed is: " + average_speed);}
+            if(!check){
+                speed_txt.setText("Your average speed is: " + average_speed);
+                speed_sum = 0;
+            }
 
         }
 
