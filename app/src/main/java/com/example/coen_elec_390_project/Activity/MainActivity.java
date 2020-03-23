@@ -245,12 +245,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 startActivity(intent);
                                 break;
                             }
-                        /*
-                        case R.id.home:
-                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
-                            break;
 
-                         */
+//                        case R.id.home:
+//                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
+//                            break;
+//
+
 
                         case R.id.statistics:
                             if (user.getEmail()== null) {
