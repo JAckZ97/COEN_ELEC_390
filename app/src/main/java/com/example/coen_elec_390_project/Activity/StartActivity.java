@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -172,7 +174,6 @@ public class StartActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(StartActivity.this, MainActivity.class));
-//                signInAnonimously();
             }
         });
 
@@ -181,35 +182,35 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-//    public void signInAnonimously() {
-//        final FirebaseAuth auth;
-//
-//        auth = FirebaseAuth.getInstance();
-//
-//        auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//            @Override
-//            public void onComplete(@NonNull Task<AuthResult> task) {
-//                if (task.isSuccessful()) {
-//                    // Sign in success, update UI with the signed-in user's information
-//                    //Log.d(TAG, "signInAnonymously:success");
-//                    FirebaseUser user = auth.getCurrentUser();
-//
-//
-//                }
-//
-//                else {
-//                    // If sign in fails, display a message to the user.
-//
-//                    Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-//
-//                }
-//            }
-//        });
-//
-//        Intent intent = new Intent(StartActivity.this, MainActivity.class);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//        startActivity(intent);
-//    }
+    /**public void signInAnonimously() {
+        final FirebaseAuth auth;
+
+        auth = FirebaseAuth.getInstance();
+
+        auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    //Log.d(TAG, "signInAnonymously:success");
+                    FirebaseUser user = auth.getCurrentUser();
+
+
+                }
+
+                else {
+                    // If sign in fails, display a message to the user.
+
+                    Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
+
+        Intent intent = new Intent(StartActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }*/
 
     @Override
     protected void onDestroy() {

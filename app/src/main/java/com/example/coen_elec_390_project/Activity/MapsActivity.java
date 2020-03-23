@@ -20,6 +20,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.PermissionUtils;
 import com.example.coen_elec_390_project.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -56,16 +58,23 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     ArrayList<Polyline> polylines;
     ArrayList<LatLng> allLatLngs;
     LocationManager lm;
+    DatabaseHelper databaseHelper;
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        email = getIntent().getStringExtra("email");
+        databaseHelper = new DatabaseHelper(this);
+        final User user = databaseHelper.getUser(email);
+
         polylines = new ArrayList<>();
         allLatLngs = new ArrayList<>();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastlocation();
-        Toast.makeText(this, "Current location:\n" + currentlocation, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Current location:\n" + currentlocation, Toast.LENGTH_SHORT).show();
         Log.e("Tag","<Map> "+"Current location:\n" + currentlocation);
         setUpBottomNavigationView();
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -148,7 +157,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
         Log.e("Tag","<Map> "+"Current location:\n" + location);
         lastKnownLatLng = new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude());
 
@@ -224,11 +233,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 switch (menuItem.getItemId()){
 
                     case R.id.home:
-                        startActivity(new Intent(MapsActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(MapsActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:
                         intent = new Intent(new Intent(MapsActivity.this, StatisticsActivity.class));
+                        intent.putExtra("email", email);
                         startActivity(intent);
                         break;
 

@@ -74,34 +74,20 @@ public class StatisticsActivity extends AppCompatActivity {
             }
         });
 
-        /**Insert statistic into the database (TEST, NEED TO REMOVE LATER)*/
-        /*Calendar calendar = Calendar.getInstance();
-        calendar.set(2020, 03 ,15);
-        String str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, 14, 150));
-        calendar.set(2020, 03 ,16);
-        str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, 15, 151));
-        calendar.set(2020, 03 ,17);
-        str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, 16, 152));*/
-
-        /**TO TEST IF THE GRAPH WHEN THERE IS A LOT OF POINTS*/
-        Calendar calendar = Calendar.getInstance();
+        //TO TEST THE GRAPH WHEN THERE IS A LOT OF POINTS
+        /**Calendar calendar = Calendar.getInstance();
         Random randomobj = new Random();
         for(int i = 0; i < 50; i++) {
             calendar.set(2020, 03 ,i);
             String str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
             databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, randomobj.nextDouble()*100));
             Log.e("Tag","<STAT> "+randomobj.nextDouble());
-        }
-
+        }*/
 
         if(startDate.equals("") && endDate.equals(""))
             loadListView();
 
         if(!startDate.equals("")) {
-            Toast.makeText(StatisticsActivity.this,"hre", Toast.LENGTH_SHORT).show();
             loadListViewAfterStart(startDate);
         }
 
@@ -135,14 +121,11 @@ public class StatisticsActivity extends AppCompatActivity {
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
         graph.getGridLabelRenderer().setHumanRounding(false);
-
-
     }
 
     public void receiveStartEndDate(String start, String end) {
         startDate = start;
         endDate = end;
-        //Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
     }
 
     protected void loadListView() {
@@ -157,15 +140,6 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
             temp += "Speed: " + statistics.get(i).getSpeed();
-
-            /**String str_date = statistics.get(i).getDate();
-            String[] date_array = str_date.split("/");
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.YEAR, Integer.parseInt(date_array[0]));
-            calendar.set(Calendar.MONTH, Integer.parseInt(date_array[1])-1);
-            calendar.set(Calendar.DAY_OF_MONTH, Integer.parseInt(date_array[2]));
-            Date date = calendar.getTime();*/
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
@@ -205,17 +179,16 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
-                databaseHelper = new DatabaseHelper(StatisticsActivity.this);
-                User user = databaseHelper.getUser(email);
 
                 switch (menuItem.getItemId()){
+                    case R.id.map:
+                        startActivity(new Intent(StatisticsActivity.this, MapsActivity.class));
+                        break;
 
                     case R.id.home:
                         intent = new Intent(new Intent(StatisticsActivity.this, MainActivity.class));
@@ -227,10 +200,6 @@ public class StatisticsActivity extends AppCompatActivity {
                         break;
 
                     case R.id.profile:
-//                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
-//                        intent.putExtra("email", email);
-//                        startActivity(intent);
-//                        break;
                         if (user.getEmail()== null) {
                             // User is signed in
                             startActivity(new Intent(StatisticsActivity.this, StartActivity.class));

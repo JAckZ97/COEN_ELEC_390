@@ -43,9 +43,6 @@ public class ProfileActivity extends AppCompatActivity {
     String selectGender;
     ProgressDialog pd;
     ProgressDialog newPd;
-    //DatabaseReference reff;
-    //FirebaseUser firebaseUser;
-    //User user;
     private boolean user_editting = false;
 
     @Override
@@ -327,6 +324,10 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
                 switch (menuItem.getItemId()){
+                    case R.id.map:
+                        startActivity(new Intent(ProfileActivity.this, MapsActivity.class));
+                        break;
+
                     case R.id.home:
                         intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
                         intent.putExtra("email", email);
@@ -343,7 +344,6 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
 
                     case R.id.logout:
-//                        FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(ProfileActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }

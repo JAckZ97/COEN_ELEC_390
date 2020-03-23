@@ -235,8 +235,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     User user = databaseHelper.getUser(email);
                     switch (menuItem.getItemId()){
                         case R.id.map:
-                            startActivity(new Intent(MainActivity.this, MapsActivity.class));
-                            break;
+                            if (user.getEmail()== null) {
+                                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                                break;
+                            } else {
+                                Log.e("Tag","<MAIN> entering statistic");
+                                intent = new Intent(new Intent(MainActivity.this, MapsActivity.class));
+                                intent.putExtra("email", email);
+                                startActivity(intent);
+                                break;
+                            }
                         /*
                         case R.id.home:
                             startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
