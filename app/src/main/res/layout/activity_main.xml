@@ -31,7 +31,7 @@
         android:background="?android:attr/windowBackground"
 	app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"/>
-
+<!--
     <Button
         android:id="@+id/stop"
         android:layout_width="wrap_content"
@@ -51,6 +51,22 @@
         android:layout_marginStart="4dp"
         android:layout_marginBottom="546dp"
         android:text="start" />
+    -->
+
+    <Button
+        android:id="@+id/recordingbutton"
+        style="@android:style/Widget.Material.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="63dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="135dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/edittext_background"
+        android:gravity="fill_vertical"
+        android:text="Start Recording" />
 
     <TextView
         android:id="@+id/speed"

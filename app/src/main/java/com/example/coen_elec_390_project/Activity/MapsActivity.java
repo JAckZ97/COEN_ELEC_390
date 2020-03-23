@@ -1,12 +1,14 @@
 package com.example.coen_elec_390_project.Activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Camera;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -53,6 +55,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     FusedLocationProviderClient fusedLocationProviderClient;
     ArrayList<Polyline> polylines;
     ArrayList<LatLng> allLatLngs;
+    LocationManager lm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,7 +68,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, "Current location:\n" + currentlocation, Toast.LENGTH_LONG).show();
         Log.e("Tag","<Map> "+"Current location:\n" + currentlocation);
         setUpBottomNavigationView();
-        startLocationUpdates();
+        lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
     }
 
     private void fetchLastlocation(){
@@ -105,7 +119,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.CYAN);
-        polylineOptions.width(4);
+        polylineOptions.width(5);
         polylines.add(mMap.addPolyline(polylineOptions));
         LatLng latLng = new LatLng(currentlocation.getLatitude(),currentlocation.getLongitude());
         allLatLngs.add(latLng);
@@ -141,7 +155,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         PolylineOptions lineOptions = new PolylineOptions()
                 .add(new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude()))
                 .add(new LatLng(location.getLatitude(), location.getLongitude()))
-                .color(Color.GREEN)
+                .color(Color.CYAN)
                 .width(5);
         // add the polyline to the map
         Polyline polyline = mMap.addPolyline(lineOptions);
@@ -177,7 +191,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         locationRequest.setInterval(5000);
         locationRequest.setFastestInterval(1000);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.e("Tag","<Map> Permission issue");
             // TODO: Consider calling
@@ -189,6 +202,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
+
     }
 
 //    private void updateTrack() {
