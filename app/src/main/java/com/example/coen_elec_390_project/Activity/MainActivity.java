@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     static ArrayList<Integer> recordings = new ArrayList<Integer>();
    // static int[] array1[] = new int[][];
     float continuous_average_speed = 0;
-    float average_speed = 0;
+    double average_speed = 0;
     float speed_sum = 0;
     boolean check = false;
     LocationManager lm;
@@ -162,6 +162,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                         listen_post_bpm=true;
                         while(recordings.size()<10 && MyBluetoothService.success);
+                        double index = getperformanceindex(preBPM,postBPM);
+                        //getperformance index
+                        //write performance index to database with current user
+                        check=false;
+                        average_speed=continuous_average_speed;
+
                         if(MyBluetoothService.success){
                             long end = System.currentTimeMillis()-start;
                             getPostBPM();
@@ -177,8 +183,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             }
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                             Date date = new Date();
-                            System.out.println(dateFormat.format(date));
-                            Statistic userstat = new Statistic();
+                            String str_date = dateFormat.format(date);
+
+                            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(preBPM,postBPM) ,average_speed, calories));
                             button1.setText("Show Performance Index");
                             counter++;
                         }
@@ -186,11 +193,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             button1.setText("Start Recording");
                             counter=0;
                         }
-                        double index = getperformanceindex(preBPM,postBPM);
-                        //getperformance index
-                        //write performance index to database with current user
-                        check=false;
-                        average_speed=continuous_average_speed;
+
                         break;
 
                     case 2:

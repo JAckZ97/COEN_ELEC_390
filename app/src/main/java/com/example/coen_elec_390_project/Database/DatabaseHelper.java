@@ -58,9 +58,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " (" + Config.COLUMN_STATISTIC_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + Config.COLUMN_STATISTIC_USER_ID + " INTEGER,"
                 + Config.COLUMN_STATISTIC_DATE + " TEXT NOT NULL,"
-                + Config.COLUMN_STATISTIC_PERF_INDEX + " INTEGER,"
+                + Config.COLUMN_STATISTIC_PERF_INDEX + " REAL,"
                 + Config.COLUMN_STATISTIC_SPEED + " REAL,"
-                + Config.COLUMN_STATISTIC_CALORIES + "REAL)";
+                + Config.COLUMN_STATISTIC_CALORIES + " REAL)";
 
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
@@ -359,6 +359,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_STATISTIC_DATE, statistic.getDate());
         contentValues.put(Config.COLUMN_STATISTIC_PERF_INDEX, statistic.getPerformance_index());
         contentValues.put(Config.COLUMN_STATISTIC_SPEED, statistic.getSpeed());
+        contentValues.put(Config.COLUMN_STATISTIC_CALORIES,statistic.getCalories());
 
         /**We try to insert it*/
         try {
