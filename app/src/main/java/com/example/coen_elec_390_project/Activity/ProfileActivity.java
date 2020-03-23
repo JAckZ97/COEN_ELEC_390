@@ -42,10 +42,6 @@ public class ProfileActivity extends AppCompatActivity {
     String email;
     String selectGender;
     ProgressDialog pd;
-    ProgressDialog newPd;
-    //DatabaseReference reff;
-    //FirebaseUser firebaseUser;
-    //User user;
     private boolean user_editting = false;
 
     @Override
@@ -250,18 +246,15 @@ public class ProfileActivity extends AppCompatActivity {
 
 
     private void writeProfile(User user) {
+        pd = new ProgressDialog(ProfileActivity.this);
+//        pd.setMessage("Please wait...");
+//        pd.show();
 
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         String str_age = age.getText().toString();
         String str_weight = weight.getText().toString();
         String str_height = height.getText().toString();
-
-        user.setFullname(str_fullname);
-        user.setGender(str_gender);
-        user.setAge(str_age);
-        user.setWeight(str_weight);
-        user.setHeight(str_height);
 
         int checkWeightId = weightGroup.getCheckedRadioButtonId();
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
@@ -273,8 +266,8 @@ public class ProfileActivity extends AppCompatActivity {
                 lb.setChecked(false);
                 user.setWeightUnit(1);
                 //Log.e("Tag","<PROFILE> kg checked");
-
                 break;
+
             case R.id.weightLB:
                 lb.setChecked(true);
                 kg.setChecked(false);
@@ -297,6 +290,40 @@ public class ProfileActivity extends AppCompatActivity {
                 //Log.e("Tag","<PROFILE> ft checked");
                 break;
         }
+
+        if (Integer.parseInt(str_age)>= 150){
+            Toast.makeText(ProfileActivity.this, "You are too old to exist", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
+        else if (user.getWeightUnit()==1 && (Integer.parseInt(str_weight)<=30 || Integer.parseInt(str_weight)>= 200)){
+            Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
+        else if (user.getWeightUnit()==0 && (Integer.parseInt(str_weight)<=75 || Integer.parseInt(str_weight)>= 450)){
+            Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
+        else if (user.getHeightUnit()==1 && (Integer.parseInt(str_height)<=120 || Integer.parseInt(str_height)>= 215)){
+            Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
+        else if (user.getHeightUnit()==0 && (Integer.parseInt(str_height)<=4 || Integer.parseInt(str_height)>= 7)){
+            Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
+            pd.dismiss();
+        }
+        else{
+            user.setFullname(str_fullname);
+            user.setGender(str_gender);
+            user.setAge(str_age);
+            user.setWeight(str_weight);
+            user.setHeight(str_height);
+        }
+
+//        user.setFullname(str_fullname);
+//        user.setGender(str_gender);
+//        user.setAge(str_age);
+//        user.setWeight(str_weight);
+//        user.setHeight(str_height);
 
         //Log.e("Tag","<PROFILE> Weight unit "+ user.getWeightUnit());
         //Log.e("Tag","<PROFILE> Height unit "+ user.getHeightUnit());
@@ -327,6 +354,10 @@ public class ProfileActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
                 switch (menuItem.getItemId()){
+                    case R.id.map:
+                        startActivity(new Intent(ProfileActivity.this, MapsActivity.class));
+                        break;
+
                     case R.id.home:
                         intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
                         intent.putExtra("email", email);
@@ -343,7 +374,6 @@ public class ProfileActivity extends AppCompatActivity {
                         break;
 
                     case R.id.logout:
-//                        FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(ProfileActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
                 }
