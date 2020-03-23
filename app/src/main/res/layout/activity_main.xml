@@ -29,6 +29,40 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        app:labelVisibilityMode="labeled"
+	app:menu="@menu/navigation_menu"
+        app:labelVisibilityMode="labeled"/>
+
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="66dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="540dp"
+        android:text="stop" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="108dp"
+        android:layout_height="65dp"
+        android:layout_alignStart="@+id/bpm"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="546dp"
+        android:text="start" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="107dp"
+        android:layout_height="51dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="142dp"
+        android:layout_marginBottom="558dp"
+        android:text="qwertyuiokjhgf"
+        android:textColorLink="@color/design_default_color_primary_dark" />
+    app:labelVisibilityMode="labeled"
         app:menu="@menu/navigation_menu" />
+
 </RelativeLayout>
