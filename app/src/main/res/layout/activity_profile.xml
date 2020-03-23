@@ -140,8 +140,6 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"/>
 
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
-
     <!--    <Button-->
 <!--        android:id="@+id/profileSaveButton"-->
 <!--        android:layout_width="wrap_content"-->
