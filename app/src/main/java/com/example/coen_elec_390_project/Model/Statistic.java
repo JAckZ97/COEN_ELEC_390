@@ -8,26 +8,29 @@ public class Statistic {
     private Integer id;
     private Integer user_id;
     private String date;
-    private Integer performance_index;
+    private Double performance_index;
     private Double speed;
+    private Double calories;
 
     public Statistic() {
 
     }
 
-    public Statistic(Integer user_id, String date, Integer performance_index, Double speed) {
+    public Statistic(Integer user_id, String date, Double performance_index, Double speed,Double calories) {
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
         this.speed = speed;
+        this.calories=calories;
     }
 
-    public Statistic(Integer id, Integer user_id, String date, Integer performance_index, Double speed) {
+    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories) {
         this.id = id;
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
         this.speed = speed;
+        this.calories=calories;
     }
 
     public Integer getId() {
@@ -46,11 +49,11 @@ public class Statistic {
         this.date = date;
     }
 
-    public Integer getPerformance_index() {
+    public Double getPerformance_index() {
         return performance_index;
     }
 
-    public void setPerformance_index(Integer performance_index) {
+    public void setPerformance_index(Double performance_index) {
         this.performance_index = performance_index;
     }
 
@@ -61,4 +64,8 @@ public class Statistic {
     public void setSpeed(Double speed) {
         this.speed = speed;
     }
+
+    public Double getCalories(){return calories;}
+
+    public void setCalories(Double calories){this.calories=calories;}
 }

@@ -24,15 +24,13 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
 //-------
 import android.widget.EditText;
 //-------
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
@@ -41,9 +39,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Calendar;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     static TextView bpm;
@@ -72,7 +71,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     float speed_sum = 0;
     boolean check = false;
     LocationManager lm;
-
+    private long start,end;
+    private User user;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        databaseHelper = new DatabaseHelper(MainActivity.this);
+        user = databaseHelper.getUser(email);
         speed_txt = (TextView) this.findViewById(R.id.speed);
 
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -142,10 +144,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                             getPreBPM();
                             button1.setText("Post-Workout Measurement Start");
                             counter++;
+                            start = System.currentTimeMillis();
                         }
-
                         else
+                        {
+                            button1.setText("Get your average speed");
                             Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
+                        }
 
                         check=true;
                         speed_counter = 0;
@@ -154,30 +159,38 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         break;
 
                     case 1:
-                        //new timestamp - oldtimestamp (duration of a session in seconds)
-                        //call calories function()
-                        //write calories burned to database with current user
 
                         listen_post_bpm=true;
                         while(recordings.size()<10 && MyBluetoothService.success);
-                        if(MyBluetoothService.success)
+                        if(MyBluetoothService.success){
+                            long end = System.currentTimeMillis()-start;
                             getPostBPM();
+                            long duration = System.currentTimeMillis()-start;
+                            double user_weight,calories;
+                            if(user.getWeightUnit()==1){
+                                user_weight = Double.parseDouble(user.getWeight());
+                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                            }
+                            else{
+                                user_weight = Double.parseDouble(user.getWeight())*0.45359237;
+                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                            }
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = new Date();
+                            System.out.println(dateFormat.format(date));
+                            Statistic userstat = new Statistic();
+                            button1.setText("Show Performance Index");
+                            counter++;
+                        }
+                        else{
+                            button1.setText("Start Recording");
+                            counter=0;
+                        }
                         double index = getperformanceindex(preBPM,postBPM);
-                        button1.setText("Show Performance Index");
-                        counter++;
                         //getperformance index
                         //write performance index to database with current user
                         check=false;
                         average_speed=continuous_average_speed;
-
-                        //weightinkg = getIntent().getStringExtra("weight");
-
-                        //retrieve activity duration
-                        actduration = //TO DO
-
-                        //call function
-                        getCaloriesBurned(weightinkg,actduration);
-
                         break;
 
                     case 2:
@@ -242,8 +255,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Intent intent;
-                    databaseHelper = new DatabaseHelper(MainActivity.this);
-                    User user = databaseHelper.getUser(email);
+
+
                     switch (menuItem.getItemId()){
                         case R.id.map:
                             if (user.getEmail()== null) {
@@ -410,16 +423,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     //MET is set to a default value for now (MET = 5)
 
-    protected double getCaloriesBurned(double weight, double duration) {
+    protected double getCaloriesBurned(double weight, long duration) {
 
-        /*
-        String S2 = met.getText().toString();
-        String S3 = duration.getText().toString();
-
-        double weightValue = Float.parseFloat(S1);
-        double metValue = Float.parseFloat(S2);
-        double durationValue = Float.parseFloat(S3);
-        */
 
         double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 

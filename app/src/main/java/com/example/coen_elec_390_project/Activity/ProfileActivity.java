@@ -295,19 +295,19 @@ public class ProfileActivity extends AppCompatActivity {
             Toast.makeText(ProfileActivity.this, "You are too old to exist", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
-        else if (user.getWeightUnit()==1 && (Integer.parseInt(str_weight)<=30 || Integer.parseInt(str_weight)>= 200)){
+        else if (user.getWeightUnit()==1 && (Double.parseDouble(str_weight)<=30 || Double.parseDouble(str_weight)>= 200)){
             Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
-        else if (user.getWeightUnit()==0 && (Integer.parseInt(str_weight)<=75 || Integer.parseInt(str_weight)>= 450)){
+        else if (user.getWeightUnit()==0 && (Double.parseDouble(str_weight)<=75 || Double.parseDouble(str_weight)>= 450)){
             Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
-        else if (user.getHeightUnit()==1 && (Integer.parseInt(str_height)<=120 || Integer.parseInt(str_height)>= 215)){
+        else if (user.getHeightUnit()==1 && (Double.parseDouble(str_height)<=120 || Double.parseDouble(str_height)>= 215)){
             Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
-        else if (user.getHeightUnit()==0 && (Integer.parseInt(str_height)<=4 || Integer.parseInt(str_height)>= 7)){
+        else if (user.getHeightUnit()==0 && (Double.parseDouble(str_height)<=4 || Double.parseDouble(str_height)>= 7)){
             Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
