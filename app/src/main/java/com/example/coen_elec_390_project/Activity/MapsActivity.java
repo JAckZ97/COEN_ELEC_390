@@ -39,23 +39,27 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.location.LocationRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         LocationListener {
 
     private GoogleMap mMap;
-    private Polyline gpsTrack;
+    private Polyline Polyline;
     private LatLng lastKnownLatLng;
     private static final int LOCATION_PERMISSION_REQUEST_CODE =101;
     Location currentlocation;
     FusedLocationProviderClient fusedLocationProviderClient;
+    ArrayList<Polyline> polylines;
+    ArrayList<LatLng> allLatLngs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
+        polylines = new ArrayList<>();
+        allLatLngs = new ArrayList<>();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastlocation();
         Toast.makeText(this, "Current location:\n" + currentlocation, Toast.LENGTH_LONG).show();
@@ -74,7 +78,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onSuccess(Location location) {
                 if(location!=null){
-                    Log.e("Tag","<Map> it was null");
                     currentlocation=location;
                     Toast.makeText(getApplicationContext(),currentlocation.getLatitude()+""+currentlocation.getLongitude(),Toast.LENGTH_SHORT).show();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -103,11 +106,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         PolylineOptions polylineOptions = new PolylineOptions();
         polylineOptions.color(Color.CYAN);
         polylineOptions.width(4);
-        gpsTrack = mMap.addPolyline(polylineOptions);
-
-//        Toast.makeText(this, "Current location:\n" + currentlocation, Toast.LENGTH_LONG).show();
-//        Log.e("Tag","<Map> "+"Current location:\n" + currentlocation);
-        LatLng latLng= new LatLng(currentlocation.getLatitude(),currentlocation.getLongitude());
+        polylines.add(mMap.addPolyline(polylineOptions));
+        LatLng latLng = new LatLng(currentlocation.getLatitude(),currentlocation.getLongitude());
+        allLatLngs.add(latLng);
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("I am here");
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
@@ -128,6 +129,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Manifest.permission.ACCESS_FINE_LOCATION, true);
         }
         // [END maps_check_location_permission]
+        mMap.setMyLocationEnabled(true);
     }
 
     @Override
@@ -135,8 +137,39 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
         Log.e("Tag","<Map> "+"Current location:\n" + location);
         lastKnownLatLng = new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude());
+
+        PolylineOptions lineOptions = new PolylineOptions()
+                .add(new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude()))
+                .add(new LatLng(location.getLatitude(), location.getLongitude()))
+                .color(Color.GREEN)
+                .width(5);
+        // add the polyline to the map
+        Polyline polyline = mMap.addPolyline(lineOptions);
+        // set the zindex so that the poly line stays on top of my tile overlays
+        polyline.setZIndex(1000);
+        // add the poly line to the array so they can all be removed if necessary
+        polylines.add(polyline);
+        // add the latlng from this point to the array
+        allLatLngs.add(new LatLng(location.getLatitude(),location.getLongitude()));
+
+        // check if the positions added is a multiple of 100, if so, redraw all of the polylines as one line (this helps with rendering the map when there are thousands of points)
+        if(allLatLngs.size() % 100 == 0) {
+            // first remove all of the existing polylines
+            for(Polyline pline : polylines) {
+                pline.remove();
+            }
+            // create one new large polyline
+            Polyline routeSoFar = mMap.addPolyline(new PolylineOptions().color(Color.GREEN).width(5));
+            // draw the polyline for the route so far
+            routeSoFar.setPoints(allLatLngs);
+            // set the zindex so that the poly line stays on top of my tile overlays
+            routeSoFar.setZIndex(1000);
+            // clear the polylines array
+            polylines.clear();
+            // add the new poly line as the first element in the polylines array
+            polylines.add(routeSoFar);
+        }
         currentlocation=location;
-        updateTrack();
     }
 
     protected void startLocationUpdates() {
@@ -158,11 +191,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    private void updateTrack() {
-        List<LatLng> points = gpsTrack.getPoints();
-        points.add(lastKnownLatLng);
-        gpsTrack.setPoints(points);
-    }
+//    private void updateTrack() {
+//
+//        points.add(lastKnownLatLng);
+//        gpsTrack.setPoints(points);
+//    }
 
     private void setUpBottomNavigationView() {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
