@@ -290,8 +290,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             bpm.setText(a);
             //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
             if(readbpm.getpostbpm || readbpm.getprebpm) {
-                readbpm.recording = Integer.parseInt(a.split("\nBPM")[0]);
-                readbpm.recordings.add(recording);
+                synchronized (readbpm.recordings) {
+                    readbpm.recording = Integer.parseInt(a.split("\nBPM")[0]);
+                    readbpm.recordings.add(recording);
+                }
             }
         }
     }
