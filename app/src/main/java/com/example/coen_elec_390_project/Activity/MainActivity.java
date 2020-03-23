@@ -120,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             lock=true;
                             button1.setText("Getting your bpm");
                         }
-
                         else
                             Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
 
@@ -291,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             bpm.setText(a);
             //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
             if(readbpm.getpostbpm || readbpm.getprebpm) {
-                readbpm.recording = Integer.parseInt(a);
+                readbpm.recording = Integer.parseInt(a.split("\nBPM")[0]);
                 readbpm.recordings.add(recording);
             }
         }
