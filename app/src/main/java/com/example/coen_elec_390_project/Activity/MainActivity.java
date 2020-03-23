@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private int sumbpm=0;
     private double performanceIndex;
     private int counter=0;
+    private int speed_counter=0;
     private static boolean listen_pre_bpm = false;
     private static boolean listen_post_bpm = false;
     private TextView speed_txt;
@@ -140,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         counter++;
 
                         check=true;
-                        counter = 0;
+                        speed_counter = 0;
                         continuous_average_speed = 0;
                         //timestamp seconds since epoch
                         break;
@@ -358,8 +359,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             float Currentspeed=location.getSpeed();
             speed_sum = speed_sum+Currentspeed;
-            counter =counter+1;
-            continuous_average_speed = speed_sum/counter;
+            speed_counter =speed_counter+1;
+            continuous_average_speed = speed_sum/speed_counter;
 
             speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
             if(!check){speed_txt.setText("Your average speed is: " + average_speed);}
