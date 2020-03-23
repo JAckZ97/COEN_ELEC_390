@@ -44,7 +44,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class StartActivity extends AppCompatActivity {
     Button login, register, guest;
 
-    FirebaseUser firebaseUser;
+//    FirebaseUser firebaseUser;
     private final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter bluetoothAdapter;
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -59,10 +59,9 @@ public class StartActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        // redirect if user is not null
+//        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+//
+//        // redirect if user is not null
 //        if(firebaseUser != null) {
 //            startActivity(new Intent(StartActivity.this, MainActivity.class));
 //            finish();
@@ -70,7 +69,8 @@ public class StartActivity extends AppCompatActivity {
 
         if(!MyBluetoothService.initialized)
             bluetoothsetup();
-        if(!MyBluetoothService.success){
+        if(!MyBluetoothService.success && !MyBluetoothService.understood){
+            MyBluetoothService.understood=true;
             showBTDialog();
         }
 
@@ -132,13 +132,13 @@ public class StartActivity extends AppCompatActivity {
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
                 mybtlist.add(device);
-                if(deviceName!=null && !found) {
-                    if (deviceName.equalsIgnoreCase("COEN390") && deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
-                        Log.e("Tag", "<Message> Found esp32");
-                        found=true;
-                        showBTDialog();
-                    }
-                }
+//                if(deviceName!=null && !found) {
+//                    if (deviceName.equalsIgnoreCase("COEN390") && deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
+//                        Log.e("Tag", "<Message> Found esp32");
+//                        found=true;
+//                        showBTDialog();
+//                    }
+//                }
 
             }
         }
@@ -171,7 +171,8 @@ public class StartActivity extends AppCompatActivity {
         guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signInAnonimously();
+                startActivity(new Intent(StartActivity.this, MainActivity.class));
+//                signInAnonimously();
             }
         });
 
@@ -180,35 +181,35 @@ public class StartActivity extends AppCompatActivity {
 
     }
 
-    public void signInAnonimously() {
-        final FirebaseAuth auth;
-
-        auth = FirebaseAuth.getInstance();
-
-        auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    //Log.d(TAG, "signInAnonymously:success");
-                    FirebaseUser user = auth.getCurrentUser();
-
-
-                }
-
-                else {
-                    // If sign in fails, display a message to the user.
-
-                    Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
-
-        Intent intent = new Intent(StartActivity.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-    }
+//    public void signInAnonimously() {
+//        final FirebaseAuth auth;
+//
+//        auth = FirebaseAuth.getInstance();
+//
+//        auth.signInAnonymously().addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//            @Override
+//            public void onComplete(@NonNull Task<AuthResult> task) {
+//                if (task.isSuccessful()) {
+//                    // Sign in success, update UI with the signed-in user's information
+//                    //Log.d(TAG, "signInAnonymously:success");
+//                    FirebaseUser user = auth.getCurrentUser();
+//
+//
+//                }
+//
+//                else {
+//                    // If sign in fails, display a message to the user.
+//
+//                    Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+//
+//                }
+//            }
+//        });
+//
+//        Intent intent = new Intent(StartActivity.this, MainActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        startActivity(intent);
+//    }
 
     @Override
     protected void onDestroy() {

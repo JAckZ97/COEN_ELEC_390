@@ -11,13 +11,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.DialogFragment.DateSelectionFragment;
 import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
@@ -37,11 +36,13 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class StatisticsActivity extends AppCompatActivity {
     private static final String TAG = "StatisticsActivity";
     GraphView graph;
     LineGraphSeries<DataPoint> series;
+    String email;
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
     DatabaseHelper databaseHelper;
     ListView statisticsListView;
@@ -61,7 +62,8 @@ public class StatisticsActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
-        user = databaseHelper.getUser(MainActivity.global_email);
+        email = getIntent().getStringExtra("email");
+        user = databaseHelper.getUser(email);
         dateSelection = findViewById(R.id.dateSelection);
 
         dateSelection.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +88,12 @@ public class StatisticsActivity extends AppCompatActivity {
 
         /**TO TEST IF THE GRAPH WHEN THERE IS A LOT OF POINTS*/
         Calendar calendar = Calendar.getInstance();
+        Random randomobj = new Random();
         for(int i = 0; i < 50; i++) {
             calendar.set(2020, 03 ,i);
             String str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, i));
+            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, randomobj.nextDouble()*100));
+            Log.e("Tag","<STAT> "+randomobj.nextDouble());
         }
 
 
@@ -133,6 +137,10 @@ public class StatisticsActivity extends AppCompatActivity {
             }
         });*/
 
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        graph.getGridLabelRenderer().setHumanRounding(false);
+
+
     }
 
     public void receiveStartEndDate(String start, String end) {
@@ -152,7 +160,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "BPM: " + statistics.get(i).getBpm();
+            temp += "Speed: " + statistics.get(i).getSpeed();
 
             /**String str_date = statistics.get(i).getDate();
             String[] date_array = str_date.split("/");
@@ -186,7 +194,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "BPM: " + statistics.get(i).getBpm();
+            temp += "speed: " + statistics.get(i).getSpeed();
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
@@ -201,24 +209,43 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                Intent intent;
+                databaseHelper = new DatabaseHelper(StatisticsActivity.this);
+                User user = databaseHelper.getUser(email);
+
                 switch (menuItem.getItemId()){
+
                     case R.id.home:
-                        startActivity(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(StatisticsActivity.this, MainActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.statistics:
                         break;
 
                     case R.id.profile:
-                        startActivity(new Intent(StatisticsActivity.this, ProfileActivity.class));
-                        break;
-
+//                        intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+//                        intent.putExtra("email", email);
+//                        startActivity(intent);
+//                        break;
+                        if (user.getEmail()== null) {
+                            // User is signed in
+                            startActivity(new Intent(StatisticsActivity.this, StartActivity.class));
+                            break;
+                        } else {
+                            // No user is signed in
+                            intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                            intent.putExtra("email", email);
+                            startActivity(intent);
+                            break;
+                        }
 
                     case R.id.logout:
                         startActivity(new Intent(StatisticsActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

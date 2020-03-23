@@ -7,6 +7,53 @@
     android:layout_height="match_parent"
     tools:context=".Activity.ProfileActivity">
 
+    <RadioGroup
+        android:id="@+id/weightRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileHeight"
+        android:layout_marginLeft="260dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/weightKG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kg" />
+
+        <RadioButton
+            android:id="@+id/weightLB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:text="lb" />
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/heightRadioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/profileAge"
+        android:layout_marginLeft="260dp"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/heightCm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="cm" />
+
+        <RadioButton
+            android:id="@+id/heightFeet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ft" />
+
+
+    </RadioGroup>
+
     <Spinner
         android:id="@+id/profileSelectGender"
         android:layout_width="300dp"
@@ -20,34 +67,49 @@
         android:id="@+id/profileName"
         android:layout_width="300dp"
         android:layout_height="40dp"
+        android:hint="Full Name"
         android:layout_below="@id/profileSelectGender"
         android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/edittext_background"
-        android:hint="Full Name"
         android:padding="10dp" />
 
     <EditText
-        android:layout_width="300dp"
+        android:layout_width="200dp"
         android:layout_height="40dp"
         android:hint="Height"
         android:id="@+id/profileHeight"
         android:inputType="numberDecimal"
         android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/profileName"
+        android:layout_alignLeft="@id/profileName"
+        android:layout_centerHorizontal="false"
+        android:layout_below="@id/profileAge"
+        android:background="@drawable/edittext_background"
+        android:padding="10dp"/>
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:hint="Weight"
+        android:id="@+id/profileWeight"
+        android:layout_marginTop="15dp"
+        android:layout_alignLeft="@id/profileHeight"
+        android:layout_centerHorizontal="false"
+        android:inputType="numberDecimal"
+        android:layout_below="@id/profileHeight"
         android:background="@drawable/edittext_background"
         android:padding="10dp"/>
 
     <EditText
         android:layout_width="300dp"
         android:layout_height="40dp"
-        android:hint="Weight"
-        android:id="@+id/profileWeight"
-        android:layout_marginTop="15dp"
-        android:layout_centerHorizontal="true"
+        android:hint="Age"
+        android:id="@+id/profileAge"
         android:inputType="numberDecimal"
-        android:layout_below="@id/profileHeight"
+        android:layout_marginTop="15dp"
+        android:layout_alignLeft="@id/profileName"
+        android:layout_centerHorizontal="false"
+        android:layout_below="@id/profileName"
         android:background="@drawable/edittext_background"
         android:padding="10dp"/>
 
@@ -78,12 +140,15 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"/>
 
-    <Button
-        android:id="@+id/profileSaveButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="325dp"
-        android:text="Profile Save" />
+    </com.google.android.material.bottomnavigation.BottomNavigationView>
+
+    <!--    <Button-->
+<!--        android:id="@+id/profileSaveButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentBottom="true"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        android:layout_marginBottom="325dp"-->
+<!--        android:text="Profile Save" />-->
+
 </RelativeLayout>

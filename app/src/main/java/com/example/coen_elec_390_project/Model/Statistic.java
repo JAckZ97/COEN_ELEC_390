@@ -9,25 +9,25 @@ public class Statistic {
     private Integer user_id;
     private String date;
     private Integer performance_index;
-    private Integer bpm;
+    private Double speed;
 
     public Statistic() {
 
     }
 
-    public Statistic(Integer user_id, String date, Integer performance_index, Integer bpm) {
+    public Statistic(Integer user_id, String date, Integer performance_index, Double speed) {
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
-        this.bpm = bpm;
+        this.speed = speed;
     }
 
-    public Statistic(Integer id, Integer user_id, String date, Integer performance_index, Integer bpm) {
+    public Statistic(Integer id, Integer user_id, String date, Integer performance_index, Double speed) {
         this.id = id;
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
-        this.bpm = bpm;
+        this.speed = speed;
     }
 
     public Integer getId() {
@@ -54,11 +54,11 @@ public class Statistic {
         this.performance_index = performance_index;
     }
 
-    public Integer getBpm() {
-        return bpm;
+    public Double getSpeed() {
+        return speed;
     }
 
-    public void setBpm(Integer bpm) {
-        this.bpm = bpm;
+    public void setSpeed(Double speed) {
+        this.speed = speed;
     }
 }

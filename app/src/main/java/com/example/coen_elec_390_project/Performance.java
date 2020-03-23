@@ -23,4 +23,6 @@ public class Performance {
         vo2maxUth = 15.3 * (bpmmax / bpmrest);
         return vo2maxUth;
     }
+
+
 }
