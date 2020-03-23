@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import android.os.Handler;
 
 import com.example.coen_elec_390_project.Activity.MainActivity;
+import com.example.coen_elec_390_project.Model.readbpm;
 
 public class MyBluetoothService {
     private static final String TAG = "MY_APP_DEBUG_TAG";
@@ -132,6 +133,24 @@ public class MyBluetoothService {
 
                     if(voltage_readings.size()==size){
                         Log.e("Tag","<DATACOM> Got 1024 Data");
+                        int BPM = (convert(voltage_readings));
+                        if((readbpm.getpostbpm || readbpm.getpostbpm)){
+                            if(readbpm.recordings.size()<4)
+                                readbpm.recordings.add(BPM);
+                            else{
+                                if(readbpm.getprebpm){
+                                    readbpm.getPreBPM();
+                                    readbpm.getprebpm=false;
+                                    MainActivity.button1.setText("Record Post Activity BPM");
+                                }
+                                else if(readbpm.getpostbpm){
+                                    readbpm.getPostBPM();
+                                    readbpm.getpostbpm=false;
+                                    MainActivity.lock=false;
+                                    MainActivity.button1.setText("Finish a session");
+                                }
+                            }
+                        }
                         MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
                         voltage_readings.clear();
 

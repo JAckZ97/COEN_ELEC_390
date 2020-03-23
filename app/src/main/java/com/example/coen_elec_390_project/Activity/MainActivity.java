@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     DatabaseHelper databaseHelper;
   
     //private Switch aSwitch;
-    protected Button button1;
+    public static Button button1;
     static int recording;
     static double bpmrecording;
     private int sumbpm=0;
@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     boolean check = false;
     public static boolean lock = false;
     LocationManager lm;
-    Thread t1;
 
     /*
     EditText weight, met, duration;
@@ -111,8 +110,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 switch (counter){
                     case 0:
                         //while(recordings.size()<10 && MyBluetoothService.success);
-                        t1 = new Thread(new readbpm());
-                        t1.start();
 
                         if(MyBluetoothService.success) {
                             readbpm.getprebpm=true;
@@ -133,11 +130,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         if(MyBluetoothService.success) {
                             readbpm.getpostbpm=true;
+                            button1.setText("Getting your bpm");
                             if(!lock){
                                 double index = getperformanceindex(readbpm.preBPM,readbpm.postBPM);
                                 button1.setText("Show Performance Index");
                                 counter++;
                             }
+
                         }
 
 
@@ -288,15 +287,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public static void  Update_bpm(String a){
         if(bpm!=null) {
             bpm.setText(a);
-            //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
-            if(readbpm.getpostbpm || readbpm.getprebpm) {
-                synchronized (readbpm.recordings) {
-                    readbpm.recording = Integer.parseInt(a.split("\nBPM")[0]);
-                    readbpm.recordings.add(recording);
-                }
-            }
         }
     }
+
 
     @Override
     public void onLocationChanged(Location location) {

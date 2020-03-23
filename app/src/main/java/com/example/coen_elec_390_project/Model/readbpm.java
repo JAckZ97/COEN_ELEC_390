@@ -8,18 +8,18 @@ import com.example.coen_elec_390_project.Activity.MainActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class readbpm implements Runnable {
+public class readbpm{
 
     public static double preBPM;
     public static double postBPM;
     public static ArrayList<Integer> recordings = new ArrayList<>();
     public static int recording;
-    public Integer bpmrecording;
-    public int sumbpm;
+    public static Integer bpmrecording;
+    public static int sumbpm;
     public static boolean getprebpm=false;
     public static boolean getpostbpm=false;
 
-    protected void getPreBPM(){
+    public static void getPreBPM(){
         preBPM=0;
 
         int div=0;
@@ -39,7 +39,7 @@ public class readbpm implements Runnable {
         sumbpm=0;
     }
 
-    protected void getPostBPM(){
+    public static void getPostBPM(){
         postBPM=0;
 
         int div =0;
@@ -59,20 +59,4 @@ public class readbpm implements Runnable {
         sumbpm=0;
     }
 
-    public void run(){
-        synchronized (recordings) {
-        while(recordings.size()<10);
-
-            if (getprebpm) {
-                getprebpm = false;
-                getPreBPM();
-            }else if(getpostbpm){
-                while(recordings.size()<10);
-                getpostbpm=false;
-                getPostBPM();
-            }
-        }
-        Log.e("Tag","<BPM> thread end");
-        MainActivity.lock=false;
-    }
 }
