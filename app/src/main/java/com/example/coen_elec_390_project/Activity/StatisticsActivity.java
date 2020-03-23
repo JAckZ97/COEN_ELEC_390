@@ -105,10 +105,6 @@ public class StatisticsActivity extends AppCompatActivity {
             loadListViewAfterStart(startDate);
         }
 
-        /*if(!endDate.equals("")) {
-
-        }*/
-
 
         if(data.length != 0) {
             series = new LineGraphSeries<>(data);

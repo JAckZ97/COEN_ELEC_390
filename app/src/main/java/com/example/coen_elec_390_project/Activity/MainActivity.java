@@ -134,11 +134,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     case 0:
                         listen_pre_bpm=true;
                         while(recordings.size()<10 && MyBluetoothService.success);
-                        button1.setText("Getting your BPM");
-                        if(MyBluetoothService.success)
+
+                        if(MyBluetoothService.success) {
+                            button1.setText("Getting your BPM");
                             getPreBPM();
-                        button1.setText("Post-Workout Measurement Start");
-                        counter++;
+                            button1.setText("Post-Workout Measurement Start");
+                            counter++;
+                        }
+
+                        else
+                            Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
 
                         check=true;
                         speed_counter = 0;
@@ -185,8 +190,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
-            if(!MyBluetoothService.understood)
-                showBTDialog();
+            bpm.setTextSize(20);
+            /**if(!MyBluetoothService.understood)
+                showBTDialog();*/
         }else{
             bpm.setText("Your BPM value");
         }
@@ -194,8 +200,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    public void showBTDialog() {
-
+    /**public void showBTDialog() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
@@ -218,11 +223,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Create popup and show
         popDialog.create();
         popDialog.show();
-    }
+    }*/
 
     private void setUpBottomNavigationView() {
-//            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
             final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override

@@ -99,7 +99,7 @@ public class StartActivity extends AppCompatActivity {
                         mythread = new ConnectThread(device);
                         mbs = new MyBluetoothService(mythread.tryconnect());
                         bluetoothAdapter.cancelDiscovery();
-                        MyBluetoothService.success=true;
+                        /**MyBluetoothService.success=true;*/
                         break;
                     }
                 }
@@ -336,5 +336,4 @@ public class StartActivity extends AppCompatActivity {
         popDialog.create();
         popDialog.show();
     }
-
 }
