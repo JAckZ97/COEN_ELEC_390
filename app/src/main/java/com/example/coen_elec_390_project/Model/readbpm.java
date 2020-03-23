@@ -59,9 +59,9 @@ public class readbpm implements Runnable {
     }
 
     public void run(){
-
-        while(recordings.size()<10);
         synchronized (recordings) {
+        while(recordings.size()<10);
+
             if (getprebpm) {
                 getprebpm = false;
                 getPreBPM();
