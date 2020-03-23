@@ -49,8 +49,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
     public static String global_email = "";
-    int average_speed = 0;
-    int speed_sum = 0;
+    float continuous_average_speed = 0;
+    float average_speed = 0;
+    float speed_sum = 0;
     int counter = 0;
     Button start,stop;
     boolean check = false;
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        final TextView speed_txt = (TextView) this.findViewById(R.id.speed);
 
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -75,8 +77,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-        start.findViewById(R.id.start);
-        stop.findViewById(R.id.stop);
+        start = findViewById(R.id.start);
+        stop = findViewById(R.id.stop);
 
         start.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +86,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 check=true;
                 start.setEnabled(false);
                 stop.setEnabled(true);
+                counter = 0;
+                continuous_average_speed = 0;
             }
         });
         stop.setOnClickListener(new View.OnClickListener() {
@@ -93,12 +97,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 start.setEnabled(true);
                 stop.setEnabled(false);
                 check=false;
+                average_speed=continuous_average_speed;
+
             }
         });
 
-       if(check) {
-           this.onLocationChanged(null);
-       }
+     //  if(check) {
+        //   this.onLocationChanged(null);
+       //}
 
 
 
@@ -194,21 +200,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         TextView speed_txt = (TextView) this.findViewById(R.id.speed);
 
         if(location == null){
-
             speed_txt.setText("-- km/hr");
-
-           /* average_speed = 0;
-            speed_sum= 0;
-            counter = 0;*/
         }
         else{
 
-            float nCurrentspeed=location.getSpeed();
-            speed_sum +=nCurrentspeed;
-            counter +=1;
-            average_speed = speed_sum/counter;
+            float Currentspeed=location.getSpeed();
+            speed_sum = speed_sum+Currentspeed;
+            counter =counter+1;
+            continuous_average_speed = speed_sum/counter;
 
-            speed_txt.setText( "Your current speed is "+(double)(+nCurrentspeed*3.6f) + " km/hr");
+            speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
             if(!check){speed_txt.setText("Your average speed is: " + average_speed);}
 
         }
