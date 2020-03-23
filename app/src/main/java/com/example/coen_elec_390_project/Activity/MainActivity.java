@@ -48,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity implements LocationListener {
     static TextView bpm;
     String email;
+    Double weightinkg;
+    Double actduration;
     DatabaseHelper databaseHelper;
   
     //private Switch aSwitch;
@@ -71,11 +73,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     boolean check = false;
     LocationManager lm;
 
-    //-----------
+    /*
     EditText weight, met, duration;
     TextView resulttext;
     String calculation;
-    //-----------
+    */
   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,11 +136,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     case 0:
                         listen_pre_bpm=true;
                         while(recordings.size()<10 && MyBluetoothService.success);
-                        button1.setText("Getting your BPM");
-                        if(MyBluetoothService.success)
+
+                        if(MyBluetoothService.success) {
+                            button1.setText("Getting your BPM");
                             getPreBPM();
-                        button1.setText("Post-Workout Measurement Start");
-                        counter++;
+                            button1.setText("Post-Workout Measurement Start");
+                            counter++;
+                        }
+
+                        else
+                            Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
 
                         check=true;
                         speed_counter = 0;
@@ -162,7 +169,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         //write performance index to database with current user
                         check=false;
                         average_speed=continuous_average_speed;
+
                         Log.e("Tag","case 1");
+
+
+                        //weightinkg = getIntent().getStringExtra("weight");
+
+                        //retrieve activity duration
+                        actduration = //TO DO
+
+                        //call function
+                        getCaloriesBurned(weightinkg,actduration);
+
+
                         break;
 
                     case 2:
@@ -181,14 +200,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         bpm = findViewById(R.id.bpm);
         bpm.setBackgroundResource(R.drawable.ic_bpm);
-        bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
-        //if(global_email.equals(""))
+        bpm.setTextColor(getResources().getColor(R.color.colorBlack));
+
         email = getIntent().getStringExtra("email");
         Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
-            if(!MyBluetoothService.understood)
-                showBTDialog();
+            bpm.setTextSize(20);
+            /**if(!MyBluetoothService.understood)
+                showBTDialog();*/
         }else{
             bpm.setText("Your BPM value");
         }
@@ -196,8 +216,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    public void showBTDialog() {
-
+    /**public void showBTDialog() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
@@ -220,11 +239,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         // Create popup and show
         popDialog.create();
         popDialog.show();
-    }
+    }*/
 
     private void setUpBottomNavigationView() {
-//            final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
             final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
             bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -234,14 +251,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     User user = databaseHelper.getUser(email);
                     switch (menuItem.getItemId()){
                         case R.id.map:
-                            startActivity(new Intent(MainActivity.this, MapsActivity.class));
-                            break;
-                        /*
-                        case R.id.home:
-                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
-                            break;
+                            if (user.getEmail()== null) {
+                                startActivity(new Intent(MainActivity.this, StartActivity.class));
+                                break;
+                            } else {
+                                Log.e("Tag","<MAIN> entering statistic");
+                                intent = new Intent(new Intent(MainActivity.this, MapsActivity.class));
+                                intent.putExtra("email", email);
+                                startActivity(intent);
+                                break;
+                            }
 
-                         */
+//                        case R.id.home:
+//                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
+//                            break;
+//
+
 
                         case R.id.statistics:
                             if (user.getEmail()== null) {
@@ -355,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         if(location == null){
-            speed_txt.setText("-- km/hr");
+            speed_txt.setText("-- km/h");
         }
         else{
 
@@ -364,11 +389,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             speed_counter++;
             continuous_average_speed = speed_sum/speed_counter;
 
+
             speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
             if(!check){
                 speed_txt.setText("Your average speed is: " + average_speed);
                 speed_sum = 0;
             }
+
+        //    speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
+            //if(!check){speed_txt.setText("Your average speed is: " + average_speed + " km/h");}
+
 
         }
 
@@ -391,21 +421,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     //-----------
 
-    public void calculateTotalCaloriesBurned(View view) {
+    //MET is set to a default value for now (MET = 5)
 
-        String S1 = weight.getText().toString();
+    protected double getCaloriesBurned(double weight, double duration) {
+
+        /*
         String S2 = met.getText().toString();
         String S3 = duration.getText().toString();
 
         double weightValue = Float.parseFloat(S1);
         double metValue = Float.parseFloat(S2);
         double durationValue = Float.parseFloat(S3);
+        */
 
-        double cb = ((weightValue * metValue * 3.5) / (200)) * (durationValue);
+        double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 
-        calculation = "Total Calories Burned:nn" + cb + "nCal";
 
-        resulttext.setText(calculation);
+        Double result = 0.0;
+        String a = "Total Calories Burned:nn" + cb + "nCal";
+
+        return result;
+
+        //resulttext.setText(calculation);
     }
 
     //-----------
