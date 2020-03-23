@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <fragment
+        android:id="@+id/map_activity"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="624dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="48dp"
+        tools:context="Activity.MapsActivity" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="0dp"
+        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/navigation_menu" />
+
+    <TextView
+        android:id="@+id/Calory"
+        android:layout_width="115dp"
+        android:layout_height="46dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="1dp"
+        android:layout_toStartOf="@+id/Speed"
+        android:text="Calories"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/Speed"
+        android:layout_width="122dp"
+        android:layout_height="49dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toStartOf="@+id/performance_index"
+        android:text="Speed"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/performance_index"
+        android:layout_width="115dp"
+        android:layout_height="48dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="2dp"
+        android:layout_marginBottom="-3dp"
+        android:text="Performance Index"
+        android:textAlignment="center"
+        android:textStyle="bold" />
+
+</RelativeLayout>

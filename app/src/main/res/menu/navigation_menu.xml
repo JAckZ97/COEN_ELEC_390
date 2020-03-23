@@ -19,8 +19,14 @@
         android:title="Profile"/>
 
     <item
+        android:id="@+id/map"
+        android:icon="@drawable/maps_default_marker"
+        android:orderInCategory="4"
+        android:title="Map" />
+
+    <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_logout"
-        android:orderInCategory="4"
+        android:orderInCategory="5"
         android:title="Log out"/>
 </menu>

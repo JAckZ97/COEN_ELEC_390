@@ -1,13 +1,15 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
+
+
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.example.coen_elec_390_project"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -47,4 +49,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation 'com.android.support:design:28.0.0'
+
+    implementation name:'maps-sdk-3.0.0-beta', ext:'aar'
+    implementation name:'places-maps-sdk-3.0.0-beta', ext:'aar'
+    implementation 'com.android.support:support-v4:+'
+    implementation 'com.android.support:appcompat-v7:+'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:17.0.0'
 }

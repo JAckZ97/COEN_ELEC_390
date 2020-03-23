@@ -4,24 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/quantum_lightblue200"
     android:orientation="vertical"
-    android:background="@drawable/gradient_background"
     tools:context=".Activity.MainActivity">
-
-    <Button
-        android:id="@+id/recordingbutton"
-        style="@android:style/Widget.Material.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="63dp"
-        android:layout_above="@+id/bottomNavigation"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="128dp"
-        android:layout_marginEnd="135dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/edittext_background"
-        android:gravity="fill_vertical"
-        android:text="Start Recording" />
 
     <TextView
         android:id="@+id/bpm"
@@ -39,7 +24,7 @@
         android:fontFamily="monospace"
         android:gravity="center_horizontal"
         android:padding="10dp"
-        android:textSize="50dp" />
+        android:textSize="48dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -47,8 +32,57 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation_menu"
+
+	app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"/>
+<!--
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="wrap_content"
+        android:layout_height="66dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="540dp"
+        android:text="stop" />
+
+    <Button
+        android:id="@+id/start"
+        android:layout_width="108dp"
+        android:layout_height="65dp"
+        android:layout_alignStart="@+id/bpm"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="4dp"
+        android:layout_marginBottom="546dp"
+        android:text="start" />
+    -->
+
+    <Button
+        android:id="@+id/recordingbutton"
+        style="@android:style/Widget.Material.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="63dp"
+        android:layout_above="@+id/bottomNavigation"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="128dp"
+        android:layout_marginEnd="135dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/edittext_background"
+        android:gravity="fill_vertical"
+        android:text="Start Recording" />
+
+    <TextView
+        android:id="@+id/speed"
+        android:layout_width="107dp"
+        android:layout_height="51dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="142dp"
+        android:layout_marginBottom="558dp"
+        android:text="qwertyuiokjhgf"
+        android:textColorLink="@color/design_default_color_primary_dark" />
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/navigation_menu" />
 
 </RelativeLayout>
-
