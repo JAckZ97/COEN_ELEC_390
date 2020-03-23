@@ -169,6 +169,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         //write performance index to database with current user
                         check=false;
                         average_speed=continuous_average_speed;
+
+                        //weightinkg = getIntent().getStringExtra("weight");
+
+                        //retrieve activity duration
+                        actduration = //TO DO
+
+                        //call function
+                        getCaloriesBurned(weightinkg,actduration);
+
                         break;
 
                     case 2:
@@ -415,7 +424,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 
 
-        result = "Total Calories Burned:nn" + cb + "nCal";
+        Double result = 0.0;
+        String a = "Total Calories Burned:nn" + cb + "nCal";
 
         return result;
 
