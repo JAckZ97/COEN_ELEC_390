@@ -139,7 +139,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "Speed: " + statistics.get(i).getSpeed();
+            temp += "Speed: " + statistics.get(i).getSpeed() + " km/h";
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
@@ -164,7 +164,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "speed: " + statistics.get(i).getSpeed();
+            temp += "Speed: " + statistics.get(i).getSpeed() + "km/h";
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
