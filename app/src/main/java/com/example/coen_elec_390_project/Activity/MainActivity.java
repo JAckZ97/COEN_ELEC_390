@@ -184,8 +184,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         bpm = findViewById(R.id.bpm);
         bpm.setBackgroundResource(R.drawable.ic_bpm);
-        bpm.setTextColor(getResources().getColor(R.color.colorPrimary));
-        //if(global_email.equals(""))
+        bpm.setTextColor(getResources().getColor(R.color.colorBlack));
+
         email = getIntent().getStringExtra("email");
         Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
@@ -364,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
 
         if(location == null){
-            speed_txt.setText("-- km/hr");
+            speed_txt.setText("-- km/h");
         }
         else{
 
@@ -373,8 +373,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             speed_counter =speed_counter+1;
             continuous_average_speed = speed_sum/speed_counter;
 
-            speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
-            if(!check){speed_txt.setText("Your average speed is: " + average_speed);}
+            speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
+            if(!check){speed_txt.setText("Your average speed is: " + average_speed + " km/h");}
 
         }
 
