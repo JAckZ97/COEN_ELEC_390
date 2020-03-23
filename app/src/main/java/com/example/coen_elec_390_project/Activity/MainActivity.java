@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private BluetoothLeScanner mBluetoothLeScanner;
     private boolean scanning;
     String email;
+    Double weightinkg;
+    Double actduration;
     DatabaseHelper databaseHelper;
   
     //private Switch aSwitch;
@@ -89,11 +91,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private double performanceIndex;
     static ArrayList<Integer> recordings = new ArrayList<Integer>();
 
-    //-----------
+    /*
     EditText weight, met, duration;
     TextView resulttext;
     String calculation;
-    //-----------
+    */
   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,10 +230,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         break;
 
                     case 1:
-                        //new timestamp - oldtimestamp (duration of a session in seconds)
-                        //call calories function()
-                        //write calories burned to database with current user
 
+                        //Calculate total calories burned by calling getCaloriesBurned()
+                        //to retrieve duration of activity: new timestamp - oldtimestamp (duration of a session in seconds)
+                        //We then write calories burned to database with current user
+
+                        //retrieve user's weight
+                        weightinkg = getIntent().getStringExtra("weight");
+
+                        //retrieve activity duration
+                        actduration = //TO DO
+
+                        //call function
+                        getCaloriesBurned(weightinkg,actduration);
 
                         listen_post_bpm=true;
                         while(recordings.size()<10 && MyBluetoothService.success);
@@ -513,21 +524,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
     //-----------
 
-    public void calculateTotalCaloriesBurned(View view) {
+    //MET is set to a default value for now (MET = 5)
 
-        String S1 = weight.getText().toString();
+    protected double getCaloriesBurned(double weight, double duration) {
+
+        /*
         String S2 = met.getText().toString();
         String S3 = duration.getText().toString();
 
         double weightValue = Float.parseFloat(S1);
         double metValue = Float.parseFloat(S2);
         double durationValue = Float.parseFloat(S3);
+        */
 
-        double cb = ((weightValue * metValue * 3.5) / (200)) * (durationValue);
+        double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 
-        calculation = "Total Calories Burned:nn" + cb + "nCal";
 
-        resulttext.setText(calculation);
+        result = "Total Calories Burned:nn" + cb + "nCal";
+
+        return result;
+
+        //resulttext.setText(calculation);
     }
 
     //-----------
