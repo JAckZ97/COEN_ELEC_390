@@ -48,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 public class MainActivity extends AppCompatActivity implements LocationListener {
     static TextView bpm;
     String email;
+    Double weightinkg;
+    Double actduration;
     DatabaseHelper databaseHelper;
   
     //private Switch aSwitch;
@@ -71,11 +73,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     boolean check = false;
     LocationManager lm;
 
-    //-----------
+    /*
     EditText weight, met, duration;
     TextView resulttext;
     String calculation;
-    //-----------
+    */
   
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,6 +169,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         //write performance index to database with current user
                         check=false;
                         average_speed=continuous_average_speed;
+
+                        //weightinkg = getIntent().getStringExtra("weight");
+
+                        //retrieve activity duration
+                        actduration = //TO DO
+
+                        //call function
+                        getCaloriesBurned(weightinkg,actduration);
+
                         break;
 
                     case 2:
@@ -245,12 +256,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                                 startActivity(intent);
                                 break;
                             }
-                        /*
-                        case R.id.home:
-                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
-                            break;
 
-                         */
+//                        case R.id.home:
+//                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
+//                            break;
+//
+
 
                         case R.id.statistics:
                             if (user.getEmail()== null) {
@@ -397,21 +408,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     //-----------
 
-    public void calculateTotalCaloriesBurned(View view) {
+    //MET is set to a default value for now (MET = 5)
 
-        String S1 = weight.getText().toString();
+    protected double getCaloriesBurned(double weight, double duration) {
+
+        /*
         String S2 = met.getText().toString();
         String S3 = duration.getText().toString();
 
         double weightValue = Float.parseFloat(S1);
         double metValue = Float.parseFloat(S2);
         double durationValue = Float.parseFloat(S3);
+        */
 
-        double cb = ((weightValue * metValue * 3.5) / (200)) * (durationValue);
+        double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 
-        calculation = "Total Calories Burned:nn" + cb + "nCal";
 
-        resulttext.setText(calculation);
+        Double result = 0.0;
+        String a = "Total Calories Burned:nn" + cb + "nCal";
+
+        return result;
+
+        //resulttext.setText(calculation);
     }
 
     //-----------
