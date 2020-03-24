@@ -1,6 +1,8 @@
 package com.example.coen_elec_390_project.Model;
 
 public class User {
+
+    public static String Global_email;
     private Integer id;
     private String fullname;
     private String email;

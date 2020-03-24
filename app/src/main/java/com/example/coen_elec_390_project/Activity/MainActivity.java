@@ -39,6 +39,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener,Runnable {
@@ -83,9 +84,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
+        List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
+        Statistic.counter=stats.size();
         speed_txt = (TextView) this.findViewById(R.id.speed);
+        Log.e("Tag", "<email> "+email );
+        Log.e("Tag", "<email> "+user.getEmail() );
 
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -133,12 +139,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         if(MyBluetoothService.success){
                             long duration = System.currentTimeMillis()-start;
-                            readbpm.getpostbpm=true;
-                            button1.setText("Getting your bpm");
+                            if(lock){
+                                readbpm.getpostbpm=true;
+                                button1.setText("Getting your bpm");
+                            }
+
                             if(!lock){
                                 button1.setText("Show Performance Index");
                               double user_weight,calories;
-                              if(user!=null){
+                              if(user.getEmail()!=null){
                             if(user.getWeightUnit()==1){
                                 user_weight = Double.parseDouble(user.getWeight());
                                 calories =getCaloriesBurned(user_weight,(end)/1000/60);
@@ -150,9 +159,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                             Date date = new Date();
                             String str_date = dateFormat.format(date);
-                            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(preBPM,postBPM) ,average_speed, calories));
-                             counter++;
+                            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(readbpm.preBPM,readbpm.postBPM) ,(double)continuous_average_speed, calories));
                               }
+                                counter++;
                             }
                             
                             
@@ -184,7 +193,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorBlack));
 
-        email = getIntent().getStringExtra("email");
         if(email==null){
             Log.e("Tag","<DEBUG> email is null");
         }

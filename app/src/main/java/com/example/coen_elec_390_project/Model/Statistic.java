@@ -11,6 +11,8 @@ public class Statistic {
     private Double performance_index;
     private Double speed;
     private Double calories;
+    private Integer counter_id;
+    public static Integer counter;
 
     public Statistic() {
 
@@ -24,13 +26,14 @@ public class Statistic {
         this.calories=calories;
     }
 
-    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories) {
+    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories,Integer counter) {
         this.id = id;
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
         this.speed = speed;
         this.calories=calories;
+        this.counter_id=counter;
     }
 
     public Integer getId() {
@@ -68,4 +71,6 @@ public class Statistic {
     public Double getCalories(){return calories;}
 
     public void setCalories(Double calories){this.calories=calories;}
+
+    public Integer getCounter_id(){return this.counter_id;}
 }

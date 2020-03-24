@@ -136,12 +136,13 @@ public class StatisticsActivity extends AppCompatActivity {
 
         for(int i = 0; i < statistics.size(); i++) {
             String temp = "";
-            temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
+            temp += "Statistic's id: " + statistics.get(i).getCounter_id() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
-            temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
+            temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0+ "\n";
+            temp += "Calories burned: " + statistics.get(i).getCalories()+ "\n";
             temp += "Speed: " + statistics.get(i).getSpeed() + " km/h";
 
-            DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
+            DataPoint dataPoint = new DataPoint(statistics.get(i).getCounter_id(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
 
             Collections.reverse(statisticsListText);
@@ -187,7 +188,9 @@ public class StatisticsActivity extends AppCompatActivity {
 
                 switch (menuItem.getItemId()){
                     case R.id.map:
-                        startActivity(new Intent(StatisticsActivity.this, MapsActivity.class));
+                        intent = new Intent(new Intent(StatisticsActivity.this, MapsActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.home:

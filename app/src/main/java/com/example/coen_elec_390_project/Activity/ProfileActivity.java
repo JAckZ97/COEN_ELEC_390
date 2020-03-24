@@ -308,7 +308,7 @@ public class ProfileActivity extends AppCompatActivity  {
             pd.dismiss();
         }
         else if (user.getHeightUnit()==0 && (Double.parseDouble(str_height)<=4 || Double.parseDouble(str_height)>= 7)){
-            Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }
         else{
@@ -355,7 +355,9 @@ public class ProfileActivity extends AppCompatActivity  {
                 Intent intent;
                 switch (menuItem.getItemId()){
                     case R.id.map:
-                        startActivity(new Intent(ProfileActivity.this, MapsActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, MapsActivity.class));
+                        intent.putExtra("email", email);
+                        startActivity(intent);
                         break;
 
                     case R.id.home:

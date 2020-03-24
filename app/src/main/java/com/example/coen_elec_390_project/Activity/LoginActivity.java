@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -130,12 +132,14 @@ public class LoginActivity extends AppCompatActivity {
     }*/
 
     public void loginOffline(String str_email, String str_password) {
+        Log.e("Tag","<email> "+str_email);
         if (databaseHelper.checkIfExisting(str_email)) {
             if (databaseHelper.checkPassword(str_email, str_password)) {
                 pd.dismiss();
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("email", str_email);
+                User.Global_email = str_email;
                 startActivity(intent);
             }
 

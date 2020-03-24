@@ -67,6 +67,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         setContentView(R.layout.activity_maps);
 
         email = getIntent().getStringExtra("email");
+
         databaseHelper = new DatabaseHelper(this);
         final User user = databaseHelper.getUser(email);
 
@@ -246,6 +247,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     case R.id.profile:
                         intent = new Intent(new Intent(MapsActivity.this, ProfileActivity.class));
+                        intent.putExtra("email", email);
                         startActivity(intent);
                         break;
 

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     private static final String TAG = "DatabaseHelper";
@@ -60,14 +61,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_STATISTIC_DATE + " TEXT NOT NULL,"
                 + Config.COLUMN_STATISTIC_PERF_INDEX + " REAL,"
                 + Config.COLUMN_STATISTIC_SPEED + " REAL,"
-                + Config.COLUMN_STATISTIC_CALORIES + " REAL)";
+                + Config.COLUMN_STATISTIC_CALORIES + " REAL,"
+                + Config.COLUMN_STATISTIC_COUNTER + " INTEGER)";
 
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
         /**Execute the SQL query*/
         db.execSQL(CREATE_TABLE_STATISTIC);
 
-        Log.d(TAG, "Statistic database created");
+        Log.d(TAG, "<DB> Statistic database created");
     }
   
     @Override
@@ -75,11 +77,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Drop older table if existed, all data will be gone
         db.execSQL("DROP TABLE IF EXISTS "+ Config.USER_TABLE_NAME);
-
+        db.execSQL("DROP TABLE IF EXISTS "+ Config.STATISTIC_TABLE_NAME);
         //recreate the table
         onCreate(db);
     }
-
 
     /**Function that adds a user into the user database*/
     public long insertUser(User user) {
@@ -353,13 +354,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = -1;
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-
+        Integer counter = Statistic.counter;
+        counter++;
         /**We put the value from the user into the database*/
         contentValues.put(Config.COLUMN_STATISTIC_USER_ID, statistic.getUser_id());
         contentValues.put(Config.COLUMN_STATISTIC_DATE, statistic.getDate());
         contentValues.put(Config.COLUMN_STATISTIC_PERF_INDEX, statistic.getPerformance_index());
         contentValues.put(Config.COLUMN_STATISTIC_SPEED, statistic.getSpeed());
         contentValues.put(Config.COLUMN_STATISTIC_CALORIES,statistic.getCalories());
+        contentValues.put(Config.COLUMN_STATISTIC_COUNTER,counter);
 
         /**We try to insert it*/
         try {
@@ -399,8 +402,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
 
-                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
                     } while(cursor.moveToNext());
 
                     return statistics;
@@ -447,8 +451,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
 
-                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
                     } while(cursor.moveToNext());
 
                     return statistics;
