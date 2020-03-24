@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,13 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
 //-------
 import android.widget.EditText;
 //-------
@@ -138,8 +130,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }
 
                         }
-
-
                         check=false;
                         average_speed=continuous_average_speed;
 
@@ -164,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         bpm.setTextColor(getResources().getColor(R.color.colorBlack));
 
         email = getIntent().getStringExtra("email");
+        if(email==null){
+            Log.e("Tag","<DEBUG> email is null");
+        }
         Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
@@ -213,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     switch (menuItem.getItemId()){
                         case R.id.map:
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -228,9 +222,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 //                            break;
 //
 
-
                         case R.id.statistics:
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -244,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         case R.id.profile:
 
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -295,29 +290,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(Location location) {
 
 
-        if(location == null){
+        if (location == null) {
             speed_txt.setText("-- km/h");
-        }
-        else{
+        } else {
 
-            float Currentspeed=location.getSpeed();
-            speed_sum = Currentspeed;
+            float Currentspeed = location.getSpeed();
+            speed_sum += Currentspeed;
             speed_counter++;
-            continuous_average_speed = speed_sum/speed_counter;
+            continuous_average_speed = speed_sum / speed_counter;
 
 
-            speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
-            if(!check){
-                speed_txt.setText("Your average speed is: " + average_speed);
+            speed_txt.setText("Your current speed is " + (int) (+Currentspeed * 3.6f) + " km/hr");
+            if (!check) {
+                speed_txt.setText("Your average speed is: " + (int) (average_speed) * 3.6f);
                 speed_sum = 0;
             }
 
-        //    speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
+            //    speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
             //if(!check){speed_txt.setText("Your average speed is: " + average_speed + " km/h");}
 
 
         }
-
     }
 
     @Override
