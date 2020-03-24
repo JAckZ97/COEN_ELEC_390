@@ -134,6 +134,7 @@ public class MyBluetoothService {
                     if(voltage_readings.size()==size){
                         Log.e("Tag","<DATACOM> Got 1024 Data");
                         int BPM = (convert(voltage_readings));
+
                         if((readbpm.getprebpm || readbpm.getpostbpm)){
                             if(readbpm.recordings.size()<4)
                                 readbpm.recordings.add(BPM);

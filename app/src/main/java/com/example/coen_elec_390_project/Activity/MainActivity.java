@@ -117,7 +117,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         //while(recordings.size()<10 && MyBluetoothService.success);
 
                         if(MyBluetoothService.success) {
-                            readbpm.getprebpm=true;
+                            synchronized (readbpm.getprebpm) {
+                                readbpm.getprebpm = true;
+                            }
                             counter++;
                             start = System.currentTimeMillis();
                             lock=true;
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         if(MyBluetoothService.success){
                             long duration = System.currentTimeMillis()-start;
+
                             if(lock){
                                 readbpm.getpostbpm=true;
                                 button1.setText("Getting your bpm");
@@ -161,10 +164,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             String str_date = dateFormat.format(date);
                             databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(readbpm.preBPM,readbpm.postBPM) ,(double)continuous_average_speed, calories));
                               }
+
                                 counter++;
                             }
-                            
-                            
                         }
                         else{
                             button1.setText("Start Recording");

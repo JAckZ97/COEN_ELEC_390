@@ -16,8 +16,8 @@ public class readbpm{
     public static int recording;
     public static Integer bpmrecording;
     public static int sumbpm;
-    public static boolean getprebpm=false;
-    public static boolean getpostbpm=false;
+    public static Boolean getprebpm=false;
+    public static Boolean getpostbpm=false;
 
     public static void getPreBPM(){
         preBPM=0;
