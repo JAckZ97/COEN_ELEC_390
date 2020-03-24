@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                                 Date date = new Date();
                                 String str_date = dateFormat.format(date);
-                                if (user.getEmail() != null && Temp.isNumeric(user.getWeight())) {
+                                if (user != null && Temp.isNumeric(user.getWeight())) {
                                     if (user.getWeightUnit() == 1) {
                                         user_weight = Double.parseDouble(user.getWeight());
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
