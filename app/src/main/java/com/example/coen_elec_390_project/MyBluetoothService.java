@@ -136,7 +136,7 @@ public class MyBluetoothService {
                         int BPM = (convert(voltage_readings));
                         synchronized (readbpm.getpostbpm) {
                             synchronized (readbpm.getpostbpm) {
-                                if ((readbpm.getpostbpm || readbpm.getpostbpm)) {
+                                if ((readbpm.getprebpm || readbpm.getpostbpm)) {
                                     if (readbpm.recordings.size() < 4)
                                         readbpm.recordings.add(BPM);
                                     else {
