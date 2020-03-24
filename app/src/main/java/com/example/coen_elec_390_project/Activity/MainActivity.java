@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 switch (counter) {
                     case 0:
                         //while(recordings.size()<10 && MyBluetoothService.success);
-                        Toast.makeText(getApplicationContext(),"Put your finger on the sensor!",Toast.LENGTH_SHORT);
+                        Toast.makeText(getApplicationContext(),"Put your finger on the sensor!",Toast.LENGTH_SHORT).show();
                         if (MyBluetoothService.success) {
                             synchronized (readbpm.getprebpm) {
                                 readbpm.getprebpm = true;
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                                 Date date = new Date();
                                 String str_date = dateFormat.format(date);
-                                if (user != null) {
+                                if (user != null && Temp.isNumeric(user.getWeight())) {
                                     if (user.getWeightUnit() == 1) {
                                         user_weight = Double.parseDouble(user.getWeight());
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
                                     databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories));
-                                }else if ( Temp.isNumeric(user.getWeight())){
+                                }else if ( user!=null ){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
                                     Intent intent;
                                     intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));

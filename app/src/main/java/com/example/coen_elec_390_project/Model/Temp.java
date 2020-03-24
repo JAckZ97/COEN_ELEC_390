@@ -15,6 +15,8 @@ public class Temp {
     public static int session_counter = 0;
 
     public static boolean isNumeric(String strNum) {
+        if(strNum==null)
+            return false;
         return strNum.matches("-?\\d+(\\.\\d+)?");
     }
 
