@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
                                     databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories));
-                                }else if ( Temp.isNumeric(user.getWeight())){
+                                }else if ( user != null && Temp.isNumeric(user.getWeight())){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
                                     Intent intent;
                                     intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
@@ -173,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     startActivity(intent);
                                 }else {
                                     //Temp is required
-
                                     if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration)) {
                                         Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                         Temp.session_counter++;
