@@ -73,4 +73,25 @@ public class Statistic {
     public void setCalories(Double calories){this.calories=calories;}
 
     public Integer getCounter_id(){return this.counter_id;}
+
+    public static double getperformanceindex(double pre, double post) {
+        if (pre != 0 && post != 0) {
+            return (15.3 * (post / pre));
+        } else
+            return 0;
+    }
+
+    public static double getCaloriesBurned(double weight, long duration) {
+
+
+        double cb = ((weight * 5 * 3.5) / (200)) * (duration);
+
+
+        Double result = 0.0;
+        String a = "Total Calories Burned:nn" + cb + "nCal";
+
+        return result;
+
+        //resulttext.setText(calculation);
+    }
 }

@@ -1,10 +1,5 @@
 package com.example.coen_elec_390_project.Model;
 
-import android.util.Log;
-import android.widget.Toast;
-
-import com.example.coen_elec_390_project.Activity.MainActivity;
-
 import java.util.ArrayList;
 import java.util.List;
 

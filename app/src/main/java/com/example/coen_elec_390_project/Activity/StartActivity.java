@@ -57,6 +57,7 @@ public class StartActivity extends AppCompatActivity {
     private boolean found =false;
     private ConnectThread mythread;
     private MyBluetoothService mbs;
+    private boolean btpass= false;
 
     @Override
     protected void onStart() {
@@ -71,7 +72,7 @@ public class StartActivity extends AppCompatActivity {
 
         if(!MyBluetoothService.initialized)
             bluetoothsetup();
-        if(!MyBluetoothService.success && !MyBluetoothService.understood){
+        if(!btpass && !MyBluetoothService.understood){
             MyBluetoothService.understood=true;
             showBTDialog();
         }
@@ -101,10 +102,7 @@ public class StartActivity extends AppCompatActivity {
                         mythread = new ConnectThread(device);
                         mbs = new MyBluetoothService(mythread.tryconnect());
                         bluetoothAdapter.cancelDiscovery();
-
-                        //MyBluetoothService.success=true;
-
-                        /**MyBluetoothService.success=true;*/
+                        btpass=true;
 
                         break;
                     }
