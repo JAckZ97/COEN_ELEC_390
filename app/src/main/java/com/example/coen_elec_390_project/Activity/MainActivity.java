@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.le.BluetoothLeScanner;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,13 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-import android.widget.TextView;
 //-------
 import android.widget.EditText;
 //-------
@@ -34,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.Model.User;
+import com.example.coen_elec_390_project.Model.readbpm;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -42,10 +35,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements LocationListener {
+
+public class MainActivity extends AppCompatActivity implements LocationListener,Runnable {
     static TextView bpm;
     String email;
     Double weightinkg;
@@ -53,9 +45,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     DatabaseHelper databaseHelper;
   
     //private Switch aSwitch;
-    protected Button button1;
-    private int preBPM;
-    private int postBPM;
+    public static Button button1;
     static int recording;
     static double bpmrecording;
     private int sumbpm=0;
@@ -71,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     float average_speed = 0;
     float speed_sum = 0;
     boolean check = false;
+    public static boolean lock = false;
     LocationManager lm;
 
     /*
@@ -78,7 +69,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     TextView resulttext;
     String calculation;
     */
-  
+
+    public void run(){
+
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,33 +93,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-        /*
-        start = findViewById(R.id.start);
-        stop = findViewById(R.id.stop);
-
-        start.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                check=true;
-                start.setEnabled(false);
-                stop.setEnabled(true);
-                counter = 0;
-                continuous_average_speed = 0;
-            }
-        });
-        stop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                start.setEnabled(true);
-                stop.setEnabled(false);
-                check=false;
-                average_speed=continuous_average_speed;
-
-            }
-        });
-        */
-
         button1 = (Button) findViewById(R.id.recordingbutton);
 
         button1.setOnClickListener(new View.OnClickListener() {
@@ -134,16 +101,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
                 switch (counter){
                     case 0:
-                        listen_pre_bpm=true;
-                        while(recordings.size()<10 && MyBluetoothService.success);
+                        //while(recordings.size()<10 && MyBluetoothService.success);
 
                         if(MyBluetoothService.success) {
-                            button1.setText("Getting your BPM");
-                            getPreBPM();
-                            button1.setText("Post-Workout Measurement Start");
+                            readbpm.getprebpm=true;
                             counter++;
+                            lock=true;
+                            button1.setText("Getting your bpm");
                         }
-
                         else
                             Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
 
@@ -154,39 +119,25 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         break;
 
                     case 1:
-                        //new timestamp - oldtimestamp (duration of a session in seconds)
-                        //call calories function()
-                        //write calories burned to database with current user
 
-                        listen_post_bpm=true;
-                        while(recordings.size()<10 && MyBluetoothService.success);
-                        if(MyBluetoothService.success)
-                            getPostBPM();
-                        double index = getperformanceindex(preBPM,postBPM);
-                        button1.setText("Show Performance Index");
-                        counter++;
-                        //getperformance index
-                        //write performance index to database with current user
+                        if(MyBluetoothService.success) {
+                            readbpm.getpostbpm=true;
+                            button1.setText("Getting your bpm");
+                            if(!lock){
+                                double index = getperformanceindex(readbpm.preBPM,readbpm.postBPM);
+                                button1.setText("Show Performance Index");
+                                counter++;
+                            }
+
+                        }
                         check=false;
                         average_speed=continuous_average_speed;
-
-                        Log.e("Tag","case 1");
-
-
-                        //weightinkg = getIntent().getStringExtra("weight");
-
-                        //retrieve activity duration
-                        actduration = //TO DO
-
-                        //call function
-                        getCaloriesBurned(weightinkg,actduration);
-
 
                         break;
 
                     case 2:
                         if(MyBluetoothService.success)
-                            displayPerformanceindex(preBPM, postBPM);
+                            displayPerformanceindex(readbpm.preBPM, readbpm.postBPM);
                         button1.setText("Start Recording");
                         counter=0;
                         Log.e("Tag","case 2");
@@ -203,6 +154,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         bpm.setTextColor(getResources().getColor(R.color.colorBlack));
 
         email = getIntent().getStringExtra("email");
+        if(email==null){
+            Log.e("Tag","<DEBUG> email is null");
+        }
         Log.e("Tag","<MAIN> email-> "+email);
         if(!MyBluetoothService.success){
             bpm.setText("Sensor Disconnected");
@@ -252,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                     switch (menuItem.getItemId()){
                         case R.id.map:
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -267,9 +222,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 //                            break;
 //
 
-
                         case R.id.statistics:
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -283,6 +238,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                         case R.id.profile:
 
                             if (user.getEmail()== null) {
+                                Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(MainActivity.this, StartActivity.class));
                                 break;
                             } else {
@@ -302,49 +258,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             });
     }
 
-    protected void getPreBPM(){
-        preBPM=0;
 
-        int div=0;
-        //int[] array1 = new int[]{85, 90, 78, 82, 84, 87, 88, 91, 92, 90, 87, 84, 85, 86, 89, 76, 89, 79, 87, 84};
-
-        for (int i = 0; i <= recordings.size() - 1; i++) {
-            bpmrecording = recordings.get(i);
-            if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 55) ;
-            sumbpm += bpmrecording;
-            div++;
-        }
-
-        //preBPM = sumbpm / recordings.size();
-        preBPM = sumbpm / div;
-        Toast.makeText(getApplicationContext(), preBPM + " BPM <pre>", Toast.LENGTH_SHORT).show();
-
-        recordings.clear();
-        sumbpm=0;
-    }
-
-    protected void getPostBPM(){
-        postBPM=0;
-
-        int div =0;
-        //int[] array2 = new int[]{111, 119, 128, 132, 111, 112, 118, 1117, 115, 111, 114, 118, 110, 109, 132, 122, 121, 125, 113, 109};
-
-        for (int i = 0; i <= recordings.size() - 1; i++) {
-            bpmrecording = recordings.get(i);
-            if (bpmrecording != 0 && bpmrecording < 190 && bpmrecording > 55) ;
-            sumbpm += bpmrecording;
-            div++;
-        }
-
-        //postBPM = sumbpm / recordings.size();
-        postBPM = sumbpm / div;
-        Toast.makeText(getApplicationContext(), postBPM + " BPM <post>", Toast.LENGTH_SHORT).show();
-
-        recordings.clear();
-        sumbpm=0;
-    }
-
-    protected void displayPerformanceindex(int pre, int post){
+    protected void displayPerformanceindex(double pre, double post){
         if(pre!=0 && post !=0){
             performanceIndex =  (15.3 * (post/pre));
             Toast.makeText(getApplicationContext(), "Your Performance Index for this Workout is: "+ performanceIndex, Toast.LENGTH_LONG).show();
@@ -356,7 +271,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     }
 
-    protected double getperformanceindex(int pre, int post){
+    protected double getperformanceindex(double pre, double post){
         if(pre!=0 && post !=0) {
             return (15.3 * (post / pre));
         }
@@ -367,41 +282,35 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public static void  Update_bpm(String a){
         if(bpm!=null) {
             bpm.setText(a);
-            //each time the display is updated, we store the value as an int in realtime, overwriting the previous one
-            if(listen_pre_bpm || listen_post_bpm) {
-                recording = Integer.parseInt(a);
-                recordings.add(recording);
-            }
         }
     }
+
 
     @Override
     public void onLocationChanged(Location location) {
 
 
-        if(location == null){
+        if (location == null) {
             speed_txt.setText("-- km/h");
-        }
-        else{
+        } else {
 
-            float Currentspeed=location.getSpeed();
-            speed_sum = Currentspeed;
+            float Currentspeed = location.getSpeed();
+            speed_sum += Currentspeed;
             speed_counter++;
-            continuous_average_speed = speed_sum/speed_counter;
+            continuous_average_speed = speed_sum / speed_counter;
 
 
-            speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/hr");
-            if(!check){
-                speed_txt.setText("Your average speed is: " + average_speed);
+            speed_txt.setText("Your current speed is " + (int) (+Currentspeed * 3.6f) + " km/hr");
+            if (!check) {
+                speed_txt.setText("Your average speed is: " + (int) (average_speed) * 3.6f);
                 speed_sum = 0;
             }
 
-        //    speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
+            //    speed_txt.setText( "Your current speed is "+(double)(+Currentspeed*3.6f) + " km/h");
             //if(!check){speed_txt.setText("Your average speed is: " + average_speed + " km/h");}
 
 
         }
-
     }
 
     @Override
