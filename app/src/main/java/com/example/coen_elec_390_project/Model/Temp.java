@@ -7,11 +7,11 @@ import java.util.Date;
 import java.util.List;
 
 public class Temp {
-    public static ArrayList<Double> PreBPMs;
-    public static ArrayList<Double> PostBPMs;
-    public static ArrayList<Long> Durations;
-    public static ArrayList<Float> Speeds;
-    public static ArrayList<String> Dates;
+    public static ArrayList<Double> PreBPMs = new ArrayList<>();
+    public static ArrayList<Double> PostBPMs= new ArrayList<>();
+    public static ArrayList<Long> Durations= new ArrayList<>();
+    public static ArrayList<Float> Speeds= new ArrayList<>();
+    public static ArrayList<String> Dates= new ArrayList<>();
     public static int session_counter = 0;
 
     public static boolean isNumeric(String strNum) {
