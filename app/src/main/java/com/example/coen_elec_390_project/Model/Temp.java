@@ -15,15 +15,7 @@ public class Temp {
     public static int session_counter = 0;
 
     public static boolean isNumeric(String strNum) {
-        if (strNum == null) {
-            return false;
-        }
-        try {
-            double d = Double.parseDouble(strNum);
-        } catch (NumberFormatException nfe) {
-            return false;
-        }
-        return true;
+        return strNum.matches("-?\\d+(\\.\\d+)?");
     }
 
     public static boolean insertTemp(double prebpm, double postbpm,String str_date,float speed,long duration){
