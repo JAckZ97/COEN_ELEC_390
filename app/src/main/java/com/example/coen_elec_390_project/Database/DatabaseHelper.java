@@ -271,6 +271,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Collections.emptyList();
     }
 
+
+    /**Function that returns a list of all statistic in the local database*/
+    public List<Statistic> getAllStats() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(Config.STATISTIC_TABLE_NAME, null, null, null, null, null, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    List<Statistic> statistics = new ArrayList<>();
+
+                    do {
+
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
+                        int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
+                        double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
+                        double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
+
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                    } while(cursor.moveToNext());
+
+                    return statistics;
+                }
+            }
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return Collections.emptyList();
+    }
+
     /**Function that checks if a user is already register in the database*/
     public boolean checkIfExisting(String email) {
         SQLiteDatabase db = this.getWritableDatabase();

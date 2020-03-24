@@ -14,6 +14,15 @@ public class Temp {
     public static ArrayList<String> Dates= new ArrayList<>();
     public static int session_counter = 0;
 
+    public static String dev_weight_kg="80";
+    public static String dev_hight_cm="180";
+    public static String dev_weight_lb="160";
+    public static String dev_hight_ft="30";
+    public static Double dev_prebpm=80.0;
+    public static Double dev_postbpm=140.0;
+    public static Integer age = 22;
+    public static float speed = 15;
+
     public static boolean isNumeric(String strNum) {
         if(strNum==null)
             return false;

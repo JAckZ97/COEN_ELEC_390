@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private long start;
     private User user;
     private boolean understood =false;
+    public static boolean developer_mode = false;
+    public static int dev_count=0;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -134,6 +136,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 understood=true;
                             }
                         }
+
+                        if(developer_mode){
+                            start = System.currentTimeMillis();
+                            lock = true;
+                            button1.setText("Getting your bpm");
+                        }
                         counter++;
                         check = true;
                         speed_counter = 0;
@@ -187,6 +195,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             counter = 0;
                         }
 
+                        if(developer_mode){
+                            long duration = System.currentTimeMillis() - start;
+                            button1.setText("Show Performance Index");
+                            double user_weight, calories;
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = new Date();
+                            String str_date = dateFormat.format(date);
+                            if (user != null && Temp.isNumeric(user.getWeight())) {
+                                if (user.getWeightUnit() == 1) {
+                                    user_weight = Double.parseDouble(user.getWeight());
+                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
+                                } else {
+                                    user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
+                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
+                                }
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories));
+
+                            }else if ( user!=null ){
+                                Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
+                                Intent intent;
+                                intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                                intent.putExtra("email", email);
+                                intent.putExtra("temp",true);
+                                startActivity(intent);
+                            }else {
+                                //Temp is required
+                                if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration)) {
+                                    Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
+                                    Temp.session_counter++;
+                                } else
+                                    Toast.makeText(getApplicationContext(), "Out of temp limit, storing temp failed!", Toast.LENGTH_LONG).show();
+                            }
+                            counter++;
+                        }
+
                         check = false;
                         average_speed = continuous_average_speed;
                         break;
@@ -224,7 +267,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
     }
-
 
     public void store_temp_dialog() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
@@ -289,7 +331,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 Intent intent;
 
-
                 switch (menuItem.getItemId()) {
                     case R.id.map:
                         if (user == null) {
@@ -303,11 +344,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             startActivity(intent);
                             break;
                         }
-                    /*
+
                     case R.id.home:
-                        startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
+                        if(developer_mode)
+                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
+                        else
+                            dev_count++;
+
+                        if(dev_count>3 && ProfileActivity.dev_count>3)
+                            developer_mode=true;
                         break;
-                    */
+
 
                     case R.id.statistics:
                         if (user == null) {
@@ -338,6 +385,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     case R.id.logout:
                         startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
+
                 }
 
                 return true;

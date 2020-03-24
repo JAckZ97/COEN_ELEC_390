@@ -46,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity  {
     ProgressDialog pd;
     private boolean user_editting = false;
     private boolean insert_temp=false;
+    public static int dev_count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -406,6 +407,8 @@ public class ProfileActivity extends AppCompatActivity  {
                         break;
 
                     case R.id.profile:
+                        if(!MainActivity.developer_mode)
+                            dev_count++;
                         break;
 
                     case R.id.logout:

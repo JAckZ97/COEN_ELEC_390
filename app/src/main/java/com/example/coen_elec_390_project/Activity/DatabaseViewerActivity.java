@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
 
@@ -28,10 +29,10 @@ public class DatabaseViewerActivity extends AppCompatActivity {
     protected void loadListView() {
         DatabaseHelper databaseHelper = new DatabaseHelper(this);
         List<User> users = databaseHelper.getAllUsers();
-        ArrayList<String> usersListText = new ArrayList<>();
-
+        ArrayList<String> dbListText = new ArrayList<>();
+        String temp;
         for(int i = 0; i < users.size(); i++) {
-            String temp = "";
+            temp = "User table\n";
             temp += users.get(i).getId() + "\n";
             temp += users.get(i).getFullname() + "\n";
             temp += users.get(i).getEmail() + "\n";
@@ -41,12 +42,24 @@ public class DatabaseViewerActivity extends AppCompatActivity {
             temp += users.get(i).getHeight()+"\n";
             temp += users.get(i).getWeight()+"\n";
             temp += users.get(i).getHeightUnit()+"\n";
-            temp += users.get(i).getWeightUnit();
-
-            usersListText.add(temp);
+            temp += users.get(i).getWeightUnit()+"\n";
+            dbListText.add(temp);
         }
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, usersListText);
+        List<Statistic> stats = databaseHelper.getAllStats();
+
+        for(int i =0;i<stats.size();i++){
+            temp = "Statistic table\n";
+            temp += stats.get(i).getId() + "\n";
+            temp += stats.get(i).getDate() +"\n";
+            temp += stats.get(i).getSpeed() +"\n";
+            temp += stats.get(i).getCalories() +"\n";
+            temp += stats.get(i).getPerformance_index() + "\n";
+            dbListText.add(temp);
+        }
+
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, dbListText);
         usersListView.setAdapter(arrayAdapter);
     }
 }
