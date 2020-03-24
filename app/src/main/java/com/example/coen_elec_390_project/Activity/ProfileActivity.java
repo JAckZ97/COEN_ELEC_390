@@ -334,10 +334,10 @@ public class ProfileActivity extends AppCompatActivity  {
                     postbpm = Temp.PostBPMs.get(i);
                     if (user.getWeightUnit() == 1) {
                         user_weight = Double.parseDouble(user.getWeight());
-                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                     } else {
                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
-                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                     }
                     databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
                 }

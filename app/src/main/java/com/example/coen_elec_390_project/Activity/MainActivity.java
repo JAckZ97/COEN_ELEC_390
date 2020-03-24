@@ -158,10 +158,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 if (user.getEmail() != null && Temp.isNumeric(user.getWeight())) {
                                     if (user.getWeightUnit() == 1) {
                                         user_weight = Double.parseDouble(user.getWeight());
-                                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     } else {
                                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
-                                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
                                     databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories));
                                 } else {
@@ -243,10 +243,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 postbpm = Temp.PostBPMs.get(i);
                                 if (user.getWeightUnit() == 1) {
                                     user_weight = Double.parseDouble(user.getWeight());
-                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 } else {
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
-                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60);
+                                    calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 }
                                 databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
                             }
@@ -358,7 +358,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onLocationChanged(Location location) {
 
-
         if (location == null) {
             speed_txt.setText("-- km/h");
         } else {
@@ -400,8 +399,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     //-----------
 
     //MET is set to a default value for now (MET = 5)
-
-
 
     //-----------
 }
