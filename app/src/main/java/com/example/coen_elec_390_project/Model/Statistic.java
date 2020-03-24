@@ -73,4 +73,36 @@ public class Statistic {
     public void setCalories(Double calories){this.calories=calories;}
 
     public Integer getCounter_id(){return this.counter_id;}
+
+    public static double getperformanceindex(double pre, double post) {
+        if (pre != 0 && post != 0) {
+            return (15.3 * (post / pre));
+        } else
+            return 0;
+    }
+
+    public static double getCaloriesBurned(double weight, long duration,float speed) {
+
+        if(speed==0.0)
+            return 0.0;
+
+        if(speed>4.0)
+            return ((weight * 5 * 3.5) / (200)) * (duration);
+        else if(speed>8.1)
+            return ((weight * 8 * 3.5) / (200)) * (duration);
+        else if(speed>9.65)
+            return ((weight * 10 * 3.5) / (200)) * (duration);
+        else if(speed>11.26)
+            return ((weight * 11.5 * 3.5) / (200)) * (duration);
+        else if(speed>12.87)
+            return ((weight * 13.5 * 3.5) / (200)) * (duration);
+        else if(speed>14.48)
+            return ((weight * 15 * 3.5) / (200)) * (duration);
+        else if(speed>16.09)
+            return ((weight * 16 * 3.5) / (200)) * (duration);
+
+        return 0.0;
+
+
+    }
 }

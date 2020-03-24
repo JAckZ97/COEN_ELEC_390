@@ -168,7 +168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public User getUser(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
-        User user = new User();
+        User user = null;
 
         String query = "SELECT * FROM " + Config.USER_TABLE_NAME + " WHERE " + Config.COLUMN_USER_EMAIL + " = '" + email + "'";
 
@@ -176,10 +176,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         try {
             cursor = db.rawQuery(query, null);
-
             if(cursor != null) {
                 if(cursor.moveToFirst()) {
                     do {
+                        user = new User();
                         String database_email = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_EMAIL));
                         Log.e("Tag","<DB> email "+database_email);
                         if(database_email.equals(email)) {
@@ -193,7 +193,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
                             user.setHeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT_UNIT)));
                             user.setWeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT_UNIT)));
-
                             return user;
                         }
                     } while(cursor.moveToNext());
@@ -204,6 +203,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         catch (SQLiteException e) {
             Log.d(TAG, "Exception: " + e);
             Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+            return null;
         }
 
         finally {
@@ -246,6 +251,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     } while(cursor.moveToNext());
 
                     return users;
+                }
+            }
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+
+    /**Function that returns a list of all statistic in the local database*/
+    public List<Statistic> getAllStats() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        try {
+            cursor = db.query(Config.STATISTIC_TABLE_NAME, null, null, null, null, null, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    List<Statistic> statistics = new ArrayList<>();
+
+                    do {
+
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
+                        int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
+                        double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
+                        double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
+
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                    } while(cursor.moveToNext());
+
+                    return statistics;
                 }
             }
         }
