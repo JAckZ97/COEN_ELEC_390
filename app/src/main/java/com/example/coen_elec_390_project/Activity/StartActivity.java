@@ -160,7 +160,16 @@ public class StartActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         guest = findViewById(R.id.guest);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        final Integer new_dev;
+        String dev = getIntent().getStringExtra("dev_count");
+        if(dev!=null) {
+            new_dev = Integer.parseInt(dev) + 1;
+            Log.e("Tag", "<DEV> pass dev is null ");
+        }
+        else
+            new_dev = 0;
 
+        Log.e("Tag","<DEV> newdev "+new_dev);
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -178,11 +187,11 @@ public class StartActivity extends AppCompatActivity {
         guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(StartActivity.this, MainActivity.class));
+                Intent intent = new Intent(StartActivity.this, MainActivity.class);
+                intent.putExtra("dev_count",new_dev.toString());
+                startActivity(intent);
             }
         });
-
-
 
 
     }
