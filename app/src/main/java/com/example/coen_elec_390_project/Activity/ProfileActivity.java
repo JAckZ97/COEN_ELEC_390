@@ -346,11 +346,11 @@ public class ProfileActivity extends AppCompatActivity  {
                 }
 
             } catch (Exception e) {
-                Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG);
+                Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG).show();
             }
         }
         else{
-            Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG);
+            Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG).show();
         }
 
 //        user.setFullname(str_fullname);

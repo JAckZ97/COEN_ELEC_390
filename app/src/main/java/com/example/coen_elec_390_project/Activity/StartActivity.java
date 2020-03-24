@@ -70,8 +70,12 @@ public class StartActivity extends AppCompatActivity {
 //            finish();
 //        }
 
-        if(!MyBluetoothService.initialized)
+        if(!MyBluetoothService.initialized){
             bluetoothsetup();
+        }
+        else
+            btpass=true;
+
         if(!btpass && !MyBluetoothService.understood){
             MyBluetoothService.understood=true;
             showBTDialog();
@@ -103,7 +107,6 @@ public class StartActivity extends AppCompatActivity {
                         mbs = new MyBluetoothService(mythread.tryconnect());
                         bluetoothAdapter.cancelDiscovery();
                         btpass=true;
-
                         break;
                     }
                 }
