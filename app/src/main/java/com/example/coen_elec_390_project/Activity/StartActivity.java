@@ -101,7 +101,11 @@ public class StartActivity extends AppCompatActivity {
                         mythread = new ConnectThread(device);
                         mbs = new MyBluetoothService(mythread.tryconnect());
                         bluetoothAdapter.cancelDiscovery();
+
+                        //MyBluetoothService.success=true;
+
                         /**MyBluetoothService.success=true;*/
+
                         break;
                     }
                 }
@@ -305,7 +309,7 @@ public class StartActivity extends AppCompatActivity {
     public void requestLocationPermission() {
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION};
         if(EasyPermissions.hasPermissions(this, perms)) {
-            Toast.makeText(this, "<Message> Permission already granted", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "<Message> Permission already granted", Toast.LENGTH_SHORT).show();
         }
         else {
             EasyPermissions.requestPermissions(this, "<Message> Please grant the location permission", MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION, perms);
