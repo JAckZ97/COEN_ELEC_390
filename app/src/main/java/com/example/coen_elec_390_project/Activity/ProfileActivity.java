@@ -45,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity  {
     String selectGender;
     ProgressDialog pd;
     private boolean user_editting = false;
-    private boolean insert_temp=false;
+    private Boolean insert_temp=false;
     public static int dev_count=0;
 
     @Override
@@ -81,7 +81,8 @@ public class ProfileActivity extends AppCompatActivity  {
 
 
         email = getIntent().getStringExtra("email");
-        insert_temp = getIntent().getBooleanExtra("temp",true);
+        Bundle bundle = getIntent().getExtras();
+        insert_temp = bundle.getBoolean("temp",false);
         databaseHelper = new DatabaseHelper(this);
         final User user = databaseHelper.getUser(email);
       
@@ -98,6 +99,8 @@ public class ProfileActivity extends AppCompatActivity  {
         // set gender spinner and catch error
         if(user.getGender() == null){
             genderSelect.setSelection(2);
+            selectGender="Other";
+            Log.e("Tag","<PROFILE> initialize selectGender = "+selectGender);
         }
         else {
             genderSelect.setSelection(genderGenerate(user.getGender()));
@@ -146,20 +149,23 @@ public class ProfileActivity extends AppCompatActivity  {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fullname.setEnabled(false);
-                height.setEnabled(false);
-                weight.setEnabled(false);
-                genderSelect.setEnabled(false);
-                age.setEnabled(false);
-                cm.setEnabled(false);
-                ft.setEnabled(false);
-                kg.setEnabled(false);
-                lb.setEnabled(false);
+
+                if(writeProfile(user)) {
+                    fullname.setEnabled(false);
+                    height.setEnabled(false);
+                    weight.setEnabled(false);
+                    genderSelect.setEnabled(false);
+                    age.setEnabled(false);
+                    cm.setEnabled(false);
+                    ft.setEnabled(false);
+                    kg.setEnabled(false);
+                    lb.setEnabled(false);
+                    readProfile();
+                    user_editting=false;
+                }
 
                 if(user_editting){
                     writeProfile(user);
-                    readProfile();
-                    user_editting=false;
                 }
 
 //                basicRead();
@@ -234,6 +240,7 @@ public class ProfileActivity extends AppCompatActivity  {
         User user = databaseHelper.getUser(email);
 
         fullname.setText(user.getFullname());
+        Log.e("Tag","<PROFILE>");
         genderSelect.setSelection(genderGenerate(user.getGender()));
         age.setText(user.getAge());
         height.setText(user.getHeight());
@@ -250,13 +257,14 @@ public class ProfileActivity extends AppCompatActivity  {
             ft.setChecked(true); }
     }
 
-    private void writeProfile(User user) {
+    private boolean writeProfile(User user) {
         pd = new ProgressDialog(ProfileActivity.this);
 //        pd.setMessage("Please wait...");
 //        pd.show();
 
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
+        Log.e("Tag","<PROFILE> "+selectGender);
         String str_age = age.getText().toString();
         String str_weight = weight.getText().toString();
         String str_height = height.getText().toString();
@@ -296,6 +304,8 @@ public class ProfileActivity extends AppCompatActivity  {
                 break;
         }
 
+        Log.e("Tag","<PROFILE> height is number -> "+Temp.isNumeric(str_height));
+        Log.e("Tag","<PROFILE> weight is number -> "+Temp.isNumeric(str_weight));
         if(Temp.isNumeric(str_height) && Temp.isNumeric(str_weight)) {
             try {
                 if (Integer.parseInt(str_age) >= 150) {
@@ -345,13 +355,16 @@ public class ProfileActivity extends AppCompatActivity  {
                     }
                     Temp.clear();
                 }
+                return true;
 
             } catch (Exception e) {
                 Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG).show();
+                return false;
             }
         }
         else{
             Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG).show();
+            return false;
         }
 
 //        user.setFullname(str_fullname);

@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private boolean understood =false;
     public static boolean developer_mode = false;
     public static int dev_count=0;
+    private Integer dev_count2=0;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -89,11 +90,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
+
+        if(getIntent().getStringExtra("dev_count")!=null)
+            dev_count2=Integer.parseInt(getIntent().getStringExtra("dev_count"));
+
+        Log.e("Tag","<DEV> "+dev_count2);
         if(user != null){
             List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
             Statistic.counter = stats.size();
         }
-        speed_txt = this.findViewById(R.id.speed);
+            speed_txt = this.findViewById(R.id.speed);
         if(Temp.session_counter>0){
             if(user!=null)
                 store_temp_dialog();
@@ -351,7 +357,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         else
                             dev_count++;
 
-                        if(dev_count>3 && ProfileActivity.dev_count>3)
+                        if(dev_count>3 && dev_count2>3)
                             developer_mode=true;
                         break;
 
@@ -383,7 +389,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         }
 
                     case R.id.logout:
-                        startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        intent = new Intent(MainActivity.this, StartActivity.class);
+                        intent.putExtra("dev_count",dev_count2.toString());
+                        startActivity(intent);
                         break;
 
                 }
