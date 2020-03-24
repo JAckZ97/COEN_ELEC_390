@@ -295,57 +295,62 @@ public class ProfileActivity extends AppCompatActivity  {
                 break;
         }
 
-        try {
-            if (Integer.parseInt(str_age) >= 150) {
-                Toast.makeText(ProfileActivity.this, "You are too old to exist", Toast.LENGTH_SHORT).show();
-                pd.dismiss();
-            } else if (user.getWeightUnit() == 1 && (Double.parseDouble(str_weight) <= 30 || Double.parseDouble(str_weight) >= 200)) {
-                Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
-                pd.dismiss();
-            } else if (user.getWeightUnit() == 0 && (Double.parseDouble(str_weight) <= 75 || Double.parseDouble(str_weight) >= 450)) {
-                Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
-                pd.dismiss();
-            } else if (user.getHeightUnit() == 1 && (Double.parseDouble(str_height) <= 120 || Double.parseDouble(str_height) >= 215)) {
-                Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
-                pd.dismiss();
-            } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7)) {
-                Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
-                pd.dismiss();
-            } else {
-                user.setFullname(str_fullname);
-                user.setGender(str_gender);
-                user.setAge(str_age);
-                user.setWeight(str_weight);
-                user.setHeight(str_height);
-            }
-            databaseHelper = new DatabaseHelper(this);
-            databaseHelper.updateProfile(user);
-
-            if(insert_temp){
-                double user_weight, calories, prebpm, postbpm;
-                long duration;
-                float speed;
-                String str_date;
-                for (int i = 0; i < Temp.session_counter; i++) {
-                    speed = Temp.Speeds.get(i);
-                    str_date = Temp.Dates.get(i);
-                    duration = Temp.Durations.get(i);
-                    prebpm = Temp.PreBPMs.get(i);
-                    postbpm = Temp.PostBPMs.get(i);
-                    if (user.getWeightUnit() == 1) {
-                        user_weight = Double.parseDouble(user.getWeight());
-                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
-                    } else {
-                        user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
-                        calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
-                    }
-                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+        if(Temp.isNumeric(str_height) && Temp.isNumeric(str_weight)) {
+            try {
+                if (Integer.parseInt(str_age) >= 150) {
+                    Toast.makeText(ProfileActivity.this, "You are too old to exist", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                } else if (user.getWeightUnit() == 1 && (Double.parseDouble(str_weight) <= 30 || Double.parseDouble(str_weight) >= 200)) {
+                    Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                } else if (user.getWeightUnit() == 0 && (Double.parseDouble(str_weight) <= 75 || Double.parseDouble(str_weight) >= 450)) {
+                    Toast.makeText(ProfileActivity.this, "Weight is out off range", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                } else if (user.getHeightUnit() == 1 && (Double.parseDouble(str_height) <= 120 || Double.parseDouble(str_height) >= 215)) {
+                    Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7)) {
+                    Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
+                    pd.dismiss();
+                } else {
+                    user.setFullname(str_fullname);
+                    user.setGender(str_gender);
+                    user.setAge(str_age);
+                    user.setWeight(str_weight);
+                    user.setHeight(str_height);
                 }
-                Temp.clear();
-            }
+                databaseHelper = new DatabaseHelper(this);
+                databaseHelper.updateProfile(user);
 
-        }catch (Exception e){
-            Toast.makeText(getApplicationContext(),"Invalid input! Please enter your information properly.",Toast.LENGTH_LONG);
+                if (insert_temp) {
+                    double user_weight, calories, prebpm, postbpm;
+                    long duration;
+                    float speed;
+                    String str_date;
+                    for (int i = 0; i < Temp.session_counter; i++) {
+                        speed = Temp.Speeds.get(i);
+                        str_date = Temp.Dates.get(i);
+                        duration = Temp.Durations.get(i);
+                        prebpm = Temp.PreBPMs.get(i);
+                        postbpm = Temp.PostBPMs.get(i);
+                        if (user.getWeightUnit() == 1) {
+                            user_weight = Double.parseDouble(user.getWeight());
+                            calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
+                        } else {
+                            user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
+                            calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
+                        }
+                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                    }
+                    Temp.clear();
+                }
+
+            } catch (Exception e) {
+                Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG);
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Invalid input! Please enter your information properly.", Toast.LENGTH_LONG);
         }
 
 //        user.setFullname(str_fullname);

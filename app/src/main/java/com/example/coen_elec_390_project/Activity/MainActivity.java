@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 switch (counter) {
                     case 0:
                         //while(recordings.size()<10 && MyBluetoothService.success);
-
+                        Toast.makeText(getApplicationContext(),"Put your finger on the sensor!",Toast.LENGTH_SHORT);
                         if (MyBluetoothService.success) {
                             synchronized (readbpm.getprebpm) {
                                 readbpm.getprebpm = true;
