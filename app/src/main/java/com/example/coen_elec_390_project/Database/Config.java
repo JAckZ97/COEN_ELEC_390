@@ -26,4 +26,5 @@ public class Config {
     public static final String COLUMN_STATISTIC_DATE = "date";
     public static final String COLUMN_STATISTIC_PERF_INDEX= "perfIndex";
     public static final String COLUMN_STATISTIC_SPEED = "speed";
+    public static final String COLUMN_STATISTIC_CALORIES = "calories";
 }

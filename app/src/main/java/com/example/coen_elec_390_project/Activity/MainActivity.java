@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.Model.readbpm;
 import com.example.coen_elec_390_project.MyBluetoothService;
@@ -34,7 +35,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener,Runnable {
@@ -58,12 +62,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     static ArrayList<Integer> recordings = new ArrayList<Integer>();
    // static int[] array1[] = new int[][];
     float continuous_average_speed = 0;
-    float average_speed = 0;
+    double average_speed = 0;
     float speed_sum = 0;
     boolean check = false;
     public static boolean lock = false;
     LocationManager lm;
-
+    private long start,end;
+    private User user;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -78,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        databaseHelper = new DatabaseHelper(MainActivity.this);
+        user = databaseHelper.getUser(email);
         speed_txt = (TextView) this.findViewById(R.id.speed);
 
         lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -106,11 +113,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         if(MyBluetoothService.success) {
                             readbpm.getprebpm=true;
                             counter++;
+                            start = System.currentTimeMillis();
                             lock=true;
                             button1.setText("Getting your bpm");
                         }
                         else
+                        {
+                            button1.setText("Get your average speed");
                             Toast.makeText(MainActivity.this, "The sensor is disconnected", Toast.LENGTH_SHORT).show();
+                        }
 
                         check=true;
                         speed_counter = 0;
@@ -120,19 +131,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     case 1:
 
-                        if(MyBluetoothService.success) {
+                        if(MyBluetoothService.success){
+                            long duration = System.currentTimeMillis()-start;
                             readbpm.getpostbpm=true;
                             button1.setText("Getting your bpm");
                             if(!lock){
-                                double index = getperformanceindex(readbpm.preBPM,readbpm.postBPM);
                                 button1.setText("Show Performance Index");
-                                counter++;
+                              double user_weight,calories;
+                              if(user!=null){
+                            if(user.getWeightUnit()==1){
+                                user_weight = Double.parseDouble(user.getWeight());
+                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
                             }
-
+                            else{
+                                user_weight = Double.parseDouble(user.getWeight())*0.45359237;
+                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                            }
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                            Date date = new Date();
+                            String str_date = dateFormat.format(date);
+                            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(preBPM,postBPM) ,average_speed, calories));
+                             counter++;
+                              }
+                            }
+                            
+                            
                         }
+                        else{
+                            button1.setText("Start Recording");
+                            counter=0;
+                        }
+
                         check=false;
                         average_speed=continuous_average_speed;
-
                         break;
 
                     case 2:
@@ -201,8 +232,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Intent intent;
-                    databaseHelper = new DatabaseHelper(MainActivity.this);
-                    User user = databaseHelper.getUser(email);
+
+
                     switch (menuItem.getItemId()){
                         case R.id.map:
                             if (user.getEmail()== null) {
@@ -332,16 +363,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     //MET is set to a default value for now (MET = 5)
 
-    protected double getCaloriesBurned(double weight, double duration) {
+    protected double getCaloriesBurned(double weight, long duration) {
 
-        /*
-        String S2 = met.getText().toString();
-        String S3 = duration.getText().toString();
-
-        double weightValue = Float.parseFloat(S1);
-        double metValue = Float.parseFloat(S2);
-        double durationValue = Float.parseFloat(S3);
-        */
 
         double cb = ((weight * 5 * 3.5) / (200)) * (duration);
 
