@@ -111,7 +111,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         //while(recordings.size()<10 && MyBluetoothService.success);
 
                         if(MyBluetoothService.success) {
-                            readbpm.getprebpm=true;
+                            synchronized (readbpm.getprebpm) {
+                                readbpm.getprebpm = true;
+                            }
                             counter++;
                             start = System.currentTimeMillis();
                             lock=true;
@@ -133,29 +135,29 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         if(MyBluetoothService.success){
                             long duration = System.currentTimeMillis()-start;
-                            readbpm.getpostbpm=true;
+                            synchronized (readbpm.getpostbpm) {
+                                readbpm.getpostbpm = true;
+                            }
                             button1.setText("Getting your bpm");
                             if(!lock){
                                 button1.setText("Show Performance Index");
-                              double user_weight,calories;
-                              if(user!=null){
-                            if(user.getWeightUnit()==1){
-                                user_weight = Double.parseDouble(user.getWeight());
-                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                                double user_weight,calories;
+                                if(user.getEmail()!=null){
+                                    if(user.getWeightUnit()==1){
+                                        user_weight = Double.parseDouble(user.getWeight());
+                                        calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                                    }
+                                    else{
+                                        user_weight = Double.parseDouble(user.getWeight())*0.45359237;
+                                        calories =getCaloriesBurned(user_weight,(end)/1000/60);
+                                    }
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                                    Date date = new Date();
+                                    String str_date = dateFormat.format(date);
+                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(readbpm.preBPM,readbpm.postBPM) ,(double)continuous_average_speed, calories));
+                                }
+                                counter++;
                             }
-                            else{
-                                user_weight = Double.parseDouble(user.getWeight())*0.45359237;
-                                calories =getCaloriesBurned(user_weight,(end)/1000/60);
-                            }
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-                            Date date = new Date();
-                            String str_date = dateFormat.format(date);
-                            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, getperformanceindex(preBPM,postBPM) ,average_speed, calories));
-                             counter++;
-                              }
-                            }
-                            
-                            
                         }
                         else{
                             button1.setText("Start Recording");

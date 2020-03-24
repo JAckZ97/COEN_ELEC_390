@@ -134,20 +134,23 @@ public class MyBluetoothService {
                     if(voltage_readings.size()==size){
                         Log.e("Tag","<DATACOM> Got 1024 Data");
                         int BPM = (convert(voltage_readings));
-                        if((readbpm.getpostbpm || readbpm.getpostbpm)){
-                            if(readbpm.recordings.size()<4)
-                                readbpm.recordings.add(BPM);
-                            else{
-                                if(readbpm.getprebpm){
-                                    readbpm.getPreBPM();
-                                    readbpm.getprebpm=false;
-                                    MainActivity.button1.setText("Record Post Activity BPM");
-                                }
-                                else if(readbpm.getpostbpm){
-                                    readbpm.getPostBPM();
-                                    readbpm.getpostbpm=false;
-                                    MainActivity.lock=false;
-                                    MainActivity.button1.setText("Finish a session");
+                        synchronized (readbpm.getpostbpm) {
+                            synchronized (readbpm.getpostbpm) {
+                                if ((readbpm.getpostbpm || readbpm.getpostbpm)) {
+                                    if (readbpm.recordings.size() < 4)
+                                        readbpm.recordings.add(BPM);
+                                    else {
+                                        if (readbpm.getprebpm) {
+                                            readbpm.getPreBPM();
+                                            readbpm.getprebpm = false;
+                                            MainActivity.button1.setText("Record Post Activity BPM");
+                                        } else if (readbpm.getpostbpm) {
+                                            readbpm.getPostBPM();
+                                            readbpm.getpostbpm = false;
+                                            MainActivity.lock = false;
+                                            MainActivity.button1.setText("Finish a session");
+                                        }
+                                    }
                                 }
                             }
                         }
