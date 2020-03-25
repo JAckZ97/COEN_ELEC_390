@@ -144,9 +144,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
             DataPoint dataPoint = new DataPoint(statistics.get(i).getCounter_id(), statistics.get(i).getPerformance_index());
             data[i] = dataPoint;
-
             Collections.reverse(statisticsListText);
-
             statisticsListText.add(temp);
         }
 
