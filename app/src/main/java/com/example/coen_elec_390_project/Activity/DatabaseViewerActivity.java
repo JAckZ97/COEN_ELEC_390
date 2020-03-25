@@ -31,30 +31,30 @@ public class DatabaseViewerActivity extends AppCompatActivity {
         List<User> users = databaseHelper.getAllUsers();
         ArrayList<String> dbListText = new ArrayList<>();
         String temp;
+        temp = "User table\n";
         for(int i = 0; i < users.size(); i++) {
-            temp = "User table\n";
-            temp += users.get(i).getId() + "\n";
-            temp += users.get(i).getFullname() + "\n";
-            temp += users.get(i).getEmail() + "\n";
-            temp += users.get(i).getPassword()+"\n";
-            temp += users.get(i).getGender()+"\n";
-            temp += users.get(i).getAge()+"\n";
-            temp += users.get(i).getHeight()+"\n";
-            temp += users.get(i).getWeight()+"\n";
-            temp += users.get(i).getHeightUnit()+"\n";
-            temp += users.get(i).getWeightUnit()+"\n";
+            temp += "user id: "+ users.get(i).getId() + "\n";
+            temp += "user name: "+ users.get(i).getFullname() + "\n";
+            temp += "user email: "+ users.get(i).getEmail() + "\n";
+            temp += "user password: "+ users.get(i).getPassword()+"\n";
+            temp += "user gender: "+ users.get(i).getGender()+"\n";
+            temp += "user age: "+ users.get(i).getAge()+"\n";
+            temp += "user height: "+ users.get(i).getHeight()+"\n";
+            temp += "user weight: "+ users.get(i).getWeight()+"\n";
+            temp += "user height unit: "+ users.get(i).getHeightUnit()+"\n";
+            temp += "user weight unit: "+ users.get(i).getWeightUnit()+"\n";
             dbListText.add(temp);
         }
 
         List<Statistic> stats = databaseHelper.getAllStats();
-
+        temp = "Statistic table\n";
         for(int i =0;i<stats.size();i++){
-            temp = "Statistic table\n";
-            temp += stats.get(i).getId() + "\n";
-            temp += stats.get(i).getDate() +"\n";
-            temp += stats.get(i).getSpeed() +"\n";
-            temp += stats.get(i).getCalories() +"\n";
-            temp += stats.get(i).getPerformance_index() + "\n";
+            temp += "stat id: "+ stats.get(i).getId() + "\n";
+            temp += "stat id counter: "+ stats.get(i).getCounter_id() + "\n";
+            temp += "stat date: "+stats.get(i).getDate() +"\n";
+            temp += "stat speed: "+stats.get(i).getSpeed() +"\n";
+            temp += "stat calory: "+stats.get(i).getCalories() +"\n";
+            temp += "stat perf index: "+stats.get(i).getPerformance_index() + "\n";
             dbListText.add(temp);
         }
 
