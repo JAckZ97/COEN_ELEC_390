@@ -229,7 +229,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }else {
                                 //Temp is required
                                 if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration)) {
-                                    Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
+                                    //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
+                                    store_temp_alert_dialog();
                                     Temp.session_counter++;
                                 } else
                                     Toast.makeText(getApplicationContext(), "Out of temp limit, storing temp failed!", Toast.LENGTH_LONG).show();
