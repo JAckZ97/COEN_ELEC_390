@@ -86,6 +86,7 @@ public class DateSelectionFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 statisticsActivity.receiveStartEndDate(startDate, endDate);
+                //statisticsActivity.loadListView();
                 getDialog().dismiss();
             }
         });

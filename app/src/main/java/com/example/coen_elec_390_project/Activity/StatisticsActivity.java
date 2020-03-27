@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Random;
 
@@ -49,7 +50,7 @@ public class StatisticsActivity extends AppCompatActivity {
     User user;
     DataPoint[] data;
     FloatingActionButton dateSelection;
-    String startDate, endDate;
+    String startDate = "", endDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +58,6 @@ public class StatisticsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
         setUpBottomNavigationView();
 
-        startDate = "";
-        endDate = "";
         databaseHelper = new DatabaseHelper(this);
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
@@ -77,61 +76,115 @@ public class StatisticsActivity extends AppCompatActivity {
         //TO TEST THE GRAPH WHEN THERE IS A LOT OF POINTS
         /**Calendar calendar = Calendar.getInstance();
         Random randomobj = new Random();
-        for(int i = 0; i < 50; i++) {
-            calendar.set(2020, 03 ,i);
+        for(int i = 1; i < 26; i++) {
+            calendar.set(2020, 03, i);
             String str_date = calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH);
-            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, i, randomobj.nextDouble()*100));
+            databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, randomobj.nextDouble()*100, randomobj.nextDouble()*100, randomobj.nextDouble()*100));
             Log.e("Tag","<STAT> "+randomobj.nextDouble());
         }*/
 
-        if(startDate.equals("") && endDate.equals(""))
-            loadListView();
+        loadListView();
 
-        if(!startDate.equals("")) {
-            loadListViewAfterStart(startDate);
-        }
+        setUpGraph();
+    }
 
-
-        if(data.length != 0) {
+    /**Function to set up the GraphView*/
+    public void setUpGraph() {
+        if(data.length >= 2) {
             series = new LineGraphSeries<>(data);
             series.setDrawDataPoints(true);
             graph.addSeries(series);
 
-            graph.getGridLabelRenderer().setHorizontalAxisTitle("Statistic's id");
+            graph.getGridLabelRenderer().setHorizontalAxisTitle("Date");
             graph.getGridLabelRenderer().setVerticalAxisTitle("Performance index");
             graph.getGridLabelRenderer().setPadding(50);
             graph.getViewport().setScrollable(true);
             graph.getViewport().setScalable(true);
             graph.getViewport().setScrollableY(true);
             graph.getViewport().setScalableY(true);
+            graph.getGridLabelRenderer().setHorizontalLabelsAngle(45);
+            graph.getViewport().setXAxisBoundsManual(false);
+            graph.getGridLabelRenderer().setHumanRounding(false);
+
+            graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
+                @Override
+                public String formatLabel(double value, boolean isValueX) {
+                    if(isValueX) {
+                        Date date = new Date((long) value);
+                        date.setYear(date.getYear()-1900);
+                        return simpleDateFormat.format(date);
+                    }
+
+                    else {
+                        return super.formatLabel(value, isValueX);
+                    }
+                }
+            });
         }
-
-        /**graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
-            @Override
-            public String formatLabel(double value, boolean isValueX) {
-                if(isValueX) {
-                    return simpleDateFormat.format(new Date((long) value));
-                }
-
-                else {
-                    return super.formatLabel(value, isValueX);
-                }
-            }
-        });*/
-
-        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
-        graph.getGridLabelRenderer().setHumanRounding(false);
     }
 
     public void receiveStartEndDate(String start, String end) {
         startDate = start;
         endDate = end;
+
+        Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
     }
 
-    protected void loadListView() {
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        List<Statistic> statistics = databaseHelper.getStatisticsByUser(user.getId());
+    public void loadListView() {
+        /**Both start and end dates are not selected*/
+        if(startDate.equals("") && endDate.equals("")) {
+            executeQuery(0);
+
+            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
+        }
+
+        /**Only start date is selected*/
+        else if(!startDate.equals("") && endDate.equals("")) {
+            executeQuery(1);
+
+            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
+        }
+
+        /**Only end date is selected*/
+        else if(startDate.equals("") && !endDate.equals("")) {
+
+            executeQuery(2);
+            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
+        }
+
+        /**Both start and end dates are selected*/
+        else {
+            executeQuery(3);
+
+            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void executeQuery(int type) {
         ArrayList<String> statisticsListText = new ArrayList<>();
+        List<Statistic> statistics;
+
+        switch (type) {
+            case 0:
+                statistics = databaseHelper.getStatisticsByUser(user.getId());
+                break;
+
+            case 1:
+                statistics = databaseHelper.getStatisticsAfterStartDate(user.getId(), "2020/3/9"/**startDate*/);
+                break;
+
+            case 2:
+                statistics = databaseHelper.getStatisticsBeforeEndDate(user.getId(), "2020/3/9"/**endDate*/);
+                break;
+
+            case 3:
+                statistics = databaseHelper.getStatisticsBetweenStartAndEndDates(user.getId(), "2020/3/9", "2020/3/12"/**startDate, endDate*/);
+                break;
+
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
+        }
+
         data = new DataPoint[statistics.size()];
 
         for(int i = 0; i < statistics.size(); i++) {
@@ -139,39 +192,22 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Statistic's id: " + statistics.get(i).getCounter_id() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0+ "\n";
-            temp += "Calories burned: " + statistics.get(i).getCalories()+ "\n";
-            temp += "Speed: " + statistics.get(i).getSpeed() + " km/h";
+            temp += "Calories burned: " + Math.round(statistics.get(i).getCalories()) + "\n";
+            temp += "Speed: " + Math.round(statistics.get(i).getSpeed()*100.0)/100.0 + " km/h";
 
-            DataPoint dataPoint = new DataPoint(statistics.get(i).getCounter_id(), statistics.get(i).getPerformance_index());
+            String str_date = statistics.get(i).getDate();
+            String date_component[] = str_date.split("/");
+
+            Date date = new Date(Integer.parseInt(date_component[0]), Integer.parseInt(date_component[1]) - 1, Integer.parseInt(date_component[2]));
+            Long date_long = date.getTime();
+
+            DataPoint dataPoint = new DataPoint(date_long, statistics.get(i).getPerformance_index());
+
             data[i] = dataPoint;
-            Collections.reverse(statisticsListText);
             statisticsListText.add(temp);
         }
 
-        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statisticsListText);
-        statisticsListView.setAdapter(arrayAdapter);
-    }
-
-    protected void loadListViewAfterStart(String startdate) {
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
-        List<Statistic> statistics = databaseHelper.getStatisticsAfterStart(user.getId(), startdate);
-        ArrayList<String> statisticsListText = new ArrayList<>();
-        data = new DataPoint[statistics.size()];
-
-        for(int i = 0; i < statistics.size(); i++) {
-            String temp = "";
-            temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
-            temp += "Date: " + statistics.get(i).getDate() + "\n";
-            temp += "Performance index: " + statistics.get(i).getPerformance_index() + "\n";
-            temp += "Speed: " + statistics.get(i).getSpeed() + "km/h";
-
-            DataPoint dataPoint = new DataPoint(statistics.get(i).getId(), statistics.get(i).getPerformance_index());
-            data[i] = dataPoint;
-
-            Collections.reverse(statisticsListText);
-
-            statisticsListText.add(temp);
-        }
+        Collections.reverse(statisticsListText);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statisticsListText);
         statisticsListView.setAdapter(arrayAdapter);
@@ -221,6 +257,24 @@ public class StatisticsActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    /**Called when the activity is about to become visible.*/
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "The onStart() event");
+
+        loadListView();
+    }
+
+    /**Called when the activity has become visible.*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "The onResume() event");
+
+        loadListView();
     }
 }
 
