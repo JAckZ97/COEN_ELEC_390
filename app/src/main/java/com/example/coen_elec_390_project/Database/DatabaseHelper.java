@@ -164,7 +164,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-
     /**Function that returns a user*/
     public User getUser(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -271,7 +270,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return Collections.emptyList();
     }
-
 
     /**Function that returns a list of all statistic in the local database*/
     public List<Statistic> getAllStats() {

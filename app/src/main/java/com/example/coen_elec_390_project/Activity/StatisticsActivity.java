@@ -170,15 +170,15 @@ public class StatisticsActivity extends AppCompatActivity {
                 break;
 
             case 1:
-                statistics = databaseHelper.getStatisticsAfterStartDate(user.getId(), "2020/3/9"/**startDate*/);
+                statistics = databaseHelper.getStatisticsAfterStartDate(user.getId(), /**"2020/3/9"*/startDate);
                 break;
 
             case 2:
-                statistics = databaseHelper.getStatisticsBeforeEndDate(user.getId(), "2020/3/9"/**endDate*/);
+                statistics = databaseHelper.getStatisticsBeforeEndDate(user.getId(), /**"2020/3/9"*/endDate);
                 break;
 
             case 3:
-                statistics = databaseHelper.getStatisticsBetweenStartAndEndDates(user.getId(), "2020/3/9", "2020/3/12"/**startDate, endDate*/);
+                statistics = databaseHelper.getStatisticsBetweenStartAndEndDates(user.getId(), /**"2020/3/9", "2020/3/12"*/startDate, endDate);
                 break;
 
             default:
@@ -191,7 +191,7 @@ public class StatisticsActivity extends AppCompatActivity {
             String temp = "";
             temp += "Statistic's id: " + statistics.get(i).getCounter_id() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
-            temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0+ "\n";
+            temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0 + "\n";
             temp += "Calories burned: " + Math.round(statistics.get(i).getCalories()) + "\n";
             temp += "Speed: " + Math.round(statistics.get(i).getSpeed()*100.0)/100.0 + " km/h";
 
