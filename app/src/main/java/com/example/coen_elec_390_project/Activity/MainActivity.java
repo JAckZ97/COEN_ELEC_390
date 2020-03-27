@@ -330,6 +330,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         popDialog.show();
     }
 
+    private void store_temp_alert_dialog(){
+        public void store_temp_dialog() {
+            final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
+            final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+            final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
+            popDialog.setTitle("Store Temp Sessions");
+            popDialog.setMessage("Do you want to store your temporary statistic data in this account?");
+            popDialog.setView(Viewlayout);
+            popDialog.setPositiveButton("Yes",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+                        }
+
+                    });
+    }
+
     private void setUpBottomNavigationView() {
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
