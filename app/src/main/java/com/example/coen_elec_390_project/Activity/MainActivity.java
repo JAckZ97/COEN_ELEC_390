@@ -189,7 +189,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 }else {
                                     //Temp is required
                                     if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration)) {
-                                        Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
+                                        store_temp_alert_dialog();
+                                        //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                         Temp.session_counter++;
                                     } else
                                         Toast.makeText(getApplicationContext(), "Out of temp limit, storing temp failed!", Toast.LENGTH_LONG).show();
@@ -278,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
         final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
-        popDialog.setTitle("Store Temp Sessions");
+        popDialog.setTitle("Store Temperarily Sessions");
         popDialog.setMessage("Do you want to store your temporary statistic data in this account?");
         popDialog.setView(Viewlayout);
         popDialog.setPositiveButton("Yes",
@@ -331,14 +332,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void store_temp_alert_dialog(){
-        public void store_temp_dialog() {
             final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
             final LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
             final View Viewlayout = inflater.inflate(R.layout.dialog_bluetooth_list, (ViewGroup) findViewById(R.id.bt_list));
-            popDialog.setTitle("Store Temp Sessions");
-            popDialog.setMessage("Do you want to store your temporary statistic data in this account?");
+            popDialog.setTitle("You might lose your data!");
+            popDialog.setMessage("Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.");
             popDialog.setView(Viewlayout);
-            popDialog.setPositiveButton("Yes",
+            popDialog.setPositiveButton("Understood",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
