@@ -65,6 +65,9 @@ public class StatisticsActivity extends AppCompatActivity {
         user = databaseHelper.getUser(email);
         dateSelection = findViewById(R.id.dateSelection);
 
+        loadListView();
+        setUpGraph();
+
         dateSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,10 +85,6 @@ public class StatisticsActivity extends AppCompatActivity {
             databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, randomobj.nextDouble()*100, randomobj.nextDouble()*100, randomobj.nextDouble()*100));
             Log.e("Tag","<STAT> "+randomobj.nextDouble());
         }*/
-
-        loadListView();
-
-        setUpGraph();
     }
 
     /**Function to set up the GraphView*/
@@ -126,37 +125,27 @@ public class StatisticsActivity extends AppCompatActivity {
     public void receiveStartEndDate(String start, String end) {
         startDate = start;
         endDate = end;
-
-        Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
     }
 
     public void loadListView() {
         /**Both start and end dates are not selected*/
         if(startDate.equals("") && endDate.equals("")) {
             executeQuery(0);
-
-            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
         }
 
         /**Only start date is selected*/
         else if(!startDate.equals("") && endDate.equals("")) {
             executeQuery(1);
-
-            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
         }
 
         /**Only end date is selected*/
         else if(startDate.equals("") && !endDate.equals("")) {
-
             executeQuery(2);
-            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
         }
 
         /**Both start and end dates are selected*/
         else {
             executeQuery(3);
-
-            Toast.makeText(StatisticsActivity.this, startDate + " " + endDate, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -257,24 +246,6 @@ public class StatisticsActivity extends AppCompatActivity {
                 return true;
             }
         });
-    }
-
-    /**Called when the activity is about to become visible.*/
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "The onStart() event");
-
-        loadListView();
-    }
-
-    /**Called when the activity has become visible.*/
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "The onResume() event");
-
-        loadListView();
     }
 }
 

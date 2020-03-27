@@ -20,6 +20,8 @@ import androidx.fragment.app.DialogFragment;
 import com.example.coen_elec_390_project.Activity.StatisticsActivity;
 import com.example.coen_elec_390_project.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -28,7 +30,7 @@ import static androidx.constraintlayout.widget.Constraints.TAG;
 public class DateSelectionFragment extends DialogFragment {
     Button startdate, enddate, back;
     DatePickerDialog.OnDateSetListener startDatePickerDialog, endDatePickerDialog;
-    String startDate, endDate;
+    String startDate = "", endDate = "";
     StatisticsActivity statisticsActivity;
 
     @Nullable
@@ -79,18 +81,60 @@ public class DateSelectionFragment extends DialogFragment {
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 enddate.setText(year + "/" + (month + 1) + "/" + dayOfMonth);
                 endDate = enddate.getText().toString();
+
+                enddate.setError(null);
+                enddate.setFocusable(false);
+                enddate.setFocusableInTouchMode(false);
             }
         };
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                statisticsActivity.receiveStartEndDate(startDate, endDate);
-                statisticsActivity.loadListView();
-                getDialog().dismiss();
+                int validDates = 2;
+
+                try {
+                    validDates = compareDate(startDate, endDate);
+                }
+
+                catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if(validDates == -1) {
+                    enddate.setError("Error: The end date \n should be after \n the start date");
+                    enddate.setFocusable(true);
+                    enddate.setFocusableInTouchMode(true);
+                }
+
+                else {
+                    statisticsActivity.receiveStartEndDate(startDate, endDate);
+                    statisticsActivity.loadListView();
+                    getDialog().dismiss();
+                }
             }
         });
 
         return view;
+    }
+
+    /**Function that compares two dates*/
+    public int compareDate(String d1, String d2) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+
+        Date date1 = format.parse(d1);
+        Date date2 = format.parse(d2);
+
+        if(date1.after(date2)) {
+            return -1;
+        }
+
+        else if(date1.before(date2)) {
+            return 1;
+        }
+
+        else {
+            return 0;
+        }
     }
 }
