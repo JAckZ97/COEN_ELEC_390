@@ -9,11 +9,13 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +46,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.target.Target;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener, Runnable {
@@ -88,6 +95,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
         email = getIntent().getStringExtra("email");
+
+        SharedPreferences sharedPreferences =
+                PreferenceManager.getDefaultSharedPreferences(this);
+        // Check if we need to display our OnboardingSupportFragment
+
+
+        new MaterialShowcaseView.Builder(this)
+                .setDismissText("GOT IT")
+                .setContentText("WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!")
+                .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
+                .setTarget(new View(getApplicationContext()))
+                .singleUse("1")
+                .show();
+
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
 
@@ -119,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         button1 = findViewById(R.id.recordingbutton);
+
+
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,6 +296,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             bpm.setText("Your BPM value");
         }
 
+        tutorialSequence();
 
     }
 
@@ -478,6 +502,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
+    public void tutorialSequence(){
+        // sequence example
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "1");
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(new View(getApplicationContext()),"This application measures your calories burned, heart rate performance,"
+                + "and your average speed of every running session \n\n "
+                + "Heart rate performance use an indicator, heart rate performance index,"
+                + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
+                + "Heart rate performance index is a relative measurement: performance index number"
+                + " is larger than previous run means you improved your heart rate performance.","Ok");
+
+        sequence.addSequenceItem(bpm,"In the package, you received a heart rate sensor. Make sure you connect it via bluetooth." +
+                "You should see sensor connected","GOT IT");
+
+        sequence.addSequenceItem(button1,
+                "Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.", "GOT IT");
+
+        button1.setText("Getting your bpm");
+        sequence.addSequenceItem(button1,"After press the button for the first time, we are getting your bpm at rest. "
+                        +" Put your finger on the sensor until you see a different message","GOT IT");
+
+        button1.setText("Show Performance Index");
+        sequence.addSequenceItem(button1,"Now you can run, while you're running we are also recording"
+                + "your speed and location. We will display your path of this run session","GOT IT");
+        sequence.addSequenceItem(speed_txt,"This is your current speed","GOT IT");
+        sequence.start();
+        button1.setText("Start Recording");
+    }
     //-----------
 
     //MET is set to a default value for now (MET = 5)
