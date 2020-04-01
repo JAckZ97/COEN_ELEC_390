@@ -101,13 +101,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         // Check if we need to display our OnboardingSupportFragment
 
 
-        new MaterialShowcaseView.Builder(this)
-                .setDismissText("GOT IT")
-                .setContentText("WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!")
-                .setDelay(500) // optional but starting animations immediately in onCreate can make them choppy
-                .setTarget(new View(getApplicationContext()))
-                .singleUse("1")
-                .show();
+
 
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
@@ -140,8 +134,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
         button1 = findViewById(R.id.recordingbutton);
-
-
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -280,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         });
 
         bpm = findViewById(R.id.bpm);
+        tutorialSequence();
         bpm.setBackgroundResource(R.drawable.ic_bpm);
         bpm.setTextColor(getResources().getColor(R.color.colorBlack));
 
@@ -296,7 +289,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             bpm.setText("Your BPM value");
         }
 
-        tutorialSequence();
+
 
     }
 
@@ -503,13 +496,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     public void tutorialSequence(){
+
+
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "1");
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
 
         sequence.setConfig(config);
+
+        MaterialShowcaseSequence sequence2 = new MaterialShowcaseSequence(this);
+
+        sequence2.setConfig(config);
+        sequence.addSequenceItem(new View(getApplicationContext()),"WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!","Ok");
 
         sequence.addSequenceItem(new View(getApplicationContext()),"This application measures your calories burned, heart rate performance,"
                 + "and your average speed of every running session \n\n "
@@ -518,15 +517,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 + "Heart rate performance index is a relative measurement: performance index number"
                 + " is larger than previous run means you improved your heart rate performance.","Ok");
 
-        sequence.addSequenceItem(bpm,"In the package, you received a heart rate sensor. Make sure you connect it via bluetooth." +
-                "You should see sensor connected","GOT IT");
+
+
+        sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
 
         sequence.addSequenceItem(button1,
                 "Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.", "GOT IT");
 
         button1.setText("Getting your bpm");
         sequence.addSequenceItem(button1,"After press the button for the first time, we are getting your bpm at rest. "
-                        +" Put your finger on the sensor until you see a different message","GOT IT");
+                +" Put your finger on the sensor until you see a different message","GOT IT");
 
         button1.setText("Show Performance Index");
         sequence.addSequenceItem(button1,"Now you can run, while you're running we are also recording"
