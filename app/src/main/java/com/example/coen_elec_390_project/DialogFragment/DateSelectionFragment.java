@@ -32,6 +32,7 @@ public class DateSelectionFragment extends DialogFragment {
     DatePickerDialog.OnDateSetListener startDatePickerDialog, endDatePickerDialog;
     String startDate = "", endDate = "";
     StatisticsActivity statisticsActivity;
+    private static final String TAG = "DateSelectionFragment";
 
     @Nullable
     @Override
@@ -44,14 +45,32 @@ public class DateSelectionFragment extends DialogFragment {
 
         statisticsActivity = (StatisticsActivity) getActivity();
 
+        final String maxDate = getArguments().getString("maxDate");
+        final String minDate = getArguments().getString("minDate");
+
+        startdate.setText(minDate);
+        enddate.setText(maxDate);
+
+        String[] min_date_component = minDate.split("/");
+        final int min_year = Integer.parseInt(min_date_component[0]);
+        final int min_month = Integer.parseInt(min_date_component[1]);
+        final int min_day = Integer.parseInt(min_date_component[2]);
+        final Calendar min_cal = Calendar.getInstance();
+        min_cal.set(min_year, min_month - 1, min_day);
+
+        String[] max_date_component = maxDate.split("/");
+        final int max_year = Integer.parseInt(max_date_component[0]);
+        final int max_month = Integer.parseInt(max_date_component[1]);
+        final int max_day = Integer.parseInt(max_date_component[2]);
+        final Calendar max_cal = Calendar.getInstance();
+        max_cal.set(max_year, max_month - 1, max_day);
+
         startdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                final int day = cal.get(Calendar.DAY_OF_MONTH);
-                final DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, startDatePickerDialog, year, month, day);
+                final DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, startDatePickerDialog, min_year, min_month - 1, min_day);
+                dialog.getDatePicker().setMinDate(min_cal.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(max_cal.getTimeInMillis());
                 dialog.show();
             }
         });
@@ -67,11 +86,9 @@ public class DateSelectionFragment extends DialogFragment {
         enddate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar cal = Calendar.getInstance();
-                int year = cal.get(Calendar.YEAR);
-                int month = cal.get(Calendar.MONTH);
-                final int day = cal.get(Calendar.DAY_OF_MONTH);
-                final DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, endDatePickerDialog, year, month, day);
+                final DatePickerDialog dialog = new DatePickerDialog(getActivity(), android.R.style.Theme_Holo_Light_Dialog_MinWidth, endDatePickerDialog, max_year, max_month, max_day);
+                dialog.getDatePicker().setMinDate(min_cal.getTimeInMillis());
+                dialog.getDatePicker().setMaxDate(max_cal.getTimeInMillis());
                 dialog.show();
             }
         });
@@ -110,6 +127,7 @@ public class DateSelectionFragment extends DialogFragment {
                 else {
                     statisticsActivity.receiveStartEndDate(startDate, endDate);
                     statisticsActivity.loadListView();
+                    statisticsActivity.setUpGraph();
                     getDialog().dismiss();
                 }
             }

@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
@@ -66,12 +68,18 @@ public class StatisticsActivity extends AppCompatActivity {
         dateSelection = findViewById(R.id.dateSelection);
 
         loadListView();
-        setUpGraph();
+
+        final String maxDate = databaseHelper.getMaxDate(user.getId());
+        final String minDate = databaseHelper.getMinDate(user.getId());
 
         dateSelection.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DateSelectionFragment dateSelectionFragment = new DateSelectionFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("maxDate", maxDate);
+                bundle.putString("minDate", minDate);
+                dateSelectionFragment.setArguments(bundle);
                 dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
             }
         });
@@ -89,9 +97,12 @@ public class StatisticsActivity extends AppCompatActivity {
 
     /**Function to set up the GraphView*/
     public void setUpGraph() {
+        graph.removeSeries(series);
+
         if(data.length >= 2) {
             series = new LineGraphSeries<>(data);
             series.setDrawDataPoints(true);
+            series.setColor(R.color.colorBlack);
             graph.addSeries(series);
 
             graph.getGridLabelRenderer().setHorizontalAxisTitle("Date");
@@ -104,6 +115,7 @@ public class StatisticsActivity extends AppCompatActivity {
             graph.getGridLabelRenderer().setHorizontalLabelsAngle(45);
             graph.getViewport().setXAxisBoundsManual(false);
             graph.getGridLabelRenderer().setHumanRounding(false);
+
 
             graph.getGridLabelRenderer().setLabelFormatter(new DefaultLabelFormatter() {
                 @Override
@@ -159,15 +171,15 @@ public class StatisticsActivity extends AppCompatActivity {
                 break;
 
             case 1:
-                statistics = databaseHelper.getStatisticsAfterStartDate(user.getId(), /**"2020/3/9"*/startDate);
+                statistics = databaseHelper.getStatisticsAfterStartDate(user.getId(), startDate);
                 break;
 
             case 2:
-                statistics = databaseHelper.getStatisticsBeforeEndDate(user.getId(), /**"2020/3/9"*/endDate);
+                statistics = databaseHelper.getStatisticsBeforeEndDate(user.getId(), endDate);
                 break;
 
             case 3:
-                statistics = databaseHelper.getStatisticsBetweenStartAndEndDates(user.getId(), /**"2020/3/9", "2020/3/12"*/startDate, endDate);
+                statistics = databaseHelper.getStatisticsBetweenStartAndEndDates(user.getId(), startDate, endDate);
                 break;
 
             default:
@@ -200,6 +212,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statisticsListText);
         statisticsListView.setAdapter(arrayAdapter);
+
+        setUpGraph();
     }
 
     private void setUpBottomNavigationView() {

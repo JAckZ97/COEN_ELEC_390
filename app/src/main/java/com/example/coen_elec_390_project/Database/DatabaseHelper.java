@@ -500,6 +500,107 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /**Function that finds the max date in the statistic database*/
+    public String getMaxDate(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    String maxdate = "2020/01/01";
+
+                    do {
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+
+                        int after = compareDate(date, maxdate);
+                        Log.d(TAG, "maxdate:" + maxdate);
+                        Log.d(TAG, "date: " + date);
+                        Log.d(TAG, "after: " + after);
+                        if(after == -1) {
+                            maxdate = date;
+                        }
+
+                    } while(cursor.moveToNext());
+                    Log.d(TAG, "final maxdate:" + maxdate);
+                    return maxdate;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return "";
+    }
+
+    /**Function that finds the max date in the statistic database*/
+    public String getMinDate(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    String mindate = "2020/12/31";
+
+                    do {
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+
+                        int before = compareDate(date, mindate);
+                        Log.d(TAG, "mindate:" + mindate);
+                        Log.d(TAG, "date: " + date);
+                        Log.d(TAG, "after: " + before);
+                        if(before == 1) {
+                            mindate = date;
+                        }
+
+                    } while(cursor.moveToNext());
+                    Log.d(TAG, "final mindate:" + mindate);
+                    return mindate;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return "";
+    }
+
+
     /**Function that returns all the statistics of a given user after a given date*/
     public List<Statistic> getStatisticsAfterStartDate(int userId, String startdate) {
         SQLiteDatabase db = this.getReadableDatabase();
