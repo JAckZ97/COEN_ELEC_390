@@ -2,7 +2,6 @@ package com.example.coen_elec_390_project.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.Temp;
@@ -35,7 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
 public class ProfileActivity extends AppCompatActivity  {
-    EditText fullname, height, weight, age;
+    EditText fullname, height, weight, age, heightFeet, heightInch;
     Button save, edit;
     Spinner genderSelect;
     DatabaseHelper databaseHelper;
@@ -53,9 +51,10 @@ public class ProfileActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         setUpBottomNavigationView();
-
         fullname = findViewById(R.id.profileName);
         height = findViewById(R.id.profileHeight);
+        heightFeet = findViewById(R.id.profileHeightFeet);
+        heightInch = findViewById(R.id.profileHeightInch);
         weight = findViewById(R.id.profileWeight);
         age = findViewById(R.id.profileAge);
         genderSelect = findViewById(R.id.profileSelectGender);
@@ -73,6 +72,10 @@ public class ProfileActivity extends AppCompatActivity  {
         age.setEnabled(false);
         weight.setEnabled(false);
         genderSelect.setEnabled(false);
+        heightFeet.setEnabled(false);
+        heightInch.setEnabled(false);
+
+        //TODO: CHECK type of height stored
       
         cm.setEnabled(false);
         ft.setEnabled(false);
