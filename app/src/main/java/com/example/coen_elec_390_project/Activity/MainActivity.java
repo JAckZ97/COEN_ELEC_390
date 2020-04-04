@@ -10,6 +10,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -46,7 +50,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements LocationListener, Runnable {
+public class MainActivity extends AppCompatActivity implements LocationListener, Runnable, SensorEventListener {
     static TextView bpm;
     String email;
     Double weightinkg;
@@ -72,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public static boolean developer_mode = false;
     public static int dev_count=0;
     private Integer dev_count2=0;
+    SensorManager sensorManager;
+    boolean running = false;
+    private TextView count;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -87,9 +94,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        count = (TextView) findViewById(R.id.count);
         email = getIntent().getStringExtra("email");
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         if(getIntent().getStringExtra("dev_count")!=null)
             dev_count2=Integer.parseInt(getIntent().getStringExtra("dev_count"));
@@ -142,6 +151,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 understood=true;
                             }
                         }
+
 
                         if(developer_mode){
                             start = System.currentTimeMillis();
@@ -331,7 +341,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void setUpBottomNavigationView() {
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -350,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             startActivity(intent);
                             break;
                         }
+
 
                     case R.id.home:
                         if(developer_mode)
@@ -459,6 +471,30 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(running){
+            count.setText(String.valueOf(sensorEvent.values[0]));
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        running = true;
+        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (countSensor != null) {
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Countsensor unavailable", Toast.LENGTH_LONG).show();
+        }
+    }
     //-----------
 
     //MET is set to a default value for now (MET = 5)

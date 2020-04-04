@@ -28,6 +28,8 @@
         android:layout_alignParentBottom="true"
         android:background="#FFFFFF"
 	    app:menu="@menu/navigation_menu"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
         app:labelVisibilityMode="labeled"/>
 <!--
     <Button
@@ -79,7 +81,16 @@
         android:textAlignment="center"
         android:textColorLink="@color/design_default_color_primary_dark"
         android:textStyle="bold" />
-    app:labelVisibilityMode="labeled"
-        app:menu="@menu/navigation_menu" />
+
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="138dp"
+        android:layout_height="36dp"
+        android:layout_below="@+id/speed"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="26dp"
+        android:layout_marginEnd="135dp"
+        android:text="Steps Count" />
+
 
 </RelativeLayout>

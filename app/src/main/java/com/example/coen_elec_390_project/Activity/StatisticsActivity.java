@@ -57,6 +57,8 @@ public class StatisticsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_statistics);
         setUpBottomNavigationView();
 
+
+
         startDate = "";
         endDate = "";
         databaseHelper = new DatabaseHelper(this);
@@ -178,15 +180,16 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.statistics);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Intent intent;
+                //Intent intent;
 
                 switch (menuItem.getItemId()){
                     case R.id.map:
-                        intent = new Intent(new Intent(StatisticsActivity.this, MapsActivity.class));
+                        Intent intent = new Intent(StatisticsActivity.this, MapsActivity.class);
                         intent.putExtra("email", email);
                         startActivity(intent);
                         break;
@@ -196,10 +199,6 @@ public class StatisticsActivity extends AppCompatActivity {
                         intent.putExtra("email", email);
                         startActivity(intent);
                         break;
-
-                    case R.id.statistics:
-                        break;
-
                     case R.id.profile:
                         if (user.getEmail()== null) {
                             // User is signed in
