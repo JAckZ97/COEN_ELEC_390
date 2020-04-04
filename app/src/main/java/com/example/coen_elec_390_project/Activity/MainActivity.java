@@ -643,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     public void tutorialSequence2(){
 
-        Toast.makeText(getApplicationContext(),"Button clicked",Toast.LENGTH_SHORT).show();
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
@@ -657,9 +656,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 .setContentText("This application measures your calories burned, heart rate performance,"
                         + "and your average speed of every running session.\n\n"
                         + "Heart rate performance use an indicator, heart rate performance index,"
-                        + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
+                        + "which is calculated by using your bpm at rest and bpm after an physical activity.\n\n"
                         + "Heart rate performance index is a relative measurement: performance index number"
-                        + " is larger than previous run means you improved your heart rate performance.")
+                        + " is larger than previous measurement means you improved your heart rate performance.")
                 .build()
         );
 
@@ -669,7 +668,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 new MaterialShowcaseView.Builder(this)
                         .setTarget(bpm)
                         .setDismissOnTouch(true)
-                        .setContentText("Please make sure that the sensor is connected to your device via bluetooth!")
+                        .setContentText("Please make sure that the sensor is connected!")
                         .build()
         );
 

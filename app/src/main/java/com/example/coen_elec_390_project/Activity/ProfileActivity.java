@@ -85,7 +85,6 @@ public class ProfileActivity extends AppCompatActivity  {
         lb.setEnabled(false);
 
         boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
-        Toast.makeText(getApplicationContext(),Boolean.toString(tutorial),Toast.LENGTH_SHORT).show();
         if(!tutorial){
             email = getIntent().getStringExtra("email");
             final User user = databaseHelper.getUser(email);

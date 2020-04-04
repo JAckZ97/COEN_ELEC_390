@@ -279,7 +279,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 .setTarget(graph)
                 .setDismissOnTouch(true)
                 .setContentText("This is shows your performance index over date. As mentioned before, if you see a increasing line it means you're improving! "
-                        + "Don't worry if you see a small decreasing! You should really look for a big difference.")
+                        + "Don't worry if you see a small decreasing!")
                 .build()
         );
 
