@@ -38,6 +38,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class StatisticsActivity extends AppCompatActivity {
     private static final String TAG = "StatisticsActivity";
     GraphView graph;
@@ -63,7 +68,7 @@ public class StatisticsActivity extends AppCompatActivity {
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
         email = getIntent().getStringExtra("email");
-        user = databaseHelper.getUser(email);
+        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
         dateSelection = findViewById(R.id.dateSelection);
 
         dateSelection.setOnClickListener(new View.OnClickListener() {
@@ -73,6 +78,23 @@ public class StatisticsActivity extends AppCompatActivity {
                 dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
             }
         });
+
+        if(!tutorial) {
+            user = databaseHelper.getUser(email);
+            if(startDate.equals("") && endDate.equals(""))
+                loadListView();
+
+            if(!startDate.equals("")) {
+                loadListViewAfterStart(startDate);
+            }
+        }
+        else{
+            Log.e("TAG", "<STAT> tutorial session");
+            loadListView_tutorial();
+            tutorialSequence();
+        }
+
+
 
         //TO TEST THE GRAPH WHEN THERE IS A LOT OF POINTS
         /**Calendar calendar = Calendar.getInstance();
@@ -84,12 +106,7 @@ public class StatisticsActivity extends AppCompatActivity {
             Log.e("Tag","<STAT> "+randomobj.nextDouble());
         }*/
 
-        if(startDate.equals("") && endDate.equals(""))
-            loadListView();
 
-        if(!startDate.equals("")) {
-            loadListViewAfterStart(startDate);
-        }
 
 
         if(data.length != 0) {
@@ -177,6 +194,31 @@ public class StatisticsActivity extends AppCompatActivity {
         statisticsListView.setAdapter(arrayAdapter);
     }
 
+    private void loadListView_tutorial(){
+        ArrayList<String> statisticsListText = new ArrayList<>();
+        data = new DataPoint[3];
+        Calendar calendar = Calendar.getInstance();
+
+
+        for(int i = 1; i < 4; i++) {
+            calendar.set(2020, 03, i);
+            String temp = "";
+            temp += "Statistic's id: " + i + "\n";
+            temp += "Date: " + calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "\n";
+            temp += "Performance index: " + i*2 + "\n";
+            temp += "Calories burned: " + 200 + "\n";
+            temp += "Speed: " + 9.5 + " km/h";
+
+            DataPoint dataPoint = new DataPoint(i, i*2);
+            data[i-1] = dataPoint;
+            Collections.reverse(statisticsListText);
+            statisticsListText.add(temp);
+        }
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statisticsListText);
+        statisticsListView.setAdapter(arrayAdapter);
+    }
+
     private void setUpBottomNavigationView() {
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -221,6 +263,62 @@ public class StatisticsActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    public void tutorialSequence(){
+
+
+        // sequence example
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(graph)
+                .setDismissOnTouch(true)
+                .setContentText("This is shows your performance index over date. As mentioned before, if you see a increasing line it means you're improving! "
+                        + "Don't worry if you see a small decreasing!")
+                .build()
+        );
+
+        //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(statisticsListView)
+                        .setDismissOnTouch(true)
+                        .setContentText("This is the table of your running session stats. You can find the calories burn in the table and other measurement if you're looking for specific numbers.")
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(dateSelection)
+                        .setDismissOnTouch(true)
+                        .setContentText("This button allows you to filter the date interval of for the graph and the table.")
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView showcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
+                                Intent intent;
+                                Log.e("Tag", "<MAIN> entering statistic");
+                                intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
+                                intent.putExtra("tutorial",true);
+                                startActivity(intent);
+                            }
+                        })
+                        .build()
+        );
+
+
+        sequence.start();
+
     }
 }
 

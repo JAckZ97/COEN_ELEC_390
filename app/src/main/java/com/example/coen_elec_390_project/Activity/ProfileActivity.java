@@ -34,6 +34,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+
 public class ProfileActivity extends AppCompatActivity  {
     EditText fullname, height, weight, age;
     Button save, edit;
@@ -79,44 +84,106 @@ public class ProfileActivity extends AppCompatActivity  {
         kg.setEnabled(false);
         lb.setEnabled(false);
 
+        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
+        if(!tutorial){
+            email = getIntent().getStringExtra("email");
+            final User user = databaseHelper.getUser(email);
+            Bundle bundle = getIntent().getExtras();
+            insert_temp = bundle.getBoolean("temp",false);
+            databaseHelper = new DatabaseHelper(this);
 
-        email = getIntent().getStringExtra("email");
-        Bundle bundle = getIntent().getExtras();
-        insert_temp = bundle.getBoolean("temp",false);
-        databaseHelper = new DatabaseHelper(this);
-        final User user = databaseHelper.getUser(email);
-      
-        fullname.setText(user.getFullname());
-        age.setText(user.getAge());
-        height.setText(user.getHeight());
-        weight.setText(user.getWeight());
 
-        if(user.getHeightUnit()==1){ kg.setChecked(true); lb.setChecked(false);}
-        else{ lb.setChecked(true); kg.setChecked(false);}
-        if(user.getWeightUnit()==1){ cm.setChecked(true); ft.setChecked(false);}
-        else{ ft.setChecked(true); cm.setChecked(false);}
+            fullname.setText(user.getFullname());
+            age.setText(user.getAge());
+            height.setText(user.getHeight());
+            weight.setText(user.getWeight());
 
-        // set gender spinner and catch error
-        if(user.getGender() == null){
+            if(user.getHeightUnit()==1){ kg.setChecked(true); lb.setChecked(false);}
+            else{ lb.setChecked(true); kg.setChecked(false);}
+            if(user.getWeightUnit()==1){ cm.setChecked(true); ft.setChecked(false);}
+            else{ ft.setChecked(true); cm.setChecked(false);}
+
+            // set gender spinner and catch error
+            if(user.getGender() == null){
+                genderSelect.setSelection(2);
+                selectGender="Other";
+                Log.e("Tag","<PROFILE> initialize selectGender = "+selectGender);
+            }
+            else {
+                genderSelect.setSelection(genderGenerate(user.getGender()));
+            }
+
+            genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    selectGender=parent.getSelectedItem().toString();
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
+                }
+            });
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if(writeProfile(user)) {
+                        fullname.setEnabled(false);
+                        height.setEnabled(false);
+                        weight.setEnabled(false);
+                        genderSelect.setEnabled(false);
+                        age.setEnabled(false);
+                        cm.setEnabled(false);
+                        ft.setEnabled(false);
+                        kg.setEnabled(false);
+                        lb.setEnabled(false);
+                        readProfile();
+                        user_editting=false;
+                    }
+
+                    if(user_editting){
+                        writeProfile(user);
+                    }
+
+//                basicRead();
+                }
+            });
+
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fullname.setEnabled(true);
+                    height.setEnabled(true);
+                    weight.setEnabled(true);
+                    genderSelect.setEnabled(true);
+                    age.setEnabled(true);
+                    cm.setEnabled(true);
+                    ft.setEnabled(true);
+                    kg.setEnabled(true);
+                    lb.setEnabled(true);
+                    user_editting=true;
+//               writeProfile();
+                }
+            });
+        }
+        else{
+            fullname.setText("Name");
+            age.setText("Age");
+            height.setText("Height");
+            weight.setText("Weight");
+
+            kg.setChecked(true); lb.setChecked(false);
+            cm.setChecked(true); ft.setChecked(false);
+
+            // set gender spinner and catch error
             genderSelect.setSelection(2);
             selectGender="Other";
             Log.e("Tag","<PROFILE> initialize selectGender = "+selectGender);
-        }
-        else {
-            genderSelect.setSelection(genderGenerate(user.getGender()));
+            tutorialSequence();
         }
 
-        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectGender=parent.getSelectedItem().toString();
-            }
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -146,48 +213,7 @@ public class ProfileActivity extends AppCompatActivity  {
             }
         });*/
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                if(writeProfile(user)) {
-                    fullname.setEnabled(false);
-                    height.setEnabled(false);
-                    weight.setEnabled(false);
-                    genderSelect.setEnabled(false);
-                    age.setEnabled(false);
-                    cm.setEnabled(false);
-                    ft.setEnabled(false);
-                    kg.setEnabled(false);
-                    lb.setEnabled(false);
-                    readProfile();
-                    user_editting=false;
-                }
-
-                if(user_editting){
-                    writeProfile(user);
-                }
-
-//                basicRead();
-            }
-        });
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fullname.setEnabled(true);
-                height.setEnabled(true);
-                weight.setEnabled(true);
-                genderSelect.setEnabled(true);
-                age.setEnabled(true);
-                cm.setEnabled(true);
-                ft.setEnabled(true);
-                kg.setEnabled(true);
-                lb.setEnabled(true);
-                user_editting=true;
-//               writeProfile();
-            }
-        });
     }
 
     /**
@@ -432,5 +458,46 @@ public class ProfileActivity extends AppCompatActivity  {
                 return true;
             }
         });
+    }
+
+    public void tutorialSequence(){
+
+
+        // sequence example
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(new View(getApplicationContext()))
+                .setDismissOnTouch(true)
+                .setContentText("Finally, the profile page allows you to input your information.\n\n"
+                        + "Make sure you register and enter your information here otherwise your running session data will not be stored and Statistic won't be able to track it!")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
+                        Intent intent;
+                        Log.e("Tag", "<MAIN> entering statistic");
+                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent.putExtra("tutorial",true);
+                        startActivity(intent);
+                    }
+                })
+                .build()
+        );
+
+        //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
+
+
+
+        sequence.start();
+
     }
 }
