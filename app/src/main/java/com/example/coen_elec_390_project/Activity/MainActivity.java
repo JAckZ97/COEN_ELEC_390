@@ -52,7 +52,7 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.target.Target;
-
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity implements LocationListener, Runnable {
     static TextView bpm;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Double weightinkg;
     Double actduration;
     DatabaseHelper databaseHelper;
+    private FloatingActionButton tutorial_btn;
 
     //private Switch aSwitch;
     public static Button button1;
@@ -102,11 +103,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our OnboardingSupportFragment
 
-
-
-
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
+
 
         if(getIntent().getStringExtra("dev_count")!=null)
             dev_count2=Integer.parseInt(getIntent().getStringExtra("dev_count"));
@@ -272,6 +271,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
             }
         });
+
+        tutorial_btn = findViewById(R.id.tutorial_btn);
+        tutorial_btn.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                tutorialSequence2();
+            }
+        });
+
+        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
+
+        if(tutorial)
+            new MaterialShowcaseView.Builder(this)
+                    .setTarget(tutorial_btn)
+                    .setDismissOnTouch(true)
+                    .setContentText("If you still have some questions, click this button to see the tutorial again or send email to coen390@HRperformance.com\n\nHave FUN!")
+                    .show();
 
         bpm = findViewById(R.id.bpm);
         tutorialSequence();
@@ -598,6 +614,131 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 })
                 .build()
                 );
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(speed_txt)
+                .setDismissOnTouch(true)
+                .setContentText("This is your current speed. Finish the recording to see your average speed of this running session.")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        Intent intent;
+                        button1.setText(getResources().getString(R.string.recording_btn_text));
+                        Log.e("Tag", "<MAIN> entering statistic");
+                        intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                        intent.putExtra("tutorial",true);
+                        startActivity(intent);
+                    }
+
+
+                })
+                .build());
+        sequence.start();
+
+    }
+
+    public void tutorialSequence2(){
+
+        Toast.makeText(getApplicationContext(),"Button clicked",Toast.LENGTH_SHORT).show();
+        // sequence example
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+
+        sequence.setConfig(config);
+
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(new View(getApplicationContext()))
+                .setDismissOnTouch(true)
+                .setContentText("This application measures your calories burned, heart rate performance,"
+                        + "and your average speed of every running session.\n\n"
+                        + "Heart rate performance use an indicator, heart rate performance index,"
+                        + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
+                        + "Heart rate performance index is a relative measurement: performance index number"
+                        + " is larger than previous run means you improved your heart rate performance.")
+                .build()
+        );
+
+        //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(bpm)
+                        .setDismissOnTouch(true)
+                        .setContentText("Please make sure that the sensor is connected to your device via bluetooth!")
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(button1)
+                        .setDismissOnTouch(true)
+                        .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.")
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                button1.setText("Getting your bpm");
+                            }
+
+
+                        })
+                        .build()
+        );
+
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(button1)
+                        .setDismissOnTouch(true)
+                        .setContentText("After press the button for the first time, we are getting your bpm at rest. "
+                                +" Put your finger on the sensor until you see a different message")
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                button1.setText("Show Performance Index");
+                            }
+
+
+                        })
+                        .build()
+        );
+
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(button1)
+                        .setDismissOnTouch(true)
+                        .setContentText("Now you can run, while you're running we are also recording "
+                                + "your speed and location. We will display your path of this run session")
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                button1.setText(getResources().getString(R.string.recording_btn_text));
+                            }
+
+
+                        })
+                        .build()
+        );
         sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
                 .setTarget(speed_txt)
                 .setDismissOnTouch(true)

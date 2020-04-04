@@ -271,7 +271,7 @@ public class StatisticsActivity extends AppCompatActivity {
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this,"2");
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
 
         sequence.setConfig(config);
 
