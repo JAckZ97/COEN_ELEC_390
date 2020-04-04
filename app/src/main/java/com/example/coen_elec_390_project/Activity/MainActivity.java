@@ -47,6 +47,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
@@ -79,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public static boolean developer_mode = false;
     public static int dev_count=0;
     private Integer dev_count2=0;
+    int count = 0;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -291,7 +293,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
 
-    }
+
+        }
 
     public void store_temp_dialog() {
         final AlertDialog.Builder popDialog = new AlertDialog.Builder(this);
@@ -501,39 +504,125 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
         config.setDelay(500); // half second between each showcase view
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this);
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this,"1");
 
         sequence.setConfig(config);
 
-        MaterialShowcaseSequence sequence2 = new MaterialShowcaseSequence(this);
-
-        sequence2.setConfig(config);
         sequence.addSequenceItem(new View(getApplicationContext()),"WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!","Ok");
 
-        sequence.addSequenceItem(new View(getApplicationContext()),"This application measures your calories burned, heart rate performance,"
-                + "and your average speed of every running session \n\n "
-                + "Heart rate performance use an indicator, heart rate performance index,"
-                + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
-                + "Heart rate performance index is a relative measurement: performance index number"
-                + " is larger than previous run means you improved your heart rate performance.","Ok");
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(new View(getApplicationContext()))
+                .setDismissOnTouch(true)
+                .setContentText("This application measures your calories burned, heart rate performance,"
+                        + "and your average speed of every running session.\n\n"
+                        + "Heart rate performance use an indicator, heart rate performance index,"
+                        + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
+                        + "Heart rate performance index is a relative measurement: performance index number"
+                        + " is larger than previous run means you improved your heart rate performance.")
+                .build()
+        );
+
+        //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(bpm)
+                        .setDismissOnTouch(true)
+                        .setContentText("Please make sure that the sensor is connected to your device via bluetooth!")
+                        .build()
+        );
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                        .setTarget(button1)
+                        .setDismissOnTouch(true)
+                        .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.")
+                        .setListener(new IShowcaseListener() {
+                            @Override
+                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                            }
+
+                            @Override
+                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                button1.setText("Getting your bpm");
+                            }
 
 
+                        })
+                        .build()
+                );
 
-        sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
 
-        sequence.addSequenceItem(button1,
-                "Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.", "GOT IT");
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                .setTarget(button1)
+                .setDismissOnTouch(true)
+                .setContentText("After press the button for the first time, we are getting your bpm at rest. "
+                        +" Put your finger on the sensor until you see a different message")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
 
-        button1.setText("Getting your bpm");
-        sequence.addSequenceItem(button1,"After press the button for the first time, we are getting your bpm at rest. "
-                +" Put your finger on the sensor until you see a different message","GOT IT");
+                    }
 
-        button1.setText("Show Performance Index");
-        sequence.addSequenceItem(button1,"Now you can run, while you're running we are also recording"
-                + "your speed and location. We will display your path of this run session","GOT IT");
-        sequence.addSequenceItem(speed_txt,"This is your current speed","GOT IT");
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        button1.setText("Show Performance Index");
+                    }
+
+
+                })
+                .build()
+                );
+
+
+        sequence.addSequenceItem(
+                new MaterialShowcaseView.Builder(this)
+                .setTarget(button1)
+                .setDismissOnTouch(true)
+                .setContentText("Now you can run, while you're running we are also recording "
+                        + "your speed and location. We will display your path of this run session")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        button1.setText(getResources().getString(R.string.recording_btn_text));
+                    }
+
+
+                })
+                .build()
+                );
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(speed_txt)
+                .setDismissOnTouch(true)
+                .setContentText("This is your current speed. Finish the recording to see your average speed of this running session.")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        Intent intent;
+                        button1.setText(getResources().getString(R.string.recording_btn_text));
+                        Log.e("Tag", "<MAIN> entering statistic");
+                        intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                        intent.putExtra("tutorial",true);
+                        startActivity(intent);
+                    }
+
+
+                })
+                .build());
         sequence.start();
-        button1.setText("Start Recording");
+
     }
     //-----------
 
