@@ -152,8 +152,19 @@ public class MyBluetoothService {
                                 }
                             }
                         }
-                        MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) +"\nBPM");
-                        voltage_readings.clear();
+
+
+                        int counter = 0;
+                        for(int j=0;j<voltage_readings.size();j++){if(voltage_readings.get(j)<=0.1){counter++;}}
+
+                        if(counter==512)
+                        {
+                            MainActivity.Update_bpm("No finger detected");
+                            voltage_readings.clear();
+                        }else if(counter!=512){
+                            MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) + "\nBPM");
+                            voltage_readings.clear();
+                        }
 
                     }
 
