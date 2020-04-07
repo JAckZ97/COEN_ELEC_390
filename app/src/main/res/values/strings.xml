@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COEN-ELEC-390-Project</string>
+    <string name="app_name">HeartBeat Monitor</string>
     <string name="profile">profile</string>
     <string name="states">states</string>
     <string name="gender">Gender</string>
