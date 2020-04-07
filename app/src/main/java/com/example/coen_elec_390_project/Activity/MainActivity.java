@@ -38,10 +38,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,8 +46,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements LocationListener, Runnable {
     static TextView bpm;
     String email;
-    Double weightinkg;
-    Double actduration;
     DatabaseHelper databaseHelper;
 
     //private Switch aSwitch;
@@ -59,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     private int counter = 0;
     private int speed_counter = 0;
     private TextView speed_txt;
-    // static int[] array1[] = new int[][];
     float continuous_average_speed = 0;
     double average_speed = 0;
     float speed_sum = 0;
@@ -77,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     TextView resulttext;
     String calculation;
     */
-
     public void run() {
 
     }
@@ -342,7 +335,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             popDialog.setPositiveButton("Understood",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-
                             dialog.dismiss();
                         }
 
@@ -439,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
         if (location == null) {
             speed_txt.setText("-- km/h");
         } else {

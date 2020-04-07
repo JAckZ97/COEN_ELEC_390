@@ -89,7 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, (float) 0.5, this);
     }
 
     private void fetchLastlocation(){
@@ -158,7 +158,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
-        //Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
         Log.e("Tag","<Map> "+"Current location:\n" + location);
         lastKnownLatLng = new LatLng(currentlocation.getLatitude(), currentlocation.getLongitude());
 
