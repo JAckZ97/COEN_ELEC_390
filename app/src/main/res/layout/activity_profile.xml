@@ -85,7 +85,7 @@
         android:layout_marginLeft="0dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/edittext_background"
-        android:hint="Height"
+        android:hint="Centimeter"
         android:inputType="numberDecimal"
         android:maxLength="3"
         android:padding="10dp" />
@@ -96,7 +96,7 @@
         android:hint="Feet"
         android:id="@+id/profileHeightFeet"
         android:inputType="numberDecimal"
-        android:maxLength="3"
+        android:maxLength="1"
         android:layout_marginTop="15dp"
         android:layout_alignLeft="@id/profileName"
         android:layout_centerHorizontal="false"
@@ -175,13 +175,5 @@
         app:menu="@menu/navigation_menu"
         app:labelVisibilityMode="labeled"/>
 
-    <!--    <Button-->
-<!--        android:id="@+id/profileSaveButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="325dp"-->
-<!--        android:text="Profile Save" />-->
 
 </RelativeLayout>

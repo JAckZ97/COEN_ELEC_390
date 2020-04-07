@@ -42,9 +42,12 @@ public class ProfileActivity extends AppCompatActivity  {
     String email;
     String selectGender;
     ProgressDialog pd;
+    double tempFeet, tempInch = 0;
+    double tempHeight = 0;
     private boolean user_editting = false;
     private Boolean insert_temp=false;
     public static int dev_count=0;
+    int indexOfDecimal;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,8 +78,6 @@ public class ProfileActivity extends AppCompatActivity  {
         heightFeet.setEnabled(false);
         heightInch.setEnabled(false);
 
-        //TODO: CHECK type of height stored
-      
         cm.setEnabled(false);
         ft.setEnabled(false);
         kg.setEnabled(false);
@@ -91,13 +92,37 @@ public class ProfileActivity extends AppCompatActivity  {
       
         fullname.setText(user.getFullname());
         age.setText(user.getAge());
-        height.setText(user.getHeight());
+//        height.setText(user.getHeight());
         weight.setText(user.getWeight());
 
-        if(user.getHeightUnit()==1){ kg.setChecked(true); lb.setChecked(false);}
-        else{ lb.setChecked(true); kg.setChecked(false);}
-        if(user.getWeightUnit()==1){ cm.setChecked(true); ft.setChecked(false);}
-        else{ ft.setChecked(true); cm.setChecked(false);}
+
+        if(user.getWeightUnit()==1){
+            kg.setChecked(true);
+            lb.setChecked(false);
+
+        }
+        else{
+            lb.setChecked(true);
+            kg.setChecked(false);
+        }
+
+        if(user.getHeightUnit()==1){
+            cm.setChecked(true);
+            height.setVisibility(View.VISIBLE);
+            heightFeet.setVisibility(View.INVISIBLE);
+            heightInch.setVisibility(View.INVISIBLE);
+            height.setText(user.getHeight());
+        }
+        if(user.getHeightUnit()==0){
+            ft.setChecked(true);
+            height.setVisibility(View.INVISIBLE);
+            heightFeet.setVisibility(View.VISIBLE);
+            heightInch.setVisibility(View.VISIBLE);
+            indexOfDecimal = user.getHeight().indexOf(".");
+            heightFeet.setText(user.getHeight().substring(0,indexOfDecimal));
+            heightInch.setText(user.getHeight().substring(indexOfDecimal+1));
+
+        }
 
         // set gender spinner and catch error
         if(user.getGender() == null){
@@ -120,6 +145,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
             }
         });
+
 
         /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
@@ -163,6 +189,9 @@ public class ProfileActivity extends AppCompatActivity  {
                     ft.setEnabled(false);
                     kg.setEnabled(false);
                     lb.setEnabled(false);
+                    heightFeet.setEnabled(false);
+                    heightInch.setEnabled(false);
+
                     readProfile();
                     user_editting=false;
                 }
@@ -187,7 +216,27 @@ public class ProfileActivity extends AppCompatActivity  {
                 ft.setEnabled(true);
                 kg.setEnabled(true);
                 lb.setEnabled(true);
+                heightFeet.setEnabled(true);
+                heightInch.setEnabled(true);
                 user_editting=true;
+
+
+                heightGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                        if(i == R.id.heightCm){
+                            height.setVisibility(View.VISIBLE);
+                            heightFeet.setVisibility(View.INVISIBLE);
+                            heightInch.setVisibility(View.INVISIBLE);
+                        }
+                        if(i == R.id.heightFeet){
+                            height.setVisibility(View.INVISIBLE);
+                            heightFeet.setVisibility(View.VISIBLE);
+                            heightInch.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
+
 //               writeProfile();
             }
         });
@@ -246,7 +295,6 @@ public class ProfileActivity extends AppCompatActivity  {
         Log.e("Tag","<PROFILE>");
         genderSelect.setSelection(genderGenerate(user.getGender()));
         age.setText(user.getAge());
-        height.setText(user.getHeight());
         weight.setText(user.getWeight());
 
         if(user.getWeightUnit()==1){
@@ -255,26 +303,65 @@ public class ProfileActivity extends AppCompatActivity  {
             lb.setChecked(true); }
 
         if(user.getHeightUnit()==1){
-            cm.setChecked(true); }
-        else{
-            ft.setChecked(true); }
+            cm.setChecked(true);
+            height.setVisibility(View.VISIBLE);
+            heightFeet.setVisibility(View.INVISIBLE);
+            heightInch.setVisibility(View.INVISIBLE);
+            height.setText(user.getHeight());
+        }
+        if(user.getHeightUnit()==0){
+            ft.setChecked(true);
+            height.setVisibility(View.INVISIBLE);
+            heightFeet.setVisibility(View.VISIBLE);
+            heightInch.setVisibility(View.VISIBLE);
+            indexOfDecimal = user.getHeight().indexOf(".");
+            heightFeet.setText(user.getHeight().substring(0,indexOfDecimal));
+            heightInch.setText(user.getHeight().substring(indexOfDecimal+1));
+
+        }
     }
 
     private boolean writeProfile(User user) {
         pd = new ProgressDialog(ProfileActivity.this);
-//        pd.setMessage("Please wait...");
-//        pd.show();
 
         String str_fullname = fullname.getText().toString();
         String str_gender = selectGender;
         Log.e("Tag","<PROFILE> "+selectGender);
         String str_age = age.getText().toString();
         String str_weight = weight.getText().toString();
-        String str_height = height.getText().toString();
+        String str_heightCm = height.getText().toString();
+
+        String str_height = null;
 
         int checkWeightId = weightGroup.getCheckedRadioButtonId();
         int checkHeightId = heightGroup.getCheckedRadioButtonId();
 
+        if(checkHeightId == R.id.heightCm){
+            if(height.getText().toString().isEmpty()){
+                Toast.makeText(ProfileActivity.this, "Invalid input! Please enter your information properly.", Toast.LENGTH_SHORT).show();
+                pd.dismiss(); }
+            else{
+                str_height = str_heightCm;
+            }
+        }
+
+        if(checkHeightId == R.id.heightFeet){
+            if(heightFeet.getText().toString().isEmpty() && heightInch.getText().toString().isEmpty()){
+                Toast.makeText(ProfileActivity.this, "Invalid input! Please enter your information properly.", Toast.LENGTH_SHORT).show();
+                pd.dismiss(); }
+            else{
+                tempFeet = Integer.parseInt(heightFeet.getText().toString());
+                tempInch = Integer.parseInt(heightInch.getText().toString());
+                tempHeight = tempFeet + tempInch/100;
+                String str_heightFeet = String.valueOf(tempHeight);
+                str_height = str_heightFeet;
+            }
+//            tempFeet = Integer.parseInt(heightFeet.getText().toString());
+//            tempInch = Integer.parseInt(heightInch.getText().toString());
+//            tempHeight = tempFeet + tempInch/100;
+//            String str_heightFeet = String.valueOf(tempHeight);
+//            str_height = str_heightFeet;
+        }
 
         switch (checkWeightId){
             case R.id.weightKG:
@@ -296,13 +383,29 @@ public class ProfileActivity extends AppCompatActivity  {
             case R.id.heightCm:
                 cm.setChecked(true);
                 ft.setChecked(false);
-                user.setHeightUnit(1);
+                if(Double.parseDouble(str_height)<=8 && Double.parseDouble(str_height)>=4){
+                    user.setHeightUnit(0);
+                }
+                else{
+                    user.setHeightUnit(1);
+                }
+                height.setVisibility(View.VISIBLE);
+                heightFeet.setVisibility(View.INVISIBLE);
+                heightInch.setVisibility(View.INVISIBLE);
                 //Log.e("Tag","<PROFILE> cm checked");
                 break;
             case R.id.heightFeet:
                 ft.setChecked(true);
                 cm.setChecked(false);
-                user.setHeightUnit(0);
+                if(tempFeet<= 4 || tempFeet >=7 || tempInch>=13){
+                    user.setHeightUnit(1);
+                }
+                else {
+                    user.setHeightUnit(0);
+                }
+                height.setVisibility(View.INVISIBLE);
+                heightFeet.setVisibility(View.VISIBLE);
+                heightInch.setVisibility(View.VISIBLE);
                 //Log.e("Tag","<PROFILE> ft checked");
                 break;
         }
@@ -323,9 +426,12 @@ public class ProfileActivity extends AppCompatActivity  {
                 } else if (user.getHeightUnit() == 1 && (Double.parseDouble(str_height) <= 120 || Double.parseDouble(str_height) >= 215)) {
                     Toast.makeText(ProfileActivity.this, "Height is out off range", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
-                } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7)) {
+                } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7 || tempInch >= 13)) {
                     Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
+//                } else if (tempInch >= 13 || tempFeet <= 4 || tempFeet>= 7) {
+//                    Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
+//                    pd.dismiss();
                 } else {
                     user.setFullname(str_fullname);
                     user.setGender(str_gender);
@@ -375,15 +481,15 @@ public class ProfileActivity extends AppCompatActivity  {
 //        user.setAge(str_age);
 //        user.setWeight(str_weight);
 //        user.setHeight(str_height);
-
-        //Log.e("Tag","<PROFILE> Weight unit "+ user.getWeightUnit());
-        //Log.e("Tag","<PROFILE> Height unit "+ user.getHeightUnit());
+//
+//        Log.e("Tag","<PROFILE> Weight unit "+ user.getWeightUnit());
+//        Log.e("Tag","<PROFILE> Height unit "+ user.getHeightUnit());
 
 
 
     }
 
-    private int genderGenerate (String selectGender){
+    private int genderGenerate (@org.jetbrains.annotations.NotNull String selectGender){
         switch (selectGender){
             case "Male":
                 return 0;
