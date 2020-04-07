@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +21,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
@@ -58,6 +61,8 @@ public class StartActivity extends AppCompatActivity {
     private ConnectThread mythread;
     private MyBluetoothService mbs;
     private boolean btpass= false;
+    private Switch wifiSwitch;
+    private WifiManager wifiManager;
 
     @Override
     protected void onStart() {
@@ -81,6 +86,15 @@ public class StartActivity extends AppCompatActivity {
             showBTDialog();
         }
 
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(wifistateReceiver, intentFilter);
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(wifistateReceiver);
     }
 
     private void bluetoothsetup(){
@@ -160,6 +174,9 @@ public class StartActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         guest = findViewById(R.id.guest);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        wifiSwitch = findViewById(R.id.wifiCheckSwitch);
+        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         final Integer new_dev;
         String dev = getIntent().getStringExtra("dev_count");
         if(dev!=null) {
@@ -193,8 +210,37 @@ public class StartActivity extends AppCompatActivity {
             }
         });
 
-
+        wifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    wifiManager.setWifiEnabled(true);
+                    wifiSwitch.setText("You have access the wifi. ");
+                }else {
+                    wifiManager.setWifiEnabled(false);
+                    wifiSwitch.setText("You turn off the wifi. ");
+                }
+            }
+        });
     }
+
+    private BroadcastReceiver wifistateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiStateExtra= intent.getIntExtra(wifiManager.EXTRA_WIFI_STATE,
+                    wifiManager.WIFI_STATE_UNKNOWN);
+            switch(wifiStateExtra){
+                case WifiManager.WIFI_STATE_ENABLED:
+                    wifiSwitch.setChecked(true);
+                    wifiSwitch.setText("You have access the wifi. ");
+                    break;
+                case WifiManager.WIFI_STATE_DISABLED:
+                    wifiSwitch.setChecked(false);
+                    wifiSwitch.setText("You turn off the wifi. ");
+                    break;
+            }
+        }
+    };
 
     /**public void signInAnonimously() {
         final FirebaseAuth auth;
