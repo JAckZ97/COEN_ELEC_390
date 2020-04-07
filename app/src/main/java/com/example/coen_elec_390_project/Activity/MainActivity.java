@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         speed_counter = 0;
                         continuous_average_speed = 0;
                         stepsCounter=0;
+                        count.setText("0");
                         //timestamp seconds since epoch
                         break;
 
