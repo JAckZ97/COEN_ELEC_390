@@ -64,38 +64,39 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
         setUpBottomNavigationView();
-      
-        startDate = "";
-        endDate = "";
-      
-        databaseHelper = new DatabaseHelper(this);
+        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
+
+
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
-        email = getIntent().getStringExtra("email");
-        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
         dateSelection = findViewById(R.id.dateSelection);
-
-        loadListView();
-
-        final String maxDate = databaseHelper.getMaxDate(user.getId());
-        final String minDate = databaseHelper.getMinDate(user.getId());
-
-        dateSelection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DateSelectionFragment dateSelectionFragment = new DateSelectionFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("maxDate", maxDate);
-                bundle.putString("minDate", minDate);
-                dateSelectionFragment.setArguments(bundle);
-                dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
-            }
-        });
-
         if(!tutorial) {
+
+            startDate = "";
+            endDate = "";
+            databaseHelper = new DatabaseHelper(this);
+
+
+            email = getIntent().getStringExtra("email");
             user = databaseHelper.getUser(email);
-            if(startDate.equals("") && endDate.equals(""))
-                loadListView();
+
+
+            loadListView();
+
+            final String maxDate = databaseHelper.getMaxDate(user.getId());
+            final String minDate = databaseHelper.getMinDate(user.getId());
+
+            dateSelection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DateSelectionFragment dateSelectionFragment = new DateSelectionFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("maxDate", maxDate);
+                    bundle.putString("minDate", minDate);
+                    dateSelectionFragment.setArguments(bundle);
+                    dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
+                }
+            });
 
         }
         else{
