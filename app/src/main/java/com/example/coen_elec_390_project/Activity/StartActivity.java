@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,6 +13,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -49,7 +53,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class StartActivity extends AppCompatActivity {
     Button login, register, guest;
 
-//    FirebaseUser firebaseUser;
+    FirebaseUser firebaseUser;
     private final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter bluetoothAdapter;
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -63,17 +67,18 @@ public class StartActivity extends AppCompatActivity {
     private boolean btpass= false;
     private Switch wifiSwitch;
     private WifiManager wifiManager;
+    ProgressDialog pd;
 
     @Override
     protected void onStart() {
         super.onStart();
-//        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        // redirect if user is not null
-//        if(firebaseUser != null) {
-//            startActivity(new Intent(StartActivity.this, MainActivity.class));
-//            finish();
-//        }
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // redirect if user is not null
+        if(firebaseUser != null) {
+            startActivity(new Intent(StartActivity.this, MainActivity.class));
+            finish();
+        }
 
         if(!MyBluetoothService.initialized){
             bluetoothsetup();
@@ -88,7 +93,6 @@ public class StartActivity extends AppCompatActivity {
 
         IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
         registerReceiver(wifistateReceiver, intentFilter);
-
     }
 
     @Override
@@ -204,9 +208,14 @@ public class StartActivity extends AppCompatActivity {
         guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StartActivity.this, MainActivity.class);
-                intent.putExtra("dev_count",new_dev.toString());
-                startActivity(intent);
+                if (checkNetworkConnection()){
+                    signInAnonimously();
+                }
+                else{
+                    Intent intent = new Intent(StartActivity.this, MainActivity.class);
+                    intent.putExtra("dev_count",new_dev.toString());
+                    startActivity(intent);
+                }
             }
         });
 
@@ -242,7 +251,37 @@ public class StartActivity extends AppCompatActivity {
         }
     };
 
-    /**public void signInAnonimously() {
+    private boolean checkNetworkConnection(){
+        pd = new ProgressDialog(StartActivity.this);
+        boolean wifiConnected;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+
+            if(wifiConnected){
+                Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
+                Log.e("Tag", "wifi is connected");
+                pd.dismiss();
+
+                return true;
+            }
+        }
+        else{ // no internet connected
+            Toast.makeText(StartActivity.this, "No internet connect", Toast.LENGTH_SHORT).show();
+            Log.e("Tag", "no internet connect ");
+            pd.dismiss();
+
+            return false;
+        }
+
+        return false;
+    }
+
+
+    public void signInAnonimously() {
         final FirebaseAuth auth;
 
         auth = FirebaseAuth.getInstance();
@@ -254,13 +293,9 @@ public class StartActivity extends AppCompatActivity {
                     // Sign in success, update UI with the signed-in user's information
                     //Log.d(TAG, "signInAnonymously:success");
                     FirebaseUser user = auth.getCurrentUser();
-
-
                 }
-
                 else {
                     // If sign in fails, display a message to the user.
-
                     Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
 
                 }
@@ -270,7 +305,7 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent(StartActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-    }*/
+    }
 
     @Override
     protected void onDestroy() {
