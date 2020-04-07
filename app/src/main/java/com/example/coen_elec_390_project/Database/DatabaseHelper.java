@@ -93,7 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
-        contentValues.putNull(Config.COLUMN_USER_GENDER);
+        contentValues.put(Config.COLUMN_USER_GENDER,"Other");
         contentValues.putNull(Config.COLUMN_USER_AGE);
         contentValues.putNull(Config.COLUMN_USER_HEIGHT);
         contentValues.putNull(Config.COLUMN_USER_WEIGHT);
