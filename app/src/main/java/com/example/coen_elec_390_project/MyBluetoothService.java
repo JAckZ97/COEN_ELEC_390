@@ -117,27 +117,44 @@ public class MyBluetoothService {
             int i = 0;
             while (true) {
                 try {
+                    MyBluetoothService.success = true;
                     // Read from the InputStream.
-                    numBytes = mmInStream.read(mmBuffer);
-                    MyBluetoothService.success=true;
-                  
-                    String s = new String(mmBuffer, 0,numBytes);
-                    String[] list_of_str = s.split(",");
+                    if((readbpm.getprebpm || readbpm.getpostbpm)) {
+                        numBytes = mmInStream.read(mmBuffer);
+                        String s = new String(mmBuffer, 0, numBytes);
+                        String[] list_of_str = s.split(",");
 
-                    for(String s1:list_of_str){
-                        //Log.e("Tag","<Message> "+s1);
-                        if(voltage_readings.size()<size){
-                            voltage_readings.add(Double.valueOf(s1)-1.49);
+                        for (String s1 : list_of_str) {
+                            //Log.e("Tag","<Message> "+s1);
+                            if (voltage_readings.size() < size) {
+                                voltage_readings.add(Double.valueOf(s1) - 1.49);
+                            }
                         }
+                    }
+                    else{
+                        MainActivity.Update_bpm("BPM: --");
                     }
 
                     if(voltage_readings.size()==size){
+
                         Log.e("Tag","<DATACOM> Got 1024 Data");
                         int BPM = (convert(voltage_readings));
 
                         if((readbpm.getprebpm || readbpm.getpostbpm)){
-                            if(readbpm.recordings.size()<4)
+                            int counter = 0;
+                            boolean finger_detected=true;
+                            for(int j=0;j<voltage_readings.size();j++){if(voltage_readings.get(j)<=0.1){counter++;}}
+
+                            if(counter==size)
+                            {
+                                MainActivity.Update_bpm("No finger detected");
+                                finger_detected=false;
+                            }
+
+                            if(readbpm.recordings.size()<4 && finger_detected) {
                                 readbpm.recordings.add(BPM);
+                                MainActivity.Update_bpm(Integer.toString(BPM) + "\nBPM");
+                            }
                             else{
                                 if(readbpm.getprebpm){
                                     readbpm.getPreBPM();
@@ -153,26 +170,16 @@ public class MyBluetoothService {
                             }
                         }
 
-
-                        int counter = 0;
-                        for(int j=0;j<voltage_readings.size();j++){if(voltage_readings.get(j)<=0.1){counter++;}}
-
-                        if(counter==512)
-                        {
-                            MainActivity.Update_bpm("No finger detected");
-                            voltage_readings.clear();
-                        }else if(counter!=512){
-                            MainActivity.Update_bpm(Integer.toString(convert(voltage_readings)) + "\nBPM");
-                            voltage_readings.clear();
-                        }
+                        voltage_readings.clear();
 
                     }
 
+
                     // Send the obtained bytes to the UI activity.
-                    Message readMsg = handler.obtainMessage(
-                            MessageConstants.MESSAGE_READ, numBytes, -1,
-                            mmBuffer);
-                    readMsg.sendToTarget();
+//                    Message readMsg = handler.obtainMessage(
+//                            MessageConstants.MESSAGE_READ, numBytes, -1,
+//                            mmBuffer);
+//                    readMsg.sendToTarget();
                     /*
                     try {
                         TimeUnit.MILLISECONDS.sleep(10);
