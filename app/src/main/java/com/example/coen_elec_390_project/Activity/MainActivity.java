@@ -556,6 +556,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         } else {
             Toast.makeText(this, "Countsensor unavailable", Toast.LENGTH_LONG).show();
         }
+    }
       
     public void tutorialSequence(){
 
