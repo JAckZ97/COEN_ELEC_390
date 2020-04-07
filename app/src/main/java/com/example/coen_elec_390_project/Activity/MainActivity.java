@@ -79,6 +79,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     SensorManager sensorManager;
     boolean running = false;
     private TextView count;
+    int steps;
+    int stepsCounter;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -153,6 +155,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         }
 
 
+
                         if(developer_mode){
                             start = System.currentTimeMillis();
                             lock = true;
@@ -162,6 +165,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         check = true;
                         speed_counter = 0;
                         continuous_average_speed = 0;
+                        stepsCounter=0;
                         //timestamp seconds since epoch
                         break;
 
@@ -474,7 +478,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(running){
-            count.setText(String.valueOf(sensorEvent.values[0]));
+
+            steps = Integer.parseInt(String.valueOf(sensorEvent.values[0]));
+            stepsCounter++;
+            count.setText(stepsCounter);
         }
 
     }
