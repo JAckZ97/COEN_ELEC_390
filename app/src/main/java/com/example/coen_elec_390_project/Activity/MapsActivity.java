@@ -225,7 +225,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setUpBottomNavigationView() {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
