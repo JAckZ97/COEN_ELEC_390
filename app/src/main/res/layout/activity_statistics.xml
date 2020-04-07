@@ -9,10 +9,11 @@
     tools:context=".Activity.StatisticsActivity">
 
     <com.jjoe64.graphview.GraphView
+        android:id="@+id/graph"
         android:layout_width="match_parent"
         android:layout_height="300dp"
-        android:id="@+id/graph"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:background="@drawable/gradient_background" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -23,7 +24,8 @@
         <ListView
             android:id="@+id/listview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_background" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/dateSelection"

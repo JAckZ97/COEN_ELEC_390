@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:layout_width="175dp"
-    android:layout_height="200dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical">
 
     <Button
+        android:id="@+id/startdate"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/edittext_background"
         android:text="Start date"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/startdate"/>
+        android:textColor="#C1000000" />
 
     <Button
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:text="End date"
         android:id="@+id/enddate"
-        android:layout_marginTop="25dp"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/startdate"/>
-
-    <Button
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="back"
+        android:layout_below="@+id/startdate"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="25dp"
+        android:background="@drawable/edittext_background"
+        android:text="End date"
+        android:textColor="#C1000000" />
+
+    <Button
         android:id="@+id/back"
-        android:layout_below="@id/enddate"/>
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/enddate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/edittext_background"
+        android:text="back"
+        android:textColor="#C1000000" />
 </RelativeLayout>

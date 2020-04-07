@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
     tools:context=".Activity.ProfileActivity">
 
     <RadioGroup
@@ -58,64 +58,64 @@
         android:id="@+id/profileSelectGender"
         android:layout_width="300dp"
         android:layout_height="40dp"
-        android:layout_marginTop="100dp"
         android:layout_centerHorizontal="true"
-        android:entries="@array/genderType"
-        android:background="@drawable/edittext_background"/>
+        android:layout_marginTop="100dp"
+        android:background="@drawable/edittext_background"
+        android:entries="@array/genderType" />
 
     <EditText
         android:id="@+id/profileName"
         android:layout_width="300dp"
         android:layout_height="40dp"
-        android:hint="Full Name"
         android:layout_below="@id/profileSelectGender"
-        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
-        android:layout_marginTop="15dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
+        android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ "
+        android:hint="Full Name"
         android:padding="10dp" />
 
     <EditText
+        android:id="@+id/profileHeight"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:hint="Height"
-        android:id="@+id/profileHeight"
-        android:inputType="numberDecimal"
-        android:maxLength="3"
-        android:layout_marginTop="15dp"
+        android:layout_below="@id/profileAge"
         android:layout_alignLeft="@id/profileName"
         android:layout_centerHorizontal="false"
-        android:layout_below="@id/profileAge"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
-        android:padding="10dp"/>
+        android:hint="Height"
+        android:inputType="numberDecimal"
+        android:maxLength="3"
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/profileWeight"
         android:layout_width="200dp"
         android:layout_height="40dp"
-        android:hint="Weight"
-        android:id="@+id/profileWeight"
-        android:layout_marginTop="15dp"
+        android:layout_below="@id/profileHeight"
         android:layout_alignLeft="@id/profileHeight"
         android:layout_centerHorizontal="false"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edittext_background"
+        android:hint="Weight"
         android:inputType="numberDecimal"
         android:maxLength="3"
-        android:layout_below="@id/profileHeight"
-        android:background="@drawable/edittext_background"
-        android:padding="10dp"/>
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/profileAge"
         android:layout_width="300dp"
         android:layout_height="40dp"
-        android:hint="Age"
-        android:id="@+id/profileAge"
-        android:inputType="numberDecimal"
-        android:maxLength="3"
-        android:layout_marginTop="15dp"
+        android:layout_below="@id/profileName"
         android:layout_alignLeft="@id/profileName"
         android:layout_centerHorizontal="false"
-        android:layout_below="@id/profileName"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
-        android:padding="10dp"/>
+        android:hint="Age"
+        android:inputType="numberDecimal"
+        android:maxLength="3"
+        android:padding="10dp" />
 
     <Button
         android:id="@+id/save"
@@ -123,7 +123,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/bottomNavigation"
         android:layout_marginBottom="1dp"
-        android:text="save" />
+        android:background="@drawable/edittext_background"
+        android:text="save"
+        android:textColor="#C1000000" />
 
     <Button
         android:id="@+id/edit"
@@ -133,7 +135,9 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="2dp"
         android:layout_marginBottom="1dp"
-        android:text="Edit"/>
+        android:background="@drawable/edittext_background"
+        android:text="Edit"
+        android:textColor="#C1000000" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
@@ -141,16 +145,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="?android:attr/windowBackground"
-        app:menu="@menu/navigation_menu"
-        app:labelVisibilityMode="labeled"/>
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/navigation_menu" />
 
     <!--    <Button-->
-<!--        android:id="@+id/profileSaveButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentBottom="true"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginBottom="325dp"-->
-<!--        android:text="Profile Save" />-->
+    <!--        android:id="@+id/profileSaveButton"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_alignParentBottom="true"-->
+    <!--        android:layout_centerHorizontal="true"-->
+    <!--        android:layout_marginBottom="325dp"-->
+    <!--        android:text="Profile Save" />-->
 
 </RelativeLayout>

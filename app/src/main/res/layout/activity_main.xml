@@ -61,12 +61,12 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="100dp"
         android:layout_marginEnd="100dp"
-        android:layout_marginBottom="81dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/edittext_background"
         android:gravity="fill_vertical"
         android:text="Start a Running session"
         android:textAlignment="center"
-        android:textStyle="bold" />
+        android:textColor="#C1000000" />
 
     <TextView
         android:id="@+id/speed"
