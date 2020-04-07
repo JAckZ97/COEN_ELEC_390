@@ -74,23 +74,24 @@
         android:id="@+id/speed"
         android:layout_width="150dp"
         android:layout_height="51dp"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-medium"
-        android:text="Speed\n-- km/h"
+        android:text="Speed:\n--km/h"
         android:textAlignment="center"
         android:textColorLink="@color/design_default_color_primary_dark"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/count"
-        android:layout_width="138dp"
-        android:layout_height="36dp"
-        android:layout_below="@+id/speed"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="26dp"
-        android:layout_marginEnd="135dp"
-        android:text="Steps Count" />
+        android:layout_width="150dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Steps Count:\n--"
+        android:textAlignment="center"
+        android:layout_alignParentRight="true"
+        android:textColorLink="@color/design_default_color_primary_dark"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

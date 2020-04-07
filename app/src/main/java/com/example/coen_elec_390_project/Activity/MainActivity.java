@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         speed_counter = 0;
                         continuous_average_speed = 0;
                         stepsCounter=0;
-                        count.setText("0");
+                        count.setText("Steps Count:\n--");
                         //timestamp seconds since epoch
                         break;
 
@@ -439,7 +439,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(Location location) {
 
         if (location == null) {
-            speed_txt.setText("-- km/h");
+            speed_txt.setText("Speed:\n-- km/h");
         } else {
 
             float Currentspeed = location.getSpeed();
@@ -448,9 +448,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             continuous_average_speed = speed_sum / speed_counter;
 
 
-            speed_txt.setText("Your current speed is " + (int) (+Currentspeed * 3.6f) + " km/hr");
+            speed_txt.setText("Current Speed:\n" + (int) (+Currentspeed * 3.6f) + " km/hr");
             if (!check) {
-                speed_txt.setText("Your average speed is: " + (int) (average_speed) * 3.6f);
+                speed_txt.setText("Average Speed:\n" + (int) (average_speed) * 3.6f);
                 speed_sum = 0;
             }
 
@@ -479,10 +479,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if(running){
-
-            steps = Integer.parseInt(String.valueOf(sensorEvent.values[0]));
+            steps = (int) Double.parseDouble(String.valueOf(sensorEvent.values[0]));
             stepsCounter++;
-            count.setText(stepsCounter);
+            count.setText("Steps Count:\n" + String.valueOf(stepsCounter));
         }
 
     }
