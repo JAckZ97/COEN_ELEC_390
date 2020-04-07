@@ -94,9 +94,7 @@ public class StatisticsActivity extends AppCompatActivity {
             if(startDate.equals("") && endDate.equals(""))
                 loadListView();
 
-            if(!startDate.equals("")) {
-                loadListViewAfterStart(startDate);
-            }
+
         }
         else{
             Log.e("TAG", "<STAT> tutorial session");

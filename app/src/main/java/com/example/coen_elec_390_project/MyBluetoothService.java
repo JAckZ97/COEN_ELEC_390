@@ -127,7 +127,7 @@ public class MyBluetoothService {
                     for(String s1:list_of_str){
                         //Log.e("Tag","<Message> "+s1);
                         if(voltage_readings.size()<size){
-                            voltage_readings.add(Double.valueOf(s1)-1.6);
+                            voltage_readings.add(Double.valueOf(s1)-1.49);
                         }
                     }
 
