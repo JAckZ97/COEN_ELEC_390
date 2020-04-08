@@ -261,21 +261,29 @@ public class StartActivity extends AppCompatActivity {
         if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
             wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
 
-            if(wifiConnected){
+            if(wifiConnected) {
                 Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
                 Log.e("Tag", "wifi is connected");
                 pd.dismiss();
 
-                //Check local database data
-                //if local database have data
-                //flush local database to online database
-                // Multiple user
-                // Each user have multiple statistic
-                //getallusers,      signin(user.email,user.password)
-                //for user in list:
-                // getstats(user.id) == list of stats
-                // for stat in stats:
-                // update(stats)
+                //for user in user table{
+                //  user.getemail, user.getpassword
+                //  if firebase.signin(user.getemail,user.getpassword)!=true{
+                //firebase.register(user.getemail.user.getpassword)
+                //databasehelper.getuser(user.email)
+                //user.profile, update user.profile
+                //   }
+                //
+                // list<stats> = databasehelper(user.getemail)
+                //      for stat in stats{
+                //          firebase.write(stat)
+                //      }
+                //  }
+                //  }
+                //
+                //}
+                //delete local database
+
 
                 return true;
             }

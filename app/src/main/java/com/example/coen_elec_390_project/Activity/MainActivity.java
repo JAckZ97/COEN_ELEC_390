@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         setUpBottomNavigationView();
         count = (TextView) findViewById(R.id.count);
         email = getIntent().getStringExtra("email");
-
+        //get firebase user
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our OnboardingSupportFragment
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             button1.setText("Start Recording");
                             counter = 0;
                         }
-
+                        /*
                         if(developer_mode){
                             long duration = System.currentTimeMillis() - start;
                             button1.setText("Show Performance Index");
@@ -276,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }
                             counter++;
                         }
+                         */
 
                         check = false;
                         average_speed = continuous_average_speed;

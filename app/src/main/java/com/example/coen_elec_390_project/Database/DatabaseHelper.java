@@ -415,6 +415,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_STATISTIC_SPEED, statistic.getSpeed());
         contentValues.put(Config.COLUMN_STATISTIC_CALORIES,statistic.getCalories());
         contentValues.put(Config.COLUMN_STATISTIC_COUNTER,counter);
+        contentValues.put(Config.COLUMN_STATISTIC_STEP_COUNTER,statistic.getStep_counter());
 
         /**We try to insert it*/
         try {
