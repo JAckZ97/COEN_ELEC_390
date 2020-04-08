@@ -78,9 +78,6 @@ public class StatisticsActivity extends AppCompatActivity {
             startDate = "";
             endDate = "";
 
-
-
-
             loadListView();
 
             final String maxDate = databaseHelper.getMaxDate(user.getId());
@@ -261,6 +258,8 @@ public class StatisticsActivity extends AppCompatActivity {
 
         ArrayAdapter arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statisticsListText);
         statisticsListView.setAdapter(arrayAdapter);
+
+        setUpGraph();
     }
 
     private void setUpBottomNavigationView() {
