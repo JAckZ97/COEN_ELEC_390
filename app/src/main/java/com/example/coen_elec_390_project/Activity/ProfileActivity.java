@@ -443,6 +443,7 @@ public class ProfileActivity extends AppCompatActivity  {
                         updateresult.put("Height", str_height);
                         updateresult.put("height unit", user.getHeightUnit());
                         updateresult.put("weight unit", user.getWeightUnit());
+                        updateresult.put("Password",user.getPassword());
                         reff.setValue(updateresult);
                     }
                 }

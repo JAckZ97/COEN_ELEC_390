@@ -93,14 +93,14 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    if(checkNetworkConnection()){
-                        registerOnline(str_fullname, str_email, str_password);
-
-                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-                    }
-                    else {
-                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-                    }
+//                    if(checkNetworkConnection()){
+//                        registerOnline(str_fullname, str_email, str_password);
+//
+//                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
+//                    }
+//                    else {
+                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
+                    //}
 
                 }
             }
@@ -163,7 +163,6 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-
     private boolean checkNetworkConnection(){
         pd = new ProgressDialog(RegisterActivity.this);
         boolean wifiConnected;
@@ -191,7 +190,6 @@ public class RegisterActivity extends AppCompatActivity {
         }
         return false;
     }
-
 
     public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight, int heightUnit, int weightUnit) {
         if(databaseHelper.checkIfExisting(email)) {

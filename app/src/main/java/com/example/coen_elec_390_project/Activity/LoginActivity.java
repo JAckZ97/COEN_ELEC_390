@@ -18,17 +18,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
     EditText email, password;
@@ -76,11 +80,61 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 else {
+
                     if (checkNetworkConnection()){
-                        loginOnline(str_email, str_password);
-                    }else {
-                        loginOffline(str_email, str_password);
+                        loginOnline(str_email,str_password);
+                        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+                        DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
+                        reff.addValueEventListener(new ValueEventListener() {
+                            @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
+                                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
+                                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
+                                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
+                                String fileHeightunit = dataSnapshot.child("height unit").getValue(String.class);
+                                String fileWeightunit = dataSnapshot.child("weight unit").getValue(String.class);
+                                String fileAge = dataSnapshot.child("Age").getValue(String.class);
+                                String fileEmail = dataSnapshot.child("Email").getValue(String.class);
+                                String filePass = dataSnapshot.child("Password").getValue(String.class);
+                                databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
+                            }
+
+                            @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // catch error
+                                }
+                        });
+
+                        DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
+                        reff2.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int counter =0;
+                                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+                                    String stat_id = ds.child("stat_id").getValue(String.class);
+                                    String stat_id_counter = ds.child("stat_id_counter").getValue(String.class);
+                                    String stat_date = ds.child("stat_date").getValue(String.class);
+                                    String stat_speed = ds.child("stat_speed").getValue(String.class);
+                                    String stat_calory = ds.child("stat_calory").getValue(String.class);
+                                    String stat_perf_index = ds.child("stat_perf_index").getValue(String.class);
+                                    String stat_step_counter = ds.child("stat_step_counter").getValue(String.class);
+                                    databaseHelper.insertStatistic(new Statistic(Integer.parseInt(stat_id), counter, stat_date, Double.parseDouble(stat_perf_index),  Double.parseDouble(stat_speed),Double.parseDouble(stat_calory),Integer.parseInt(stat_id_counter),Integer.parseInt(stat_step_counter)));
+                                }
+
+                                //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                                // catch error
+                            }
+                        });
                     }
+//                        loginOnline(str_email, str_password);
+//                    }else {
+                    loginOffline(str_email, str_password);
+                    //}
                 }
 
             }
@@ -137,10 +191,10 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             pd.dismiss();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//                            startActivity(intent);
+//                            finish();
                         }
 
                         @Override
