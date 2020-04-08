@@ -1,11 +1,15 @@
 package com.example.coen_elec_390_project.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +18,14 @@ import android.widget.Toast;
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.R;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import java.util.HashMap;
 
 public class RegisterActivity extends AppCompatActivity {
     EditText fullname, email, password, password2;
@@ -24,6 +36,9 @@ public class RegisterActivity extends AppCompatActivity {
     DatabaseHelper databaseHelper;
     String age, height, weight, gender = null;
     int weightUnit, heightUnit = 1;
+    FirebaseAuth auth;
+    DatabaseReference reference;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +51,8 @@ public class RegisterActivity extends AppCompatActivity {
         password2 = findViewById(R.id.password2);
         register = findViewById(R.id.register);
         txt_login = findViewById(R.id.txt_login);
-
         databaseHelper = new DatabaseHelper(this);
+        auth = FirebaseAuth.getInstance();
 
         txt_login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,8 +65,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 pd = new ProgressDialog(RegisterActivity.this);
-                pd.setMessage("Please wait...");
-                pd.show();
 
                 String str_fullname = fullname.getText().toString();
                 String str_email = email.getText().toString();
@@ -80,7 +93,15 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
+                    if(checkNetworkConnection()){
+                        registerOnline(str_fullname, str_email, str_password);
+
+                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
+                    }
+                    else {
+                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
+                    }
+
                 }
             }
         });
@@ -97,30 +118,28 @@ public class RegisterActivity extends AppCompatActivity {
         return hasAt;
     }
 
-     /**private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }/
-
-    /**public void registerOnline(final String fullname, String email, String password) {
+    public void registerOnline(final String fullname, final String email, final String password) {
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
                             FirebaseUser firebaseUser = auth.getCurrentUser();
-                            String userid = firebaseUser.getUid();
+                            String userId = firebaseUser.getUid();
 
-                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userid);
+                            reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
 
                             HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("Id", userid);
+                            hashMap.put("Id", userId);
+                            hashMap.put("Email",email);
+                            hashMap.put("Password",password);
                             hashMap.put("Fullname", fullname);
                             hashMap.put("Gender", "");
+                            hashMap.put("Age", "");
                             hashMap.put("Weight", "");
                             hashMap.put("Height", "");
-                            hashMap.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
+                            hashMap.put("height unit","1");
+                            hashMap.put("weight unit", "1");
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
@@ -142,7 +161,37 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                     }
                 });
-    }*/
+    }
+
+
+    private boolean checkNetworkConnection(){
+        pd = new ProgressDialog(RegisterActivity.this);
+        boolean wifiConnected;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+
+            if(wifiConnected){
+//                Toast.makeText(RegisterActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
+                Log.e("Tag", "wifi is connected");
+//                pd.dismiss();
+
+                return true;
+            }
+        }
+        else{ // no internet connected
+//            Toast.makeText(RegisterActivity.this, "No internet connect", Toast.LENGTH_SHORT).show();
+            Log.e("Tag", "no internet connect ");
+//            pd.dismiss();
+
+            return false;
+        }
+        return false;
+    }
+
 
     public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight, int heightUnit, int weightUnit) {
         if(databaseHelper.checkIfExisting(email)) {

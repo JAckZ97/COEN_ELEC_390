@@ -7,6 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -35,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     TextView txt_signup;
     ProgressDialog pd;
     DatabaseHelper databaseHelper;
+    FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class LoginActivity extends AppCompatActivity {
         login = findViewById(R.id.login);
         txt_signup = findViewById(R.id.txt_signup);
         databaseHelper = new DatabaseHelper(this);
+        auth = FirebaseAuth.getInstance();
 
         txt_signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,8 +61,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 pd = new ProgressDialog(LoginActivity.this);
-                pd.setMessage("Please wait...");
-                pd.show();
 
                 String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
@@ -75,7 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 else {
-                    loginOffline(str_email, str_password);
+                    if (checkNetworkConnection()){
+                        loginOnline(str_email, str_password);
+                    }else {
+                        loginOffline(str_email, str_password);
+                    }
                 }
 
             }
@@ -93,13 +98,35 @@ public class LoginActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    /**private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+    private boolean checkNetworkConnection(){
+        pd = new ProgressDialog(LoginActivity.this);
+        boolean wifiConnected;
 
-        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
-    }*/
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
 
-    /**public void loginOnline(String str_email, String str_password) {
+        if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+
+            if(wifiConnected){
+//                Toast.makeText(RegisterActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
+                Log.e("Tag", "wifi is connected");
+//                pd.dismiss();
+
+                return true;
+            }
+        }
+        else{ // no internet connected
+//            Toast.makeText(RegisterActivity.this, "No internet connect", Toast.LENGTH_SHORT).show();
+            Log.e("Tag", "no internet connect ");
+//            pd.dismiss();
+
+            return false;
+        }
+        return false;
+    }
+
+    public void loginOnline(String str_email, String str_password) {
         auth.signInWithEmailAndPassword(str_email, str_password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -129,7 +156,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         });
-    }*/
+    }
 
     public void loginOffline(String str_email, String str_password) {
         Log.e("Tag","<email> "+str_email);

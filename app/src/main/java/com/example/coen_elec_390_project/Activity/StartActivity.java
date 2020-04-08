@@ -312,7 +312,9 @@ public class StartActivity extends AppCompatActivity {
         super.onDestroy();
         // Don't forget to unregister the ACTION_FOUND receiver.
         try {
-            unregisterReceiver(receiver);
+//            if(!MyBluetoothService.success && !found){
+//                unregisterReceiver(receiver);
+//            }
             //Register or UnRegister your broadcast receiver here
 
         } catch(IllegalArgumentException e) {

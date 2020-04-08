@@ -42,6 +42,8 @@ public class ProfileActivity extends AppCompatActivity  {
     String email;
     String selectGender;
     ProgressDialog pd;
+    DatabaseReference reff;
+    FirebaseUser firebaseUser;
     double tempFeet, tempInch = 0;
     double tempHeight = 0;
     private boolean user_editting = false;
@@ -146,34 +148,9 @@ public class ProfileActivity extends AppCompatActivity  {
             }
         });
 
-
-        /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
-        basicRead();
 
-
-        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectGender=parent.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-        profileSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                basicWrite();
-
-            }
-        });*/
 
         save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,46 +219,44 @@ public class ProfileActivity extends AppCompatActivity  {
         });
     }
 
-    /**
-    public void basicRead(){
-        reff.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
-                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
-                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
-                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
-
-                fullname.setText(fileName);
-                height.setText(fileHeight);
-                weight.setText(fileWeight);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // catch error
-            }
-        });
-    }
-
-    private void basicWrite () {
-        String userid = firebaseUser.getUid();
-        String str_fullname = fullname.getText().toString();
-        String str_gender = selectGender;
-        String str_weight = weight.getText().toString();
-        String str_height = height.getText().toString();
-
-        HashMap<String, Object> updateresult = new HashMap<>();
-        updateresult.put("Id", userid);
-        updateresult.put("Fullname", str_fullname);
-        updateresult.put("Gender", str_gender);
-        updateresult.put("Weight", str_weight);
-        updateresult.put("Height", str_height);
-        updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
-
-        reff.setValue(updateresult);
-    }*/
+//    public void basicRead(){
+//        reff.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
+//                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
+//                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
+//                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
+//
+//                fullname.setText(fileName);
+//                height.setText(fileHeight);
+//                weight.setText(fileWeight);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // catch error
+//            }
+//        });
+//    }
+//    private void writeProfileCnline () {
+//        String userid = firebaseUser.getUid();
+//        String str_fullname = fullname.getText().toString();
+//        String str_gender = selectGender;
+//        String str_weight = weight.getText().toString();
+//        String str_height = height.getText().toString();
+//
+//        HashMap<String, Object> updateresult = new HashMap<>();
+//        updateresult.put("Id", userid);
+//        updateresult.put("Fullname", str_fullname);
+//        updateresult.put("Gender", str_gender);
+//        updateresult.put("Weight", str_weight);
+//        updateresult.put("Height", str_height);
+//        updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
+//
+//        reff.setValue(updateresult);
+//    }
 
     // TODO: heightUnit cm: 1/ ft: 0
     //       weightUnit kg: 1/ lb: 0
@@ -438,6 +413,19 @@ public class ProfileActivity extends AppCompatActivity  {
                     user.setAge(str_age);
                     user.setWeight(str_weight);
                     user.setHeight(str_height);
+
+                    String userid = firebaseUser.getUid();
+                    HashMap<String, Object> updateresult = new HashMap<>();
+                    updateresult.put("Id", userid);
+                    updateresult.put("Fullname", str_fullname);
+                    updateresult.put("Gender", str_gender);
+                    updateresult.put("Age", str_age);
+                    updateresult.put("Weight", str_weight);
+                    updateresult.put("Height", str_height);
+                    updateresult.put("height unit",user.getHeightUnit());
+                    updateresult.put("weight unit",user.getWeightUnit());
+
+                    reff.setValue(updateresult);
                 }
                 databaseHelper = new DatabaseHelper(this);
                 databaseHelper.updateProfile(user);
