@@ -240,36 +240,6 @@ public class ProfileActivity extends AppCompatActivity  {
       }
 
 
-
-
-        /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
-        basicRead();
-
-
-        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectGender=parent.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-        profileSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                basicWrite();
-
-            }
-        });*/
-
       
     }
 
@@ -385,11 +355,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 String str_heightFeet = String.valueOf(tempHeight);
                 str_height = str_heightFeet;
             }
-//            tempFeet = Integer.parseInt(heightFeet.getText().toString());
-//            tempInch = Integer.parseInt(heightInch.getText().toString());
-//            tempHeight = tempFeet + tempInch/100;
-//            String str_heightFeet = String.valueOf(tempHeight);
-//            str_height = str_heightFeet;
+
         }
 
         switch (checkWeightId){
@@ -458,9 +424,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7 || tempInch >= 13)) {
                     Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
-//                } else if (tempInch >= 13 || tempFeet <= 4 || tempFeet>= 7) {
-//                    Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
-//                    pd.dismiss();
+
                 } else {
                     user.setFullname(str_fullname);
                     user.setGender(str_gender);

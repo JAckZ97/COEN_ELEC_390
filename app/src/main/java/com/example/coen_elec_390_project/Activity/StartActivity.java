@@ -31,6 +31,7 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
+import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 import com.example.coen_elec_390_project.MyBluetoothService;
 import com.example.coen_elec_390_project.R;
@@ -39,10 +40,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import android.Manifest;
@@ -68,6 +73,8 @@ public class StartActivity extends AppCompatActivity {
     private Switch wifiSwitch;
     private WifiManager wifiManager;
     ProgressDialog pd;
+    DatabaseReference reff;
+    DatabaseHelper databaseHelper;
 
     @Override
     protected void onStart() {
@@ -180,6 +187,7 @@ public class StartActivity extends AppCompatActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         wifiSwitch = findViewById(R.id.wifiCheckSwitch);
         wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        reff = FirebaseDatabase.getInstance().getReference().child("Stats").child(firebaseUser.getUid());
 
         final Integer new_dev;
         String dev = getIntent().getStringExtra("dev_count");
@@ -231,6 +239,33 @@ public class StartActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+//      UPLOAD all updated stats
+        // TODO:
+        User user = databaseHelper.getUser(email);
+        databaseHelper = new DatabaseHelper(this);
+        List<User> users = databaseHelper.getAllUsers();
+        for(int i = 0; i < users.size(); i++){
+
+            HashMap<String, Object> updateresult = new HashMap<>();
+
+            List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
+
+            for(int p =0; p<stats.size(); p++) {
+                updateresult.put("stat_id", stats.get(i).getId());
+                updateresult.put("stat_id_counter", stats.get(i).getCounter_id());
+                updateresult.put("stat_date", stats.get(i).getDate());
+                updateresult.put("stat_speed", stats.get(i).getSpeed());
+                updateresult.put("stat_calory", stats.get(i).getCalories());
+                updateresult.put("stat_perf_index", stats.get(i).getPerformance_index());
+                //need one more line of data
+                reff.child(String.valueOf(stats.get(i).getId())).setValue(updateresult);
+            }
+
+        }
+
+
     }
 
     private BroadcastReceiver wifistateReceiver = new BroadcastReceiver() {
