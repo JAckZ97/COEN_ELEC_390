@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
+    android:background="#334C96D7"
     android:gravity="center"
+    android:orientation="vertical"
     android:padding="10dp"
     tools:context=".Activity.RegisterActivity">
 
@@ -14,65 +14,66 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:src="@drawable/logo"/>
+        android:background="#00FFFFFF"
+        android:src="@drawable/hearticon" />
 
 
     <EditText
+        android:id="@+id/fullname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
         android:hint="Full Name"
-        android:layout_marginTop="15dp"
         android:maxLines="1"
-        android:id="@+id/fullname"
-        android:padding="10dp"/>
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/email"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
         android:hint="Email"
-        android:layout_marginTop="15dp"
         android:inputType="textEmailAddress"
         android:maxLines="1"
-        android:id="@+id/email"
-        android:padding="10dp"/>
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
         android:hint="Password"
-        android:layout_marginTop="15dp"
-        android:maxLines="1"
         android:inputType="textPassword"
-        android:id="@+id/password"
-        android:padding="10dp"/>
+        android:maxLines="1"
+        android:padding="10dp" />
 
     <EditText
+        android:id="@+id/password2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:background="@drawable/edittext_background"
         android:hint="Re-enter Password"
-        android:maxLines="1"
-        android:layout_marginTop="15dp"
         android:inputType="textPassword"
-        android:id="@+id/password2"
-        android:padding="10dp"/>
+        android:maxLines="1"
+        android:padding="10dp" />
 
     <Button
+        android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/register"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edittext_background"
         android:text="Register"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/button_background"
-        android:layout_marginTop="15dp"/>
+        android:textColor="#C1000000" />
 
     <TextView
+        android:id="@+id/txt_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Already have an account? Log In"
-        android:id="@+id/txt_login"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp"
+        android:text="Already have an account? Log In" />
 </LinearLayout>
