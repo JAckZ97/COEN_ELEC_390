@@ -214,7 +214,7 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0 + "\n";
             temp += "Calories burned: " + Math.round(statistics.get(i).getCalories()) + "\n";
             temp += "Speed: " + Math.round(statistics.get(i).getSpeed()*100.0)/100.0 + " km/h";
-
+            temp += "Step Counter: " +statistics.get(i).getStep_counter();
             String str_date = statistics.get(i).getDate();
             String date_component[] = str_date.split("/");
 

@@ -75,10 +75,10 @@ public class StartActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // redirect if user is not null
-        if(firebaseUser != null) {
-            startActivity(new Intent(StartActivity.this, MainActivity.class));
-            finish();
-        }
+//        if(firebaseUser != null) {
+//            startActivity(new Intent(StartActivity.this, MainActivity.class));
+//            finish();
+//        }
 
         if(!MyBluetoothService.initialized){
             bluetoothsetup();
@@ -265,6 +265,17 @@ public class StartActivity extends AppCompatActivity {
                 Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
                 Log.e("Tag", "wifi is connected");
                 pd.dismiss();
+
+                //Check local database data
+                //if local database have data
+                //flush local database to online database
+                // Multiple user
+                // Each user have multiple statistic
+                //getallusers,      signin(user.email,user.password)
+                //for user in list:
+                // getstats(user.id) == list of stats
+                // for stat in stats:
+                // update(stats)
 
                 return true;
             }

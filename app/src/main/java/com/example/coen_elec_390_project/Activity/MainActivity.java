@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
-                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories));
+                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter));
 
                                 }else if ( user!=null ){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,stepsCounter));
 
                             }else if ( user!=null ){
                                 Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter));
                             }
                             Temp.clear();
                         }
@@ -468,9 +468,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         }
 
                     case R.id.logout:
-                        intent = new Intent(MainActivity.this, StartActivity.class);
-                        intent.putExtra("dev_count",dev_count2.toString());
-                        startActivity(intent);
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
 
                 }

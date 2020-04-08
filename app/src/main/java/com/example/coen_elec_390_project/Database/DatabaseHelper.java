@@ -63,7 +63,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_STATISTIC_PERF_INDEX + " REAL,"
                 + Config.COLUMN_STATISTIC_SPEED + " REAL,"
                 + Config.COLUMN_STATISTIC_CALORIES + " REAL,"
-                + Config.COLUMN_STATISTIC_COUNTER + " INTEGER)";
+                + Config.COLUMN_STATISTIC_COUNTER + " INTEGER,"
+                + Config.COLUMN_STATISTIC_STEP_COUNTER+ " INTEGER)";
 
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
@@ -292,7 +293,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
-
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
                         statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
                     } while(cursor.moveToNext());
 
