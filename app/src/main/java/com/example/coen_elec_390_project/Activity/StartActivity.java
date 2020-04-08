@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,6 +13,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +25,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.Toast;
 
 import com.example.coen_elec_390_project.Database.DatabaseHelper;
@@ -46,7 +53,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class StartActivity extends AppCompatActivity {
     Button login, register, guest;
 
-//    FirebaseUser firebaseUser;
+    FirebaseUser firebaseUser;
     private final int REQUEST_ENABLE_BT = 1;
     private BluetoothAdapter bluetoothAdapter;
     static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
@@ -58,17 +65,20 @@ public class StartActivity extends AppCompatActivity {
     private ConnectThread mythread;
     private MyBluetoothService mbs;
     private boolean btpass= false;
+    private Switch wifiSwitch;
+    private WifiManager wifiManager;
+    ProgressDialog pd;
 
     @Override
     protected void onStart() {
         super.onStart();
-//        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        // redirect if user is not null
-//        if(firebaseUser != null) {
-//            startActivity(new Intent(StartActivity.this, MainActivity.class));
-//            finish();
-//        }
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        // redirect if user is not null
+        if(firebaseUser != null) {
+            startActivity(new Intent(StartActivity.this, MainActivity.class));
+            finish();
+        }
 
         if(!MyBluetoothService.initialized){
             bluetoothsetup();
@@ -81,6 +91,14 @@ public class StartActivity extends AppCompatActivity {
             showBTDialog();
         }
 
+        IntentFilter intentFilter = new IntentFilter(WifiManager.WIFI_STATE_CHANGED_ACTION);
+        registerReceiver(wifistateReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        unregisterReceiver(wifistateReceiver);
     }
 
     private void bluetoothsetup(){
@@ -160,6 +178,9 @@ public class StartActivity extends AppCompatActivity {
         register = findViewById(R.id.register);
         guest = findViewById(R.id.guest);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        wifiSwitch = findViewById(R.id.wifiCheckSwitch);
+        wifiManager = (WifiManager)getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+
         final Integer new_dev;
         String dev = getIntent().getStringExtra("dev_count");
         if(dev!=null) {
@@ -187,16 +208,80 @@ public class StartActivity extends AppCompatActivity {
         guest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(StartActivity.this, MainActivity.class);
-                intent.putExtra("dev_count",new_dev.toString());
-                startActivity(intent);
+                if (checkNetworkConnection()){
+                    signInAnonimously();
+                }
+                else{
+                    Intent intent = new Intent(StartActivity.this, MainActivity.class);
+                    intent.putExtra("dev_count",new_dev.toString());
+                    startActivity(intent);
+                }
             }
         });
 
-
+        wifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    wifiManager.setWifiEnabled(true);
+                    wifiSwitch.setText("You have access the wifi. ");
+                }else {
+                    wifiManager.setWifiEnabled(false);
+                    wifiSwitch.setText("You turn off the wifi. ");
+                }
+            }
+        });
     }
 
-    /**public void signInAnonimously() {
+    private BroadcastReceiver wifistateReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            int wifiStateExtra= intent.getIntExtra(wifiManager.EXTRA_WIFI_STATE,
+                    wifiManager.WIFI_STATE_UNKNOWN);
+            switch(wifiStateExtra){
+                case WifiManager.WIFI_STATE_ENABLED:
+                    wifiSwitch.setChecked(true);
+                    wifiSwitch.setText("You have access the wifi. ");
+                    break;
+                case WifiManager.WIFI_STATE_DISABLED:
+                    wifiSwitch.setChecked(false);
+                    wifiSwitch.setText("You turn off the wifi. ");
+                    break;
+            }
+        }
+    };
+
+    private boolean checkNetworkConnection(){
+        pd = new ProgressDialog(StartActivity.this);
+        boolean wifiConnected;
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
+
+        if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
+            wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
+
+            if(wifiConnected){
+                Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
+                Log.e("Tag", "wifi is connected");
+                pd.dismiss();
+
+                return true;
+            }
+        }
+        else{ // no internet connected
+            Toast.makeText(StartActivity.this, "No internet connect", Toast.LENGTH_SHORT).show();
+            Log.e("Tag", "no internet connect ");
+            pd.dismiss();
+
+            return false;
+        }
+
+        return false;
+    }
+
+
+    public void signInAnonimously() {
         final FirebaseAuth auth;
 
         auth = FirebaseAuth.getInstance();
@@ -208,13 +293,9 @@ public class StartActivity extends AppCompatActivity {
                     // Sign in success, update UI with the signed-in user's information
                     //Log.d(TAG, "signInAnonymously:success");
                     FirebaseUser user = auth.getCurrentUser();
-
-
                 }
-
                 else {
                     // If sign in fails, display a message to the user.
-
                     Toast.makeText(StartActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
 
                 }
@@ -224,14 +305,16 @@ public class StartActivity extends AppCompatActivity {
         Intent intent = new Intent(StartActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-    }*/
+    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // Don't forget to unregister the ACTION_FOUND receiver.
         try {
-            unregisterReceiver(receiver);
+//            if(!MyBluetoothService.success && !found){
+//                unregisterReceiver(receiver);
+//            }
             //Register or UnRegister your broadcast receiver here
 
         } catch(IllegalArgumentException e) {
