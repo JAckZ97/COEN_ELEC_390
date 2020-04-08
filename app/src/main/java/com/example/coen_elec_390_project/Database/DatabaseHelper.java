@@ -63,7 +63,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_STATISTIC_PERF_INDEX + " REAL,"
                 + Config.COLUMN_STATISTIC_SPEED + " REAL,"
                 + Config.COLUMN_STATISTIC_CALORIES + " REAL,"
-                + Config.COLUMN_STATISTIC_COUNTER + " INTEGER)";
+                + Config.COLUMN_STATISTIC_COUNTER + " INTEGER,"
+                + Config.COLUMN_STATISTIC_STEP_COUNTER+ " INTEGER)";
 
         Log.d(TAG, CREATE_TABLE_STATISTIC);
 
@@ -292,8 +293,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
-
-                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter,step_counter));
                     } while(cursor.moveToNext());
 
                     return statistics;
@@ -414,6 +415,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_STATISTIC_SPEED, statistic.getSpeed());
         contentValues.put(Config.COLUMN_STATISTIC_CALORIES,statistic.getCalories());
         contentValues.put(Config.COLUMN_STATISTIC_COUNTER,counter);
+        contentValues.put(Config.COLUMN_STATISTIC_STEP_COUNTER,statistic.getStep_counter());
 
         /**We try to insert it*/
         try {
@@ -455,8 +457,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
-
-                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
+                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter,step_counter));
                     } while(cursor.moveToNext());
 
                     return statistics;
@@ -628,9 +630,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
 
                         if(after == -1 || after == 0) {
-                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter,step_counter));
                         }
                     } while(cursor.moveToNext());
 
@@ -682,9 +685,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
-
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
                         if(before == 1 || before == 0) {
-                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter,step_counter));
                         }
                     } while(cursor.moveToNext());
 
@@ -738,9 +741,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
-
+                        int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
                         if((after == -1 || after == 0) && (before == 1 || before == 0)) {
-                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter,step_counter));
                         }
                     } while(cursor.moveToNext());
 

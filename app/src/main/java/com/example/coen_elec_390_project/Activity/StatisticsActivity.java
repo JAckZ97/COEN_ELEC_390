@@ -213,8 +213,8 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0 + "\n";
             temp += "Calories burned: " + Math.round(statistics.get(i).getCalories()) + "\n";
-            temp += "Speed: " + Math.round(statistics.get(i).getSpeed()*100.0)/100.0 + " km/h";
-
+            temp += "Speed: " + Math.round(statistics.get(i).getSpeed()*100.0)/100.0 + " km/h\n";
+            temp += "Step Counter: " +statistics.get(i).getStep_counter() + " steps";
             String str_date = statistics.get(i).getDate();
             String date_component[] = str_date.split("/");
 
@@ -248,7 +248,8 @@ public class StatisticsActivity extends AppCompatActivity {
             temp += "Date: " + calendar.get(Calendar.YEAR) + "/" + calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.DAY_OF_MONTH) + "\n";
             temp += "Performance index: " + i*2 + "\n";
             temp += "Calories burned: " + 200 + "\n";
-            temp += "Speed: " + 9.5 + " km/h";
+            temp += "Speed: " + 9.5 + " km/h\n";
+            temp += "Step Counter: 5000 steps";
 
             DataPoint dataPoint = new DataPoint(i, i*2);
             data[i-1] = dataPoint;

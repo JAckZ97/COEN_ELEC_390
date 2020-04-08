@@ -75,10 +75,10 @@ public class StartActivity extends AppCompatActivity {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         // redirect if user is not null
-        if(firebaseUser != null) {
-            startActivity(new Intent(StartActivity.this, MainActivity.class));
-            finish();
-        }
+//        if(firebaseUser != null) {
+//            startActivity(new Intent(StartActivity.this, MainActivity.class));
+//            finish();
+//        }
 
         if(!MyBluetoothService.initialized){
             bluetoothsetup();
@@ -261,10 +261,29 @@ public class StartActivity extends AppCompatActivity {
         if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
             wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
 
-            if(wifiConnected){
+            if(wifiConnected) {
                 Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
                 Log.e("Tag", "wifi is connected");
                 pd.dismiss();
+
+                //for user in user table{
+                //  user.getemail, user.getpassword
+                //  if firebase.signin(user.getemail,user.getpassword)!=true{
+                //firebase.register(user.getemail.user.getpassword)
+                //databasehelper.getuser(user.email)
+                //user.profile, update user.profile
+                //   }
+                //
+                // list<stats> = databasehelper(user.getemail)
+                //      for stat in stats{
+                //          firebase.write(stat)
+                //      }
+                //  }
+                //  }
+                //
+                //}
+                //delete local database
+
 
                 return true;
             }
