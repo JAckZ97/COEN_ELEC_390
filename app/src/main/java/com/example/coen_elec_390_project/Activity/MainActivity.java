@@ -729,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                 new MaterialShowcaseView.Builder(this)
                         .setTarget(button1)
                         .setDismissOnTouch(true)
-                        .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.")
+                        .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.\n\nWithout the heart rate sensor, we can only record your speed!")
                         .setListener(new IShowcaseListener() {
                             @Override
                             public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
