@@ -97,7 +97,6 @@ public class StatisticsActivity extends AppCompatActivity {
                     dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
                 }
             });
-
         }
         else{
 
@@ -308,7 +307,6 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     public void tutorialSequence(){
-
 
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
