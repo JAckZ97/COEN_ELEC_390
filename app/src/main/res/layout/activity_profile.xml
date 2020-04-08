@@ -177,5 +177,4 @@
         app:itemTextColor="@drawable/selector"
         app:labelVisibilityMode="labeled"/>
 
-
 </RelativeLayout>
