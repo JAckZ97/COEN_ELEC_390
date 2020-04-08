@@ -64,21 +64,25 @@ public class StatisticsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_statistics);
         setUpBottomNavigationView();
+        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
 
         databaseHelper = new DatabaseHelper(this);
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
-        email = getIntent().getStringExtra("email");
-        boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
         dateSelection = findViewById(R.id.dateSelection);
-
-
-
-
-
+        email = getIntent().getStringExtra("email");
+        Log.e("Tag","<STAT> "+email);
+        user = databaseHelper.getUser(email);
         if(!tutorial) {
-            user = databaseHelper.getUser(email);
+
+            startDate = "";
+            endDate = "";
+
+
+
+
             loadListView();
+
             final String maxDate = databaseHelper.getMaxDate(user.getId());
             final String minDate = databaseHelper.getMinDate(user.getId());
 
@@ -93,9 +97,9 @@ public class StatisticsActivity extends AppCompatActivity {
                     dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
                 }
             });
-
         }
         else{
+
             Log.e("TAG", "<STAT> tutorial session");
             loadListView_tutorial();
             tutorialSequence();
@@ -260,15 +264,16 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setUpBottomNavigationView() {
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.statistics);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                Intent intent;
+                //Intent intent;
 
                 switch (menuItem.getItemId()){
                     case R.id.map:
-                        intent = new Intent(new Intent(StatisticsActivity.this, MapsActivity.class));
+                        Intent intent = new Intent(StatisticsActivity.this, MapsActivity.class);
                         intent.putExtra("email", email);
                         startActivity(intent);
                         break;
@@ -278,10 +283,6 @@ public class StatisticsActivity extends AppCompatActivity {
                         intent.putExtra("email", email);
                         startActivity(intent);
                         break;
-
-                    case R.id.statistics:
-                        break;
-
                     case R.id.profile:
                         if (user.getEmail()== null) {
                             // User is signed in
@@ -349,6 +350,8 @@ public class StatisticsActivity extends AppCompatActivity {
                                 Log.e("Tag", "<MAIN> entering statistic");
                                 intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
                                 intent.putExtra("tutorial",true);
+                                if(user!=null)
+                                    intent.putExtra("email",email);
                                 startActivity(intent);
                             }
                         })

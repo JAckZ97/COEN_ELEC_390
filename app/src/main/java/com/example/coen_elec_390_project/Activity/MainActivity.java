@@ -11,6 +11,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -54,7 +58,7 @@ import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 import uk.co.deanwild.materialshowcaseview.target.Target;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity implements LocationListener, Runnable {
+public class MainActivity extends AppCompatActivity implements LocationListener, Runnable, SensorEventListener {
     static TextView bpm;
     String email;
     Double weightinkg;
@@ -82,7 +86,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public static boolean developer_mode = false;
     public static int dev_count=0;
     private Integer dev_count2=0;
-    int count = 0;
+  
+    SensorManager sensorManager;
+    boolean running = false;
+    private TextView count;
+    int steps;
+    int stepsCounter;
     /*
     EditText weight, met, duration;
     TextView resulttext;
@@ -104,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setUpBottomNavigationView();
+        count = (TextView) findViewById(R.id.count);
         email = getIntent().getStringExtra("email");
 
         SharedPreferences sharedPreferences =
@@ -112,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
 
         if(getIntent().getStringExtra("dev_count")!=null)
@@ -166,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }
                         }
 
+
+
                         if(developer_mode){
                             start = System.currentTimeMillis();
                             lock = true;
@@ -175,6 +188,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         check = true;
                         speed_counter = 0;
                         continuous_average_speed = 0;
+                        stepsCounter=0;
+                        count.setText("Steps Count:\n--");
                         //timestamp seconds since epoch
                         break;
 
@@ -393,7 +408,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     }
 
     private void setUpBottomNavigationView() {
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -412,6 +428,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             startActivity(intent);
                             break;
                         }
+
 
                     case R.id.home:
                         if(developer_mode)
@@ -484,7 +501,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     public void onLocationChanged(Location location) {
 
         if (location == null) {
-            speed_txt.setText("-- km/h");
+            speed_txt.setText("Speed:\n-- km/h");
         } else {
 
             float Currentspeed = location.getSpeed();
@@ -493,9 +510,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
             continuous_average_speed = speed_sum / speed_counter;
 
 
-            speed_txt.setText("Your current speed is " + (int) (+Currentspeed * 3.6f) + " km/hr");
+            speed_txt.setText("Current Speed:\n" + (int) (+Currentspeed * 3.6f) + " km/hr");
             if (!check) {
-                speed_txt.setText("Your average speed is: " + (int) (average_speed) * 3.6f);
+                speed_txt.setText("Average Speed:\n" + (int) (average_speed) * 3.6f);
                 speed_sum = 0;
             }
 
@@ -521,6 +538,33 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     }
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(running){
+            steps = (int) Double.parseDouble(String.valueOf(sensorEvent.values[0]));
+            stepsCounter++;
+            count.setText("Steps Count:\n" + String.valueOf(stepsCounter));
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        running = true;
+        Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        if (countSensor != null) {
+            sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
+        } else {
+            Toast.makeText(this, "Countsensor unavailable", Toast.LENGTH_LONG).show();
+        }
+    }
+      
     public void tutorialSequence(){
 
 
@@ -638,6 +682,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         Log.e("Tag", "<MAIN> entering statistic");
                         intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
                         intent.putExtra("tutorial",true);
+                        if(user!=null)
+                            intent.putExtra("email",email);
                         startActivity(intent);
                     }
 
@@ -762,6 +808,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         Log.e("Tag", "<MAIN> entering statistic");
                         intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
                         intent.putExtra("tutorial",true);
+                        if(user!=null)
+                            intent.putExtra("email",email);
                         startActivity(intent);
                     }
 
