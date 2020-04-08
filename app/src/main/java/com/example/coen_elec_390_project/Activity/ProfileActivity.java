@@ -96,7 +96,9 @@ public class ProfileActivity extends AppCompatActivity  {
         email = getIntent().getStringExtra("email");
         user = databaseHelper.getUser(email);
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+
+        if(firebaseUser!=null)
+            reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
       
         if(!tutorial){
             Bundle bundle = getIntent().getExtras();
@@ -430,19 +432,19 @@ public class ProfileActivity extends AppCompatActivity  {
                     user.setWeight(str_weight);
                     user.setHeight(str_height);
 
-                    String userid = firebaseUser.getUid();
-                    HashMap<String, Object> updateresult = new HashMap<>();
-                    updateresult.put("Id", userid);
-                    updateresult.put("Email",email);
-                    updateresult.put("Fullname", str_fullname);
-                    updateresult.put("Gender", str_gender);
-                    updateresult.put("Age", str_age);
-                    updateresult.put("Weight", str_weight);
-                    updateresult.put("Height", str_height);
-                    updateresult.put("height unit",user.getHeightUnit());
-                    updateresult.put("weight unit",user.getWeightUnit());
-
-                    reff.setValue(updateresult);
+                    if(firebaseUser!=null) {
+                        String userid = firebaseUser.getUid();
+                        HashMap<String, Object> updateresult = new HashMap<>();
+                        updateresult.put("Id", userid);
+                        updateresult.put("Fullname", str_fullname);
+                        updateresult.put("Gender", str_gender);
+                        updateresult.put("Age", str_age);
+                        updateresult.put("Weight", str_weight);
+                        updateresult.put("Height", str_height);
+                        updateresult.put("height unit", user.getHeightUnit());
+                        updateresult.put("weight unit", user.getWeightUnit());
+                        reff.setValue(updateresult);
+                    }
                 }
                 databaseHelper = new DatabaseHelper(this);
                 databaseHelper.updateProfile(user);
@@ -451,6 +453,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     double user_weight, calories, prebpm, postbpm;
                     long duration;
                     float speed;
+                    int step_counter;
                     String str_date;
                     for (int i = 0; i < Temp.session_counter; i++) {
                         speed = Temp.Speeds.get(i);
@@ -458,6 +461,7 @@ public class ProfileActivity extends AppCompatActivity  {
                         duration = Temp.Durations.get(i);
                         prebpm = Temp.PreBPMs.get(i);
                         postbpm = Temp.PostBPMs.get(i);
+                        step_counter=Temp.Step_Counters.get(i);
                         if (user.getWeightUnit() == 1) {
                             user_weight = Double.parseDouble(user.getWeight());
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
@@ -465,7 +469,7 @@ public class ProfileActivity extends AppCompatActivity  {
                             user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
                         }
-                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,step_counter));
                     }
                     Temp.clear();
                 }

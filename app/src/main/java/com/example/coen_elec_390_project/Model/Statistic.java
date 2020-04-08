@@ -14,19 +14,30 @@ public class Statistic {
     private Integer counter_id;
     public static Integer counter;
 
+    public Integer getStep_counter() {
+        return step_counter;
+    }
+
+    public void setStep_counter(Integer step_counter) {
+        this.step_counter = step_counter;
+    }
+
+    private Integer step_counter;
+
     public Statistic() {
 
     }
 
-    public Statistic(Integer user_id, String date, Double performance_index, Double speed,Double calories) {
+    public Statistic(Integer user_id, String date, Double performance_index, Double speed,Double calories,Integer step_counter) {
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
         this.speed = speed;
         this.calories=calories;
+        this.step_counter=step_counter;
     }
 
-    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories,Integer counter) {
+    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories,Integer counter,Integer step_counter) {
         this.id = id;
         this.user_id = user_id;
         this.date = date;
@@ -34,6 +45,7 @@ public class Statistic {
         this.speed = speed;
         this.calories=calories;
         this.counter_id=counter;
+        this.step_counter=step_counter;
     }
 
     public Integer getId() {

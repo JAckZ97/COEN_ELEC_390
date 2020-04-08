@@ -12,6 +12,7 @@ public class Temp {
     public static ArrayList<Long> Durations= new ArrayList<>();
     public static ArrayList<Float> Speeds= new ArrayList<>();
     public static ArrayList<String> Dates= new ArrayList<>();
+    public static ArrayList<Integer> Step_Counters= new ArrayList<>();
     public static int session_counter = 0;
 
     public static String dev_weight_kg="80";
@@ -22,6 +23,7 @@ public class Temp {
     public static Double dev_postbpm=140.0;
     public static Integer age = 22;
     public static float speed = 15;
+    public static Integer step_counter= 0;
 
     public static boolean isNumeric(String strNum) {
         if(strNum==null)
@@ -29,13 +31,14 @@ public class Temp {
         return strNum.matches("-?\\d+(\\.\\d+)?");
     }
 
-    public static boolean insertTemp(double prebpm, double postbpm,String str_date,float speed,long duration){
+    public static boolean insertTemp(double prebpm, double postbpm,String str_date,float speed,long duration,int step_counter){
         if(session_counter<10){
             PreBPMs.add(prebpm);
             PostBPMs.add(postbpm);
             Dates.add(str_date);
             Speeds.add(speed);
             Durations.add(duration);
+            Step_Counters.add(step_counter);
             return true;
         }
         return false;

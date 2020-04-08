@@ -28,4 +28,5 @@ public class Config {
     public static final String COLUMN_STATISTIC_SPEED = "speed";
     public static final String COLUMN_STATISTIC_CALORIES = "calories";
     public static final String COLUMN_STATISTIC_COUNTER = "counter";
+    public static final String COLUMN_STATISTIC_STEP_COUNTER = "step_counter";
 }
