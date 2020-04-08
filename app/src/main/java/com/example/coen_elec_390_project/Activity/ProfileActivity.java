@@ -489,6 +489,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     double user_weight, calories, prebpm, postbpm;
                     long duration;
                     float speed;
+                    int step_counter;
                     String str_date;
                     for (int i = 0; i < Temp.session_counter; i++) {
                         speed = Temp.Speeds.get(i);
@@ -496,6 +497,7 @@ public class ProfileActivity extends AppCompatActivity  {
                         duration = Temp.Durations.get(i);
                         prebpm = Temp.PreBPMs.get(i);
                         postbpm = Temp.PostBPMs.get(i);
+                        step_counter=Temp.Step_Counters.get(i);
                         if (user.getWeightUnit() == 1) {
                             user_weight = Double.parseDouble(user.getWeight());
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
@@ -503,7 +505,7 @@ public class ProfileActivity extends AppCompatActivity  {
                             user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
                         }
-                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,step_counter));
                     }
                     Temp.clear();
                 }

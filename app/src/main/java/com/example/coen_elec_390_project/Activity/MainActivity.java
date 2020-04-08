@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     startActivity(intent);
                                 }else {
                                     //Temp is required
-                                    if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration)) {
+                                    if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration,stepsCounter)) {
                                         store_temp_alert_dialog();
                                         //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                         Temp.session_counter++;
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 startActivity(intent);
                             }else {
                                 //Temp is required
-                                if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration)) {
+                                if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration,stepsCounter)) {
                                     //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                     store_temp_alert_dialog();
                                     Temp.session_counter++;
