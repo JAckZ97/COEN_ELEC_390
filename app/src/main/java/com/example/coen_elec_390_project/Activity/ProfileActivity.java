@@ -54,6 +54,7 @@ public class ProfileActivity extends AppCompatActivity  {
     private Boolean insert_temp=false;
     public static int dev_count=0;
     int indexOfDecimal;
+    User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,14 +89,14 @@ public class ProfileActivity extends AppCompatActivity  {
         ft.setEnabled(false);
         kg.setEnabled(false);
         lb.setEnabled(false);
-
+        databaseHelper = new DatabaseHelper(this);
         boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
+        email = getIntent().getStringExtra("email");
+        user = databaseHelper.getUser(email);
         if(!tutorial){
-            email = getIntent().getStringExtra("email");
             Bundle bundle = getIntent().getExtras();
             insert_temp = bundle.getBoolean("temp",false);
-            databaseHelper = new DatabaseHelper(this);
-            final User user = databaseHelper.getUser(email);
+
 
             fullname.setText(user.getFullname());
             age.setText(user.getAge());
@@ -595,6 +596,8 @@ public class ProfileActivity extends AppCompatActivity  {
                         Log.e("Tag", "<MAIN> entering statistic");
                         intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
                         intent.putExtra("tutorial",true);
+                        if(user!=null)
+                            intent.putExtra("email",email);
                         startActivity(intent);
                     }
                 })

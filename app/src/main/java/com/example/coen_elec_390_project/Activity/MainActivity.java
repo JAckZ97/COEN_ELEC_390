@@ -675,6 +675,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         Log.e("Tag", "<MAIN> entering statistic");
                         intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
                         intent.putExtra("tutorial",true);
+                        if(user!=null)
+                            intent.putExtra("email",email);
                         startActivity(intent);
                     }
 
@@ -799,6 +801,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         Log.e("Tag", "<MAIN> entering statistic");
                         intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
                         intent.putExtra("tutorial",true);
+                        if(user!=null)
+                            intent.putExtra("email",email);
                         startActivity(intent);
                     }
 
