@@ -131,9 +131,12 @@ public class MyBluetoothService {
                             }
                         }
                     }
-                    else{
-                        MainActivity.Update_bpm("BPM: --");
+                    /*
+                    else if(MainActivity.active){
+                       MainActivity.Update_bpm("BPM: --");
                     }
+
+                     */
 
                     if(voltage_readings.size()==size){
 
@@ -151,9 +154,11 @@ public class MyBluetoothService {
                                 finger_detected=false;
                             }
 
-                            if(readbpm.recordings.size()<4 && finger_detected) {
-                                readbpm.recordings.add(BPM);
-                                MainActivity.Update_bpm(Integer.toString(BPM) + "\nBPM");
+                            if(readbpm.recordings.size()<4) {
+                                if(finger_detected) {
+                                    readbpm.recordings.add(BPM);
+                                    MainActivity.Update_bpm(Integer.toString(BPM) + "\nBPM");
+                                }
                             }
                             else{
                                 if(readbpm.getprebpm){

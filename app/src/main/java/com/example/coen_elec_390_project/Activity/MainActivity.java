@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     Double actduration;
     DatabaseHelper databaseHelper;
     private FloatingActionButton tutorial_btn;
+    public static boolean active=false;
 
     //private Switch aSwitch;
     public static Button button1;
@@ -90,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
     public void run() {
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        active=true;
     }
 
     @Override

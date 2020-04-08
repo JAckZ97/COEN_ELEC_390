@@ -72,28 +72,27 @@ public class StatisticsActivity extends AppCompatActivity {
         boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
         dateSelection = findViewById(R.id.dateSelection);
 
-        loadListView();
 
-        final String maxDate = databaseHelper.getMaxDate(user.getId());
-        final String minDate = databaseHelper.getMinDate(user.getId());
 
-        dateSelection.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DateSelectionFragment dateSelectionFragment = new DateSelectionFragment();
-                Bundle bundle = new Bundle();
-                bundle.putString("maxDate", maxDate);
-                bundle.putString("minDate", minDate);
-                dateSelectionFragment.setArguments(bundle);
-                dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
-            }
-        });
+
 
         if(!tutorial) {
             user = databaseHelper.getUser(email);
-            if(startDate.equals("") && endDate.equals(""))
-                loadListView();
+            loadListView();
+            final String maxDate = databaseHelper.getMaxDate(user.getId());
+            final String minDate = databaseHelper.getMinDate(user.getId());
 
+            dateSelection.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DateSelectionFragment dateSelectionFragment = new DateSelectionFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("maxDate", maxDate);
+                    bundle.putString("minDate", minDate);
+                    dateSelectionFragment.setArguments(bundle);
+                    dateSelectionFragment.show(getSupportFragmentManager(), "DateSelectionFragment");
+                }
+            });
 
         }
         else{
@@ -307,7 +306,6 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     public void tutorialSequence(){
-
 
         // sequence example
         ShowcaseConfig config = new ShowcaseConfig();
