@@ -1,38 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="200dp"
-    android:layout_height="200dp"
-    android:background="@drawable/gradient_background"
-    android:orientation="vertical">
+    android:layout_height="250dp"
+    android:background="@drawable/gradient_background">
 
-    <Button
-        android:id="@+id/startdate"
+    <TextView
         android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:text="Select a start date"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/edittext_background"
+        android:textAlignment="center"
+        android:id="@+id/startDateTextView"
+        android:textSize="15sp"
+        android:textColor="@color/colorBlack"/>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:text="Start date"
-        android:textColor="#C1000000" />
+        android:layout_centerHorizontal="true"
+        android:id="@+id/startdate"
+        android:layout_below="@id/startDateTextView"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"/>
 
-    <Button
-        android:id="@+id/enddate"
+    <TextView
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/startdate"
+        android:text="Select an end date"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/edittext_background"
+        android:textAlignment="center"
+        android:id="@+id/endDateTextView"
+        android:layout_below="@id/startdate"
+        android:textSize="15sp"
+        android:textColor="@color/colorBlack"/>
+
+    <Button
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
         android:text="End date"
-        android:textColor="#C1000000" />
+        android:id="@+id/enddate"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/endDateTextView"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"/>
 
     <Button
-        android:id="@+id/back"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/enddate"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/edittext_background"
         android:text="back"
-        android:textColor="#C1000000" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:id="@+id/back"
+        android:layout_below="@id/enddate"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/button_background"
+        android:textSize="20sp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"/>
 </RelativeLayout>

@@ -31,6 +31,8 @@
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         app:labelVisibilityMode="labeled"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
         app:menu="@menu/navigation_menu" />
 
     <TextView
