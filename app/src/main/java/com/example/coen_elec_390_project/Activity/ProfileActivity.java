@@ -48,6 +48,8 @@ public class ProfileActivity extends AppCompatActivity  {
     String email;
     String selectGender;
     ProgressDialog pd;
+    DatabaseReference reff;
+    FirebaseUser firebaseUser;
     double tempFeet, tempInch = 0;
     double tempHeight = 0;
     private boolean user_editting = false;
@@ -93,6 +95,11 @@ public class ProfileActivity extends AppCompatActivity  {
         boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
         email = getIntent().getStringExtra("email");
         user = databaseHelper.getUser(email);
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        if(firebaseUser!=null)
+            reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
+      
         if(!tutorial){
             Bundle bundle = getIntent().getExtras();
             insert_temp = bundle.getBoolean("temp",false);
@@ -100,7 +107,6 @@ public class ProfileActivity extends AppCompatActivity  {
 
             fullname.setText(user.getFullname());
             age.setText(user.getAge());
-    //        height.setText(user.getHeight());
             weight.setText(user.getWeight());
 
 
@@ -142,6 +148,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
                 }
             });
+          
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,8 +207,8 @@ public class ProfileActivity extends AppCompatActivity  {
                         heightInch.setVisibility(View.VISIBLE);
                     }
                 }
-            });
-        }
+              });
+          }
         });
     }
       else{
@@ -266,46 +273,44 @@ public class ProfileActivity extends AppCompatActivity  {
       
     }
 
-    /**
-    public void basicRead(){
-        reff.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
-                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
-                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
-                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
-
-                fullname.setText(fileName);
-                height.setText(fileHeight);
-                weight.setText(fileWeight);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                // catch error
-            }
-        });
-    }
-
-    private void basicWrite () {
-        String userid = firebaseUser.getUid();
-        String str_fullname = fullname.getText().toString();
-        String str_gender = selectGender;
-        String str_weight = weight.getText().toString();
-        String str_height = height.getText().toString();
-
-        HashMap<String, Object> updateresult = new HashMap<>();
-        updateresult.put("Id", userid);
-        updateresult.put("Fullname", str_fullname);
-        updateresult.put("Gender", str_gender);
-        updateresult.put("Weight", str_weight);
-        updateresult.put("Height", str_height);
-        updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
-
-        reff.setValue(updateresult);
-    }*/
+//    public void basicRead(){
+//        reff.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
+//                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
+//                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
+//                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
+//
+//                fullname.setText(fileName);
+//                height.setText(fileHeight);
+//                weight.setText(fileWeight);
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//                // catch error
+//            }
+//        });
+//    }
+//    private void writeProfileCnline () {
+//        String userid = firebaseUser.getUid();
+//        String str_fullname = fullname.getText().toString();
+//        String str_gender = selectGender;
+//        String str_weight = weight.getText().toString();
+//        String str_height = height.getText().toString();
+//
+//        HashMap<String, Object> updateresult = new HashMap<>();
+//        updateresult.put("Id", userid);
+//        updateresult.put("Fullname", str_fullname);
+//        updateresult.put("Gender", str_gender);
+//        updateresult.put("Weight", str_weight);
+//        updateresult.put("Height", str_height);
+//        updateresult.put("Imageur", "https://firebasestorage.googleapis.com/v0/b/coen-elec-390-98dd3.appspot.com/o/placeholder.png?alt=media&token=deb0ea3a-dc94-4093-a187-19590f61894b");
+//
+//        reff.setValue(updateresult);
+//    }
 
     // TODO: heightUnit cm: 1/ ft: 0
     //       weightUnit kg: 1/ lb: 0
@@ -462,6 +467,20 @@ public class ProfileActivity extends AppCompatActivity  {
                     user.setAge(str_age);
                     user.setWeight(str_weight);
                     user.setHeight(str_height);
+
+                    if(firebaseUser!=null) {
+                        String userid = firebaseUser.getUid();
+                        HashMap<String, Object> updateresult = new HashMap<>();
+                        updateresult.put("Id", userid);
+                        updateresult.put("Fullname", str_fullname);
+                        updateresult.put("Gender", str_gender);
+                        updateresult.put("Age", str_age);
+                        updateresult.put("Weight", str_weight);
+                        updateresult.put("Height", str_height);
+                        updateresult.put("height unit", user.getHeightUnit());
+                        updateresult.put("weight unit", user.getWeightUnit());
+                        reff.setValue(updateresult);
+                    }
                 }
                 databaseHelper = new DatabaseHelper(this);
                 databaseHelper.updateProfile(user);
@@ -470,6 +489,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     double user_weight, calories, prebpm, postbpm;
                     long duration;
                     float speed;
+                    int step_counter;
                     String str_date;
                     for (int i = 0; i < Temp.session_counter; i++) {
                         speed = Temp.Speeds.get(i);
@@ -477,6 +497,7 @@ public class ProfileActivity extends AppCompatActivity  {
                         duration = Temp.Durations.get(i);
                         prebpm = Temp.PreBPMs.get(i);
                         postbpm = Temp.PostBPMs.get(i);
+                        step_counter=Temp.Step_Counters.get(i);
                         if (user.getWeightUnit() == 1) {
                             user_weight = Double.parseDouble(user.getWeight());
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
@@ -484,7 +505,7 @@ public class ProfileActivity extends AppCompatActivity  {
                             user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
                         }
-                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,step_counter));
                     }
                     Temp.clear();
                 }

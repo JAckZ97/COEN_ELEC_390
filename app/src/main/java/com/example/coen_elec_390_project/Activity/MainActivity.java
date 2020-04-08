@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         setUpBottomNavigationView();
         count = (TextView) findViewById(R.id.count);
         email = getIntent().getStringExtra("email");
-
+        //get firebase user
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our OnboardingSupportFragment
@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             start = System.currentTimeMillis();
                             lock = true;
                             button1.setText("Getting your bpm");
+                            running = true;
                         } else {
                             button1.setText("Get your average speed");
                             if(!understood) {
@@ -215,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
-                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories));
+                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter));
 
                                 }else if ( user!=null ){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -226,7 +227,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     startActivity(intent);
                                 }else {
                                     //Temp is required
-                                    if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration)) {
+                                    if (Temp.insertTemp(readbpm.preBPM, readbpm.postBPM, str_date, continuous_average_speed, duration,stepsCounter)) {
                                         store_temp_alert_dialog();
                                         //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                         Temp.session_counter++;
@@ -239,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             button1.setText("Start Recording");
                             counter = 0;
                         }
-
+                        /*
                         if(developer_mode){
                             long duration = System.currentTimeMillis() - start;
                             button1.setText("Show Performance Index");
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,stepsCounter));
 
                             }else if ( user!=null ){
                                 Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -266,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 startActivity(intent);
                             }else {
                                 //Temp is required
-                                if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration)) {
+                                if (Temp.insertTemp(Temp.dev_prebpm, Temp.dev_postbpm, str_date, Temp.speed, duration,stepsCounter)) {
                                     //Toast.makeText(getApplicationContext(), "Your running session is stored temporarily. Please login to save your data in database! Your temporary data will be lost if you exit the application.", Toast.LENGTH_LONG).show();
                                     store_temp_alert_dialog();
                                     Temp.session_counter++;
@@ -275,6 +276,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }
                             counter++;
                         }
+                         */
 
                         check = false;
                         average_speed = continuous_average_speed;
@@ -363,7 +365,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter));
                             }
                             Temp.clear();
                         }
@@ -468,9 +470,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         }
 
                     case R.id.logout:
-                        intent = new Intent(MainActivity.this, StartActivity.class);
-                        intent.putExtra("dev_count",dev_count2.toString());
-                        startActivity(intent);
+                        FirebaseAuth.getInstance().signOut();
+                        startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
                         break;
 
                 }
@@ -556,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onResume() {
         super.onResume();
-        running = true;
+
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
