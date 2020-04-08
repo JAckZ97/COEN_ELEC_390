@@ -118,8 +118,8 @@ public class RegisterActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    public void registerOnline(final String fullname, final String email, final String password) {
-        auth.createUserWithEmailAndPassword(email, password)
+    public void registerOnline(final String str_fullname, final String str_email, final String str_password) {
+        auth.createUserWithEmailAndPassword(str_email, str_password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -131,9 +131,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("Id", userId);
-                            hashMap.put("Email",email);
-                            hashMap.put("Password",password);
-                            hashMap.put("Fullname", fullname);
+                            hashMap.put("Email",str_email);
+                            hashMap.put("Password",str_password);
+                            hashMap.put("Fullname", str_fullname);
                             hashMap.put("Gender", "");
                             hashMap.put("Age", "");
                             hashMap.put("Weight", "");
