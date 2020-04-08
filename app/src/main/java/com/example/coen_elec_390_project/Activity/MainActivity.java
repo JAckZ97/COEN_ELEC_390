@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             start = System.currentTimeMillis();
                             lock = true;
                             button1.setText("Getting your bpm");
+                            running = true;
                         } else {
                             button1.setText("Get your average speed");
                             if(!understood) {
@@ -555,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
     @Override
     protected void onResume() {
         super.onResume();
-        running = true;
+
         Sensor countSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         if (countSensor != null) {
             sensorManager.registerListener(this, countSensor, SensorManager.SENSOR_DELAY_UI);
