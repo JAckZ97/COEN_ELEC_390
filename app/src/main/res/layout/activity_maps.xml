@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    android:orientation="vertical">
 
     <fragment
         android:id="@+id/map_activity"
@@ -29,44 +31,50 @@
         android:layout_marginStart="0dp"
         android:background="?android:attr/windowBackground"
         app:labelVisibilityMode="labeled"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
         app:menu="@menu/navigation_menu" />
 
     <TextView
         android:id="@+id/Calory"
-        android:layout_width="115dp"
+        android:layout_width="110dp"
         android:layout_height="46dp"
         android:layout_above="@+id/bottomNavigation"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="3dp"
-        android:layout_marginEnd="10dp"
+        android:layout_marginStart="6dp"
         android:layout_marginBottom="1dp"
-        android:layout_toStartOf="@+id/Speed"
+        android:background="@drawable/edittext_background"
         android:text="Calories"
         android:textAlignment="center"
+        android:textColor="#C1000000"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/Speed"
-        android:layout_width="122dp"
-        android:layout_height="49dp"
+        android:layout_width="110dp"
+        android:layout_height="46dp"
         android:layout_above="@+id/bottomNavigation"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginEnd="37dp"
+        android:layout_marginBottom="1dp"
         android:layout_toStartOf="@+id/performance_index"
+        android:background="@drawable/edittext_background"
         android:text="Speed"
         android:textAlignment="center"
+        android:textColor="#C1000000"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/performance_index"
         android:layout_width="115dp"
-        android:layout_height="48dp"
+        android:layout_height="46dp"
         android:layout_above="@+id/bottomNavigation"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="-3dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="1dp"
+        android:background="@drawable/edittext_background"
         android:text="Performance Index"
         android:textAlignment="center"
+        android:textColor="#C1000000"
         android:textStyle="bold" />
 
 </RelativeLayout>

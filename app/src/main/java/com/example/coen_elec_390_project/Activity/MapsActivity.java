@@ -176,23 +176,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         // add the latlng from this point to the array
         allLatLngs.add(new LatLng(location.getLatitude(),location.getLongitude()));
 
-        // check if the positions added is a multiple of 100, if so, redraw all of the polylines as one line (this helps with rendering the map when there are thousands of points)
-        if(allLatLngs.size() % 100 == 0) {
-            // first remove all of the existing polylines
-            for(Polyline pline : polylines) {
-                pline.remove();
-            }
-            // create one new large polyline
-            Polyline routeSoFar = mMap.addPolyline(new PolylineOptions().color(Color.GREEN).width(5));
-            // draw the polyline for the route so far
-            routeSoFar.setPoints(allLatLngs);
-            // set the zindex so that the poly line stays on top of my tile overlays
-            routeSoFar.setZIndex(1000);
-            // clear the polylines array
-            polylines.clear();
-            // add the new poly line as the first element in the polylines array
-            polylines.add(routeSoFar);
-        }
         currentlocation=location;
     }
 
@@ -213,7 +196,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             return;
         }
 
-
     }
 
 //    private void updateTrack() {
@@ -225,7 +207,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void setUpBottomNavigationView() {
         final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.map);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {

@@ -1,46 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#334C96D7"
     android:gravity="center"
-    android:padding="12dp"
     android:orientation="vertical"
+    android:padding="12dp"
     tools:context=".Activity.StartActivity">
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="200dp"
-        android:src="@drawable/logo"/>
+        android:src="@drawable/logo" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Log in"
         android:id="@+id/login"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/button_background"/>
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edittext_background"
+        android:text="Log in"
+        android:textColor="#C1000000" />
+
+    <Button
         android:id="@+id/register"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/button_background"/>
-
-    <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guest"
-        android:id="@+id/guest"
         android:layout_marginTop="15dp"
-        android:textColor="@color/colorPrimary"
-        android:background="@drawable/button_background"/>
+        android:background="@drawable/edittext_background"
+        android:text="Register"
+        android:textColor="#C1000000" />
+
+    <Button
+        android:id="@+id/guest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edittext_background"
+        android:text="Guest"
+        android:textColor="#C1000000" />
 
     <Switch
         android:id="@+id/wifiCheckSwitch"
