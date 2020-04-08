@@ -66,19 +66,19 @@ public class StatisticsActivity extends AppCompatActivity {
         setUpBottomNavigationView();
         boolean tutorial = getIntent().getBooleanExtra("tutorial",false);
 
-
+        databaseHelper = new DatabaseHelper(this);
         statisticsListView = findViewById(R.id.listview);
         graph = findViewById(R.id.graph);
         dateSelection = findViewById(R.id.dateSelection);
+        email = getIntent().getStringExtra("email");
+        Log.e("Tag","<STAT> "+email);
+        user = databaseHelper.getUser(email);
         if(!tutorial) {
 
             startDate = "";
             endDate = "";
-            databaseHelper = new DatabaseHelper(this);
 
 
-            email = getIntent().getStringExtra("email");
-            user = databaseHelper.getUser(email);
 
 
             loadListView();
@@ -100,6 +100,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         }
         else{
+
             Log.e("TAG", "<STAT> tutorial session");
             loadListView_tutorial();
             tutorialSequence();
@@ -351,6 +352,8 @@ public class StatisticsActivity extends AppCompatActivity {
                                 Log.e("Tag", "<MAIN> entering statistic");
                                 intent = new Intent(new Intent(StatisticsActivity.this, ProfileActivity.class));
                                 intent.putExtra("tutorial",true);
+                                if(user!=null)
+                                    intent.putExtra("email",email);
                                 startActivity(intent);
                             }
                         })
