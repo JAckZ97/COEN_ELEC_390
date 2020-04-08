@@ -15,6 +15,7 @@ import androidx.constraintlayout.solver.widgets.ConstraintWidgetGroup;
 import com.example.coen_elec_390_project.Model.Statistic;
 import com.example.coen_elec_390_project.Model.User;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -92,7 +93,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
-        contentValues.putNull(Config.COLUMN_USER_GENDER);
+        contentValues.put(Config.COLUMN_USER_GENDER,"Other");
         contentValues.putNull(Config.COLUMN_USER_AGE);
         contentValues.putNull(Config.COLUMN_USER_HEIGHT);
         contentValues.putNull(Config.COLUMN_USER_WEIGHT);
@@ -163,8 +164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
-
-    /**Fucntion that returns a user*/
+    /**Function that returns a user*/
     public User getUser(String email) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -270,7 +270,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return Collections.emptyList();
     }
-
 
     /**Function that returns a list of all statistic in the local database*/
     public List<Statistic> getAllStats() {
@@ -434,6 +433,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    /**Function that returns all the statistics of a given user*/
     public List<Statistic> getStatisticsByUser(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
@@ -480,14 +480,135 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Collections.emptyList();
     }
 
-    public List<Statistic> getStatisticsAfterStart(int userId, String startdate) {
+    /**Function that compares two dates*/
+    public int compareDate(String d1, String d2) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+
+        Date date1 = format.parse(d1);
+        Date date2 = format.parse(d2);
+
+        if(date1.after(date2)) {
+            return -1;
+        }
+
+        else if(date1.before(date2)) {
+            return 1;
+        }
+
+        else {
+            return 0;
+        }
+    }
+
+    /**Function that finds the max date in the statistic database*/
+    public String getMaxDate(int userId) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = null;
-        SimpleDateFormat sdformat = new SimpleDateFormat("yyyy-MM-dd");
-        Date startDate;
 
-        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE "/* + Config.COLUMN_STATISTIC_USER_ID + " = " + userId
-                + " AND "*/ + Config.COLUMN_STATISTIC_DATE + " > " + startdate;
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    String maxdate = "2020/01/01";
+
+                    do {
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+
+                        int after = compareDate(date, maxdate);
+                        Log.d(TAG, "maxdate:" + maxdate);
+                        Log.d(TAG, "date: " + date);
+                        Log.d(TAG, "after: " + after);
+                        if(after == -1) {
+                            maxdate = date;
+                        }
+
+                    } while(cursor.moveToNext());
+                    Log.d(TAG, "final maxdate:" + maxdate);
+                    return maxdate;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return "";
+    }
+
+    /**Function that finds the max date in the statistic database*/
+    public String getMinDate(int userId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    String mindate = "2020/12/31";
+
+                    do {
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+
+                        int before = compareDate(date, mindate);
+                        Log.d(TAG, "mindate:" + mindate);
+                        Log.d(TAG, "date: " + date);
+                        Log.d(TAG, "after: " + before);
+                        if(before == 1) {
+                            mindate = date;
+                        }
+
+                    } while(cursor.moveToNext());
+                    Log.d(TAG, "final mindate:" + mindate);
+                    return mindate;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return "";
+    }
+
+
+    /**Function that returns all the statistics of a given user after a given date*/
+    public List<Statistic> getStatisticsAfterStartDate(int userId, String startdate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
 
         try {
             cursor = db.rawQuery(query, null);
@@ -500,12 +621,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
                         int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
                         String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        Log.d(TAG, "date: " + date);
+                        int after = compareDate(date, startdate);
+                        Log.d(TAG, "after: " + after);
                         double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
 
-                        statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        if(after == -1 || after == 0) {
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        }
                     } while(cursor.moveToNext());
 
                     return statistics;
@@ -513,7 +639,117 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        catch (SQLiteException e) {
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**Function that returns all the statistics of a given user before a given date*/
+    public List<Statistic> getStatisticsBeforeEndDate(int userId, String enddate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    List<Statistic> statistics = new ArrayList<>();
+
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
+                        int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        Log.d(TAG, "date: " + date);
+                        int before = compareDate(date, enddate);
+                        Log.d(TAG, "before: " + before);
+                        double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
+                        double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
+                        double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
+
+                        if(before == 1 || before == 0) {
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        }
+                    } while(cursor.moveToNext());
+
+                    return statistics;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+        }
+
+        finally {
+            if(cursor != null) {
+                cursor.close();
+            }
+
+            db.close();
+        }
+
+        return Collections.emptyList();
+    }
+
+    /**Function that returns all the statistics of a given user between a given start date and end date*/
+    public List<Statistic> getStatisticsBetweenStartAndEndDates(int userId, String startdate, String enddate) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = null;
+
+        String query = "SELECT * FROM " + Config.STATISTIC_TABLE_NAME + " WHERE " + Config.COLUMN_STATISTIC_USER_ID + " = " + userId;
+
+        Log.d(TAG, query);
+
+        try {
+            cursor = db.rawQuery(query, null);
+
+            if(cursor != null) {
+                if(cursor.moveToFirst()) {
+                    List<Statistic> statistics = new ArrayList<>();
+
+                    do {
+                        int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
+                        int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
+                        String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
+                        Log.d(TAG, "date: " + date);
+                        int before = compareDate(date, enddate);
+                        int after = compareDate(date, startdate);
+                        Log.d(TAG, "before: " + before);
+                        Log.d(TAG, "after: " + after);
+                        double perf_index = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_PERF_INDEX));
+                        double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
+                        double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
+                        int counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_COUNTER));
+
+                        if((after == -1 || after == 0) && (before == 1 || before == 0)) {
+                            statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,counter));
+                        }
+                    } while(cursor.moveToNext());
+
+                    return statistics;
+                }
+            }
+        }
+
+        catch (SQLiteException | ParseException e) {
             Log.d(TAG, "Exception: " + e);
             Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
         }
