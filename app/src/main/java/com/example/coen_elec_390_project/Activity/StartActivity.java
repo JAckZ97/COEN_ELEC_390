@@ -243,27 +243,7 @@ public class StartActivity extends AppCompatActivity {
 
 //      UPLOAD all updated stats
         // TODO:
-        User user = databaseHelper.getUser(email);
-        databaseHelper = new DatabaseHelper(this);
-        List<User> users = databaseHelper.getAllUsers();
-        for(int i = 0; i < users.size(); i++){
 
-            HashMap<String, Object> updateresult = new HashMap<>();
-
-            List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
-
-            for(int p =0; p<stats.size(); p++) {
-                updateresult.put("stat_id", stats.get(i).getId());
-                updateresult.put("stat_id_counter", stats.get(i).getCounter_id());
-                updateresult.put("stat_date", stats.get(i).getDate());
-                updateresult.put("stat_speed", stats.get(i).getSpeed());
-                updateresult.put("stat_calory", stats.get(i).getCalories());
-                updateresult.put("stat_perf_index", stats.get(i).getPerformance_index());
-                //need one more line of data
-                reff.child(String.valueOf(stats.get(i).getId())).setValue(updateresult);
-            }
-
-        }
 
 
     }
@@ -301,23 +281,28 @@ public class StartActivity extends AppCompatActivity {
                 Log.e("Tag", "wifi is connected");
                 pd.dismiss();
 
-                //for user in user table{
-                //  user.getemail, user.getpassword
-                //  if firebase.signin(user.getemail,user.getpassword)!=true{
-                //firebase.register(user.getemail.user.getpassword)
-                //databasehelper.getuser(user.email)
-                //user.profile, update user.profile
-                //   }
-                //
-                // list<stats> = databasehelper(user.getemail)
-                //      for stat in stats{
-                //          firebase.write(stat)
-                //      }
-                //  }
-                //  }
-                //
-                //}
-                //delete local database
+                databaseHelper = new DatabaseHelper(this);
+                List<User> users = databaseHelper.getAllUsers();
+                for(int i = 0; i < users.size(); i++){
+
+                    HashMap<String, Object> updateresult = new HashMap<>();
+
+                    List<Statistic> stats = databaseHelper.getStatisticsByUser(users.get(i).getId());
+
+                    for(int p =0; p<stats.size(); p++) {
+                        updateresult.put("stat_id", stats.get(i).getId());
+                        updateresult.put("stat_id_counter", stats.get(i).getCounter_id());
+                        updateresult.put("stat_date", stats.get(i).getDate());
+                        updateresult.put("stat_speed", stats.get(i).getSpeed());
+                        updateresult.put("stat_calory", stats.get(i).getCalories());
+                        updateresult.put("stat_perf_index", stats.get(i).getPerformance_index());
+                        updateresult.put("stat_step_counter",stats.get(i).getStep_counter());
+                        //need one more line of data
+                        reff.child(String.valueOf(stats.get(i).getId())).setValue(updateresult);
+                    }
+
+                }
+                databaseHelper.clearDatabase();
 
 
                 return true;

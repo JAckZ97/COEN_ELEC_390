@@ -602,7 +602,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return "";
     }
 
-
     /**Function that returns all the statistics of a given user after a given date*/
     public List<Statistic> getStatisticsAfterStartDate(int userId, String startdate) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -766,6 +765,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         return Collections.emptyList();
+    }
+
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String clearUser = "DELETE FROM " + Config.USER_TABLE_NAME;
+        String clearStats = "DELETE FROM " + Config.STATISTIC_TABLE_NAME;
+        db.execSQL(clearUser);
+        db.execSQL(clearStats);
     }
 
 }
