@@ -209,7 +209,7 @@ public class StatisticsActivity extends AppCompatActivity {
 
         for(int i = 0; i < statistics.size(); i++) {
             String temp = "";
-            temp += "Statistic's id: " + statistics.get(i).getCounter_id() + "\n";
+            temp += "Statistic's id: " + statistics.get(i).getId() + "\n";
             temp += "Date: " + statistics.get(i).getDate() + "\n";
             temp += "Performance index: " + Math.round((statistics.get(i).getPerformance_index())*100.0)/100.0 + "\n";
             temp += "Calories burned: " + Math.round(statistics.get(i).getCalories()) + "\n";

@@ -69,67 +69,14 @@ public class LoginActivity extends AppCompatActivity {
                 String str_email = email.getText().toString();
                 String str_password = password.getText().toString();
 
-                if(TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)){
+                if (TextUtils.isEmpty(str_email) || TextUtils.isEmpty(str_password)) {
                     Toast.makeText(LoginActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
-                }
+                } else {
 
-                else if(!checkforAt(str_email)) {
-                    Toast.makeText(LoginActivity.this, "This is not a valid email", Toast.LENGTH_SHORT).show();
-                    pd.dismiss();
-                }
+                    if (checkNetworkConnection()) {
+                        loginOnline(str_email, str_password);
 
-                else {
-
-                    if (checkNetworkConnection()){
-                        loginOnline(str_email,str_password);
-                        FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-                        DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
-                        reff.addValueEventListener(new ValueEventListener() {
-                            @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                String fileName = dataSnapshot.child("Fullname").getValue(String.class);
-                                String fileGender = dataSnapshot.child("Gender").getValue(String.class);
-                                String fileHeight = dataSnapshot.child("Height").getValue(String.class);
-                                String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
-                                String fileHeightunit = dataSnapshot.child("height unit").getValue(String.class);
-                                String fileWeightunit = dataSnapshot.child("weight unit").getValue(String.class);
-                                String fileAge = dataSnapshot.child("Age").getValue(String.class);
-                                String fileEmail = dataSnapshot.child("Email").getValue(String.class);
-                                String filePass = dataSnapshot.child("Password").getValue(String.class);
-                                databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
-                            }
-
-                            @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-                                // catch error
-                                }
-                        });
-
-                        DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
-                        reff2.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int counter =0;
-                                for(DataSnapshot ds : dataSnapshot.getChildren()) {
-                                    String stat_id = ds.child("stat_id").getValue(String.class);
-                                    String stat_id_counter = ds.child("stat_id_counter").getValue(String.class);
-                                    String stat_date = ds.child("stat_date").getValue(String.class);
-                                    String stat_speed = ds.child("stat_speed").getValue(String.class);
-                                    String stat_calory = ds.child("stat_calory").getValue(String.class);
-                                    String stat_perf_index = ds.child("stat_perf_index").getValue(String.class);
-                                    String stat_step_counter = ds.child("stat_step_counter").getValue(String.class);
-                                    databaseHelper.insertStatistic(new Statistic(Integer.parseInt(stat_id), counter, stat_date, Double.parseDouble(stat_perf_index),  Double.parseDouble(stat_speed),Double.parseDouble(stat_calory),Integer.parseInt(stat_id_counter),Integer.parseInt(stat_step_counter)));
-                                }
-
-                                //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-                                // catch error
-                            }
-                        });
                     }
 //                        loginOnline(str_email, str_password);
 //                    }else {
@@ -143,8 +90,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private boolean checkforAt(String email) {
         boolean hasAt = false;
-        for(int i = 0; i < email.length(); i++) {
-            if(email.charAt(i) == '@') {
+        for (int i = 0; i < email.length(); i++) {
+            if (email.charAt(i) == '@') {
                 hasAt = true;
             }
         }
@@ -152,25 +99,24 @@ public class LoginActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    private boolean checkNetworkConnection(){
+    private boolean checkNetworkConnection() {
         pd = new ProgressDialog(LoginActivity.this);
         boolean wifiConnected;
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeInfo = connectivityManager.getActiveNetworkInfo();
 
-        if (activeInfo != null && activeInfo.isConnected()){ // wifi connected
+        if (activeInfo != null && activeInfo.isConnected()) { // wifi connected
             wifiConnected = activeInfo.getType() == ConnectivityManager.TYPE_WIFI;
 
-            if(wifiConnected){
+            if (wifiConnected) {
 //                Toast.makeText(RegisterActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
                 Log.e("Tag", "wifi is connected");
 //                pd.dismiss();
 
                 return true;
             }
-        }
-        else{ // no internet connected
+        } else { // no internet connected
 //            Toast.makeText(RegisterActivity.this, "No internet connect", Toast.LENGTH_SHORT).show();
             Log.e("Tag", "no internet connect ");
 //            pd.dismiss();
@@ -184,17 +130,80 @@ public class LoginActivity extends AppCompatActivity {
         auth.signInWithEmailAndPassword(str_email, str_password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
+                    //reading data
+                    final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
-
                     reference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
+                            reff.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    /*
+                                    HashMap<String, Object> hashMap = new HashMap<>();
+                                    hashMap.put("Id", temp_user.getId());
+                                    hashMap.put("Email",temp_user.getEmail());
+                                    hashMap.put("Fullname", temp_user.getFullname());
+                                    hashMap.put("Gender", temp_user.getGender());
+                                    hashMap.put("Age", temp_user.getAge());
+                                    hashMap.put("Weight", temp_user.getWeight());
+                                    hashMap.put("Height", temp_user.getHeight());`
+                                    hashMap.put("height unit",temp_user.getHeightUnit());
+                                    hashMap.put("weight unit", temp_user.getWeightUnit());
+                                    hashMap.put("Password",temp_user.getPassword());
+                                    hashMap.put("Stat_Counter",temp_user.getStat_counter()+stat_counter);
+                                     */
+                                    String fileName = dataSnapshot.child("Fullname").getValue(String.class);
+                                    String fileGender = dataSnapshot.child("Gender").getValue(String.class);
+                                    String fileHeight = dataSnapshot.child("Height").getValue(String.class);
+                                    String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
+                                    String fileHeightunit = dataSnapshot.child("height unit").getValue(String.class);
+                                    String fileWeightunit = dataSnapshot.child("weight unit").getValue(String.class);
+                                    String fileAge = dataSnapshot.child("Age").getValue(String.class);
+                                    String fileEmail = dataSnapshot.child("Email").getValue(String.class);
+                                    String filePass = dataSnapshot.child("Password").getValue(String.class);
+                                    int stat_counter = Integer.parseInt(dataSnapshot.child("Stat_Counter").getValue(String.class));
+                                    databaseHelper.insertUser(new User(fileName, fileEmail, filePass, fileAge, fileWeight, fileHeight, fileGender, Integer.parseInt(fileHeightunit), Integer.parseInt(fileWeightunit), stat_counter, fbuser.getUid()));
+
+                                    final User user = databaseHelper.getUser(fileEmail);
+                                    DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
+                                    reff2.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            int counter = 0;
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                int stat_id = Integer.parseInt(ds.child("stat_id").getValue(String.class));
+                                                String stat_date = ds.child("stat_date").getValue(String.class);
+                                                double stat_speed = Double.parseDouble(ds.child("stat_speed").getValue(String.class));
+                                                double stat_calory = Double.parseDouble(ds.child("stat_calory").getValue(String.class));
+                                                double stat_perf_index = Double.parseDouble(ds.child("stat_perf_index").getValue(String.class));
+                                                int stat_step_counter = Integer.parseInt(ds.child("stat_step_counter").getValue(String.class));
+                                                databaseHelper.insertStatistic(new Statistic(stat_id, user.getId(), stat_date, stat_perf_index, stat_speed, stat_calory, stat_step_counter), user);
+                                            }
+
+                                            //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                                            // catch error
+                                        }
+                                    });
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                    // catch error
+                                }
+                            });
+
+
                             pd.dismiss();
-//                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//                            startActivity(intent);
-//                            finish();
+
+
                         }
 
                         @Override
@@ -202,9 +211,8 @@ public class LoginActivity extends AppCompatActivity {
                             pd.dismiss();
                         }
                     });
-                }
 
-                else {
+                } else {
                     pd.dismiss();
                     Toast.makeText(LoginActivity.this, "Authentication failed!", Toast.LENGTH_SHORT).show();
                 }
@@ -213,7 +221,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void loginOffline(String str_email, String str_password) {
-        Log.e("Tag","<email> "+str_email);
+        Log.e("Tag", "<email> " + str_email);
         if (databaseHelper.checkIfExisting(str_email)) {
             if (databaseHelper.checkPassword(str_email, str_password)) {
                 pd.dismiss();
@@ -222,15 +230,11 @@ public class LoginActivity extends AppCompatActivity {
                 intent.putExtra("email", str_email);
                 User.Global_email = str_email;
                 startActivity(intent);
-            }
-
-            else {
+            } else {
                 Toast.makeText(LoginActivity.this, "This password is incorrect", Toast.LENGTH_SHORT).show();
                 pd.dismiss();
             }
-        }
-
-        else {
+        } else {
             Toast.makeText(LoginActivity.this, "This email is not registered", Toast.LENGTH_SHORT).show();
             pd.dismiss();
         }

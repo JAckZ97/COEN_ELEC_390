@@ -13,11 +13,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,15 +84,7 @@ public class StartActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-        super.onStart();
-        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-
-        // redirect if user is not null
-//        if(firebaseUser != null) {
-//            startActivity(new Intent(StartActivity.this, MainActivity.class));
-//            finish();
-//        }
-
+    super.onStart();
         if(!MyBluetoothService.initialized){
             bluetoothsetup();
         }
@@ -283,9 +277,6 @@ public class StartActivity extends AppCompatActivity {
                 Toast.makeText(StartActivity.this, "Wifi is connected", Toast.LENGTH_SHORT).show();
                 Log.e("Tag", "wifi is connected");
                 pd.dismiss();
-
-
-
                 databaseHelper = new DatabaseHelper(this);
                 final List<User> users = databaseHelper.getAllUsers();
                 Log.e("Tag","<START> try login here");
@@ -297,53 +288,12 @@ public class StartActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if(task.isSuccessful()) {
                                 Log.e("Tag","<START> login here");
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
-                                reference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    }
-
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                                        pd.dismiss();
-                                    }
-                                });
-                                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                reff = FirebaseDatabase.getInstance().getReference().child("Stats").child(firebaseUser.getUid());
-                                HashMap<String, Object> updateresult = new HashMap<>();
-                                List<Statistic> stats = databaseHelper.getStatisticsByUser(users.get(index).getId());
-
-                                for(int p =0; p<stats.size(); p++) {
-                                    updateresult.put("stat_id", stats.get(p).getId());
-                                    updateresult.put("stat_id_counter", stats.get(p).getCounter_id());
-                                    updateresult.put("stat_date", stats.get(p).getDate());
-                                    updateresult.put("stat_speed", stats.get(p).getSpeed());
-                                    updateresult.put("stat_calory", stats.get(p).getCalories());
-                                    updateresult.put("stat_perf_index", stats.get(p).getPerformance_index());
-                                    updateresult.put("stat_step_counter",stats.get(p).getStep_counter());
-                                    reff.child(String.valueOf(stats.get(p).getId())).setValue(updateresult);
-                                }
+                                update_user_stats(users.get(index));
                                 FirebaseAuth.getInstance().signOut();
                             }
                             else {
                                 Log.e("Tag","<START> Try register here");
                                 registerOnline(temp_user);
-
-                                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                                reff = FirebaseDatabase.getInstance().getReference().child("Stats").child(firebaseUser.getUid());
-                                HashMap<String, Object> updateresult = new HashMap<>();
-                                List<Statistic> stats = databaseHelper.getStatisticsByUser(users.get(index).getId());
-
-                                for(int p =0; p<stats.size(); p++) {
-                                    updateresult.put("stat_id", stats.get(p).getId());
-                                    updateresult.put("stat_id_counter", stats.get(p).getCounter_id());
-                                    updateresult.put("stat_date", stats.get(p).getDate());
-                                    updateresult.put("stat_speed", stats.get(p).getSpeed());
-                                    updateresult.put("stat_calory", stats.get(p).getCalories());
-                                    updateresult.put("stat_perf_index", stats.get(p).getPerformance_index());
-                                    updateresult.put("stat_step_counter", stats.get(p).getStep_counter());
-                                    reff.child(String.valueOf(stats.get(p).getId())).setValue(updateresult);
-                                }
                                 FirebaseAuth.getInstance().signOut();
                                 pd.dismiss();
                             }
@@ -523,36 +473,72 @@ public class StartActivity extends AppCompatActivity {
         popDialog.show();
     }
 
+    public void update_user_stats(User user){
+        final User temp_user = user;
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                final int stat_counter=Integer.parseInt(dataSnapshot.child("Stat_Counter").getValue(String.class));
+                List<Statistic> stats = databaseHelper.getStatisticsByUser(temp_user.getId());
+                HashMap<String, Object> updateresult;
+                DatabaseReference reff_stats = FirebaseDatabase.getInstance().getReference().child("Stats").child(firebaseUser.getUid());
+
+                HashMap<String, Object> hashMap = new HashMap<>();
+                hashMap.put("Id", temp_user.getId());
+                hashMap.put("Email",temp_user.getEmail());
+                hashMap.put("Fullname", temp_user.getFullname());
+                hashMap.put("Gender", temp_user.getGender());
+                hashMap.put("Age", temp_user.getAge());
+                hashMap.put("Weight", temp_user.getWeight());
+                hashMap.put("Height", temp_user.getHeight());
+                hashMap.put("height unit",temp_user.getHeightUnit());
+                hashMap.put("weight unit", temp_user.getWeightUnit());
+                hashMap.put("Password",temp_user.getPassword());
+                hashMap.put("Stat_Counter",temp_user.getStat_counter()+stat_counter);
+                reference.updateChildren(hashMap);
+
+                boolean lock = false;
+                for(int i = 0;i<stats.size();i++){
+                    updateresult = new HashMap<>();
+                    updateresult.put("stat_id", i+stat_counter);
+                    updateresult.put("stat_date", stats.get(i).getDate());
+                    updateresult.put("stat_speed", stats.get(i).getSpeed());
+                    updateresult.put("stat_calory", stats.get(i).getCalories());
+                    updateresult.put("stat_perf_index", stats.get(i).getPerformance_index());
+                    updateresult.put("stat_step_counter",stats.get(i).getStep_counter());
+                    reff_stats.child(String.valueOf(i+stat_counter)).setValue(updateresult).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()) {
+                                Log.e("Tag","Update stats complete");
+                                pd.dismiss();
+                            }
+                        }
+                    });
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                pd.dismiss();
+            }
+        });
+
+    }
+
     public void registerOnline(final User user) {
-        Log.e("Tag","<START> entered here");
+
         auth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword())
                 .addOnCompleteListener(StartActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            FirebaseUser firebaseUser = auth.getCurrentUser();
-                            String userId = firebaseUser.getUid();
-
-                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-                            HashMap<String, Object> hashMap = new HashMap<>();
-                            hashMap.put("Id", userId);
-                            hashMap.put("Email",user.getEmail());
-                            hashMap.put("Fullname", user.getFullname());
-                            hashMap.put("Gender", user.getGender());
-                            hashMap.put("Age", user.getAge());
-                            hashMap.put("Weight", user.getWeight());
-                            hashMap.put("Height", user.getHeight());
-                            hashMap.put("height unit",user.getHeightUnit());
-                            hashMap.put("weight unit", user.getWeightUnit());
-                            hashMap.put("Password",user.getPassword());
-                            reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if(task.isSuccessful()) {
-                                        pd.dismiss();
-                                    }
-                                }
-                            });
+                            update_user_stats(user);
                         }
 
                         else {
@@ -560,5 +546,6 @@ public class StartActivity extends AppCompatActivity {
                         }
                     }
                 });
+
     }
 }

@@ -61,8 +61,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity implements LocationListener, Runnable, SensorEventListener {
     static TextView bpm;
     String email;
-    Double weightinkg;
-    Double actduration;
     DatabaseHelper databaseHelper;
     private FloatingActionButton tutorial_btn;
     public static boolean active=false;
@@ -124,16 +122,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         user = databaseHelper.getUser(email);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-
-        if(getIntent().getStringExtra("dev_count")!=null)
-            dev_count2=Integer.parseInt(getIntent().getStringExtra("dev_count"));
-
         Log.e("Tag","<DEV> "+dev_count2);
         if(user != null){
             List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
             Statistic.counter = stats.size();
         }
-            speed_txt = this.findViewById(R.id.speed);
+        speed_txt = this.findViewById(R.id.speed);
         if(Temp.session_counter>0){
             if(user!=null)
                 store_temp_dialog();
@@ -216,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
-                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter));
+                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter),user);
 
                                 }else if ( user!=null ){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -240,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             button1.setText("Start Recording");
                             counter = 0;
                         }
-                        /*
+
                         if(developer_mode){
                             long duration = System.currentTimeMillis() - start;
                             button1.setText("Show Performance Index");
@@ -256,7 +250,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,stepsCounter));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,stepsCounter),user);
 
                             }else if ( user!=null ){
                                 Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
@@ -276,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             }
                             counter++;
                         }
-                         */
+
 
                         check = false;
                         average_speed = continuous_average_speed;
@@ -365,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter),user);
                             }
                             Temp.clear();
                         }
@@ -438,8 +432,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         else
                             dev_count++;
 
-                        if(dev_count>3 && dev_count2>3)
-                            developer_mode=true;
+                        if(dev_count>3)
+                        developer_mode=true;
                         break;
 
 
