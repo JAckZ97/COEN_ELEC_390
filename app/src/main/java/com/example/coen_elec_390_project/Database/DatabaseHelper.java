@@ -111,13 +111,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         catch (SQLiteException e) {
             Log.d(TAG, "Exception: " + e);
             Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+            Log.e("Tag","<LOGIN> exception here");
         }
 
         /**We close the database*/
         finally {
             db.close();
         }
+        Log.e("Tag","<LOGIN> finished here");
+        return id;
+    }
 
+    public long insertOldUser(User user) {
+        long id = -1;
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        /**We put the value from the user into the database*/
+        contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
+        contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
+        contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
+        contentValues.put(Config.COLUMN_USER_GENDER,user.getGender());
+        contentValues.put(Config.COLUMN_USER_AGE,user.getAge());
+        contentValues.put(Config.COLUMN_USER_HEIGHT,user.getHeight());
+        contentValues.put(Config.COLUMN_USER_WEIGHT,user.getWeight());
+        contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, user.getHeightUnit());
+        contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, user.getWeightUnit());
+        contentValues.put(Config.COLUMN_USER_STAT_COUNTER, user.getStat_counter());
+
+        /**We try to insert it*/
+        try {
+            id = db.insertOrThrow(Config.USER_TABLE_NAME, null, contentValues);
+        }
+
+        catch (SQLiteException e) {
+            Log.d(TAG, "Exception: " + e);
+            Toast.makeText(context, "Operation failed: " + e, Toast.LENGTH_LONG).show();
+            Log.e("Tag","<LOGIN> exception here");
+        }
+
+        /**We close the database*/
+        finally {
+            db.close();
+        }
+        Log.e("Tag","<LOGIN> finished here");
         return id;
     }
 

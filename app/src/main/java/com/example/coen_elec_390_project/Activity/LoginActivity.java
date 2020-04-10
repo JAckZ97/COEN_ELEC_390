@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
@@ -76,12 +77,10 @@ public class LoginActivity extends AppCompatActivity {
 
                     if (checkNetworkConnection()) {
                         loginOnline(str_email, str_password);
-
+                    } else {
+                        loginOffline(str_email, str_password);
                     }
-//                        loginOnline(str_email, str_password);
-//                    }else {
-                    loginOffline(str_email, str_password);
-                    //}
+
                 }
 
             }
@@ -133,15 +132,12 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     //reading data
                     final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(auth.getCurrentUser().getUid());
+                    Log.e("Tag", "<LOGIN> get user uid " + fbuser.getUid());
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
                     reference.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            DatabaseReference reff = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
-                            reff.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
+                            Log.e("Tag", "<LOGIN> on DataChange");
                                     /*
                                     HashMap<String, Object> hashMap = new HashMap<>();
                                     hashMap.put("Id", temp_user.getId());
@@ -156,42 +152,41 @@ public class LoginActivity extends AppCompatActivity {
                                     hashMap.put("Password",temp_user.getPassword());
                                     hashMap.put("Stat_Counter",temp_user.getStat_counter()+stat_counter);
                                      */
-                                    String fileName = dataSnapshot.child("Fullname").getValue(String.class);
-                                    String fileGender = dataSnapshot.child("Gender").getValue(String.class);
-                                    String fileHeight = dataSnapshot.child("Height").getValue(String.class);
-                                    String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
-                                    String fileHeightunit = dataSnapshot.child("height unit").getValue(String.class);
-                                    String fileWeightunit = dataSnapshot.child("weight unit").getValue(String.class);
-                                    String fileAge = dataSnapshot.child("Age").getValue(String.class);
-                                    String fileEmail = dataSnapshot.child("Email").getValue(String.class);
-                                    String filePass = dataSnapshot.child("Password").getValue(String.class);
-                                    int stat_counter = Integer.parseInt(dataSnapshot.child("Stat_Counter").getValue(String.class));
-                                    databaseHelper.insertUser(new User(fileName, fileEmail, filePass, fileAge, fileWeight, fileHeight, fileGender, Integer.parseInt(fileHeightunit), Integer.parseInt(fileWeightunit), stat_counter, fbuser.getUid()));
+                            String fileName = dataSnapshot.child("Fullname").getValue(String.class);
+                            String fileGender = dataSnapshot.child("Gender").getValue(String.class);
+                            String fileHeight = dataSnapshot.child("Height").getValue(String.class);
+                            String fileWeight = dataSnapshot.child("Weight").getValue(String.class);
+                            String fileHeightunit = dataSnapshot.child("height unit").getValue(String.class);
+                            String fileWeightunit = dataSnapshot.child("weight unit").getValue(String.class);
+                            String fileAge = dataSnapshot.child("Age").getValue(String.class);
+                            String fileEmail = fbuser.getEmail();
+                            String filePass = dataSnapshot.child("Password").getValue(String.class);
+                            int stat_counter = Integer.parseInt(dataSnapshot.child("Stat_Counter").getValue(String.class));
+                            Log.e("Tag","<LOGIN> "+fileEmail);
+                            databaseHelper.insertOldUser(new User(fileName, fileEmail, filePass, fileAge, fileWeight, fileHeight, fileGender, Integer.parseInt(fileHeightunit), Integer.parseInt(fileWeightunit), stat_counter, fbuser.getUid()));
+                            Log.e("Tag","<LOGIN> Database success");
 
-                                    final User user = databaseHelper.getUser(fileEmail);
-                                    DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
-                                    reff2.addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                            int counter = 0;
-                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                                int stat_id = Integer.parseInt(ds.child("stat_id").getValue(String.class));
-                                                String stat_date = ds.child("stat_date").getValue(String.class);
-                                                double stat_speed = Double.parseDouble(ds.child("stat_speed").getValue(String.class));
-                                                double stat_calory = Double.parseDouble(ds.child("stat_calory").getValue(String.class));
-                                                double stat_perf_index = Double.parseDouble(ds.child("stat_perf_index").getValue(String.class));
-                                                int stat_step_counter = Integer.parseInt(ds.child("stat_step_counter").getValue(String.class));
-                                                databaseHelper.insertStatistic(new Statistic(stat_id, user.getId(), stat_date, stat_perf_index, stat_speed, stat_calory, stat_step_counter), user);
-                                            }
+                            final User user = databaseHelper.getUser(fileEmail);
+                            Log.e("Tag", "<LOGIN> user email " + user.getEmail());
+                            DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
+                            reff2.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    int counter = 0;
+                                    ArrayList<Statistic> mystat_list = new ArrayList<Statistic>();
+                                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                        int stat_id = Integer.parseInt(ds.child("stat_id").getValue(String.class));
+                                        String stat_date = ds.child("stat_date").getValue(String.class);
+                                        double stat_speed = Double.parseDouble(ds.child("stat_speed").getValue(String.class));
+                                        double stat_calory = Double.parseDouble(ds.child("stat_calory").getValue(String.class));
+                                        double stat_perf_index = Double.parseDouble(ds.child("stat_perf_index").getValue(String.class));
+                                        int stat_step_counter = Integer.parseInt(ds.child("stat_step_counter").getValue(String.class));
+                                        mystat_list.add(new Statistic(stat_id, user.getId(), stat_date, stat_perf_index, stat_speed, stat_calory, stat_step_counter));
+                                    }
+                                    databaseHelper.UpdateStatistic(mystat_list);
+                                    Log.e("TAG", "<LOGIN> database finished here");
 
-                                            //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError databaseError) {
-                                            // catch error
-                                        }
-                                    });
+                                    //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
                                 }
 
                                 @Override
@@ -200,14 +195,15 @@ public class LoginActivity extends AppCompatActivity {
                                 }
                             });
 
+                            loginOffline(user.getEmail(), user.getPassword());
+
 
                             pd.dismiss();
-
-
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.e("Tag","<LOGIN> database error "+databaseError.getMessage());
                             pd.dismiss();
                         }
                     });

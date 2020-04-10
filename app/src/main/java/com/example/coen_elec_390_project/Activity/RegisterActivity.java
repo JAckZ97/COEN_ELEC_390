@@ -93,14 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-//                    if(checkNetworkConnection()){
-//                        registerOnline(str_fullname, str_email, str_password);
-//
-//                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-//                    }
-//                    else {
                     registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-                    //}
 
                 }
             }
@@ -198,7 +191,7 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         else {
-            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight, heightUnit, weightUnit));
+            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight, heightUnit, weightUnit,0,""));
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

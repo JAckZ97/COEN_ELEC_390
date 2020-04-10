@@ -162,14 +162,6 @@ public class StartActivity extends AppCompatActivity {
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress(); // MAC address
                 mybtlist.add(device);
-//                if(deviceName!=null && !found) {
-//                    if (deviceName.equalsIgnoreCase("COEN390") && deviceHardwareAddress.equalsIgnoreCase("30:AE:A4:58:3E:DA")) {
-//                        Log.e("Tag", "<Message> Found esp32");
-//                        found=true;
-//                        showBTDialog();
-//                    }
-//                }
-
             }
         }
     };
@@ -493,8 +485,8 @@ public class StartActivity extends AppCompatActivity {
                 hashMap.put("Age", temp_user.getAge());
                 hashMap.put("Weight", temp_user.getWeight());
                 hashMap.put("Height", temp_user.getHeight());
-                hashMap.put("height unit",temp_user.getHeightUnit());
-                hashMap.put("weight unit", temp_user.getWeightUnit());
+                hashMap.put("height unit",Integer.toString(temp_user.getHeightUnit()));
+                hashMap.put("weight unit", Integer.toString(temp_user.getWeightUnit()));
                 hashMap.put("Password",temp_user.getPassword());
                 hashMap.put("Stat_Counter",temp_user.getStat_counter()+stat_counter);
                 reference.updateChildren(hashMap);
@@ -519,8 +511,6 @@ public class StartActivity extends AppCompatActivity {
                     });
 
                 }
-
-
             }
 
             @Override

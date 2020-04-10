@@ -50,7 +50,6 @@ public class DatabaseViewerActivity extends AppCompatActivity {
         temp = "Statistic table\n";
         for(int i =0;i<stats.size();i++){
             temp += "stat id: "+ stats.get(i).getId() + "\n";
-            temp += "stat id counter: "+ stats.get(i).getCounter_id() + "\n";
             temp += "stat date: "+stats.get(i).getDate() +"\n";
             temp += "stat speed: "+stats.get(i).getSpeed() +"\n";
             temp += "stat calory: "+stats.get(i).getCalories() +"\n";
