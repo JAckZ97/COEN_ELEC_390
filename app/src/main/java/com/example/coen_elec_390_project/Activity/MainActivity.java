@@ -428,13 +428,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
 
                     case R.id.home:
-                        if(developer_mode)
-                            startActivity(new Intent(MainActivity.this, DatabaseViewerActivity.class));
-                        else
-                            dev_count++;
-
-                        if(dev_count>3)
-                        developer_mode=true;
                         break;
 
 
