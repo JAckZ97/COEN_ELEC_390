@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
@@ -61,8 +62,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class MainActivity extends AppCompatActivity implements LocationListener, Runnable, SensorEventListener {
     static TextView bpm;
     String email;
-    Double weightinkg;
-    Double actduration;
     DatabaseHelper databaseHelper;
     private FloatingActionButton tutorial_btn;
     public static boolean active=false;
@@ -116,24 +115,18 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
         count = (TextView) findViewById(R.id.count);
         email = getIntent().getStringExtra("email");
         //get firebase user
-        SharedPreferences sharedPreferences =
-                PreferenceManager.getDefaultSharedPreferences(this);
         // Check if we need to display our OnboardingSupportFragment
 
         databaseHelper = new DatabaseHelper(MainActivity.this);
         user = databaseHelper.getUser(email);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
-
-        if(getIntent().getStringExtra("dev_count")!=null)
-            dev_count2=Integer.parseInt(getIntent().getStringExtra("dev_count"));
-
         Log.e("Tag","<DEV> "+dev_count2);
         if(user != null){
             List<Statistic> stats = databaseHelper.getStatisticsByUser(user.getId());
             Statistic.counter = stats.size();
         }
-            speed_txt = this.findViewById(R.id.speed);
+        speed_txt = this.findViewById(R.id.speed);
         if(Temp.session_counter>0){
             if(user!=null)
                 store_temp_dialog();
@@ -216,12 +209,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                         user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                         calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,continuous_average_speed);
                                     }
-                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter));
+                                    databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(readbpm.preBPM, readbpm.postBPM), (double) continuous_average_speed, calories,stepsCounter),user);
 
                                 }else if ( user!=null ){
                                     Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
                                     Intent intent;
-                                    intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                                    intent = new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     intent.putExtra("email", email);
                                     intent.putExtra("temp",true);
                                     startActivity(intent);
@@ -240,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             button1.setText("Start Recording");
                             counter = 0;
                         }
-                        /*
+
                         if(developer_mode){
                             long duration = System.currentTimeMillis() - start;
                             button1.setText("Show Performance Index");
@@ -256,12 +249,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,Temp.speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,stepsCounter));
+                                Random randobj = new Random();
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(Temp.dev_prebpm, Temp.dev_postbpm), (double) Temp.speed, calories,(randobj.nextInt(3000)+1000)),user);
 
                             }else if ( user!=null ){
                                 Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
                                 Intent intent;
-                                intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                                intent = new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 intent.putExtra("email", email);
                                 intent.putExtra("temp",true);
                                 startActivity(intent);
@@ -274,9 +268,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                 } else
                                     Toast.makeText(getApplicationContext(), "Out of temp limit, storing temp failed!", Toast.LENGTH_LONG).show();
                             }
-                            counter++;
+                            button1.setText("Start Recording");
+                            counter = 0;
                         }
-                         */
+
 
                         check = false;
                         average_speed = continuous_average_speed;
@@ -365,14 +360,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                                     user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                                     calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60,speed);
                                 }
-                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter));
+                                databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,stepsCounter),user);
                             }
                             Temp.clear();
                         }
                         else{
                             Toast.makeText(getApplicationContext(),"Failed to store temp to statistic database! Please enter your profile first!",Toast.LENGTH_LONG).show();
                             Intent intent;
-                            intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                            intent = new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("email", email);
                             intent.putExtra("temp",true);
                             startActivity(intent);
@@ -421,11 +416,11 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                     case R.id.map:
                         if (user == null) {
                             Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, StartActivity.class));
+                            startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                             break;
                         } else {
                             Log.e("Tag", "<MAIN> entering statistic");
-                            intent = new Intent(new Intent(MainActivity.this, MapsActivity.class));
+                            intent = new Intent(MainActivity.this, MapsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("email", email);
                             startActivity(intent);
                             break;
@@ -438,8 +433,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         else
                             dev_count++;
 
-                        if(dev_count>3 && dev_count2>3)
-                            developer_mode=true;
+                        if(dev_count>3)
+                        developer_mode=true;
                         break;
 
 
@@ -450,7 +445,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                             break;
                         } else {
                             Log.e("Tag", "<MAIN> entering statistic");
-                            intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                            intent = new Intent(MainActivity.this, StatisticsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("email", email);
                             startActivity(intent);
                             break;
@@ -460,10 +455,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                         if (user == null) {
                             Toast.makeText(getApplicationContext(), "<Message> Please Login to use this feature", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(MainActivity.this, StartActivity.class));
+                            startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                             break;
                         } else {
-                            intent = new Intent(new Intent(MainActivity.this, ProfileActivity.class));
+                            intent = new Intent(MainActivity.this, ProfileActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("email", email);
                             startActivity(intent);
                             break;
@@ -471,7 +466,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
 
                     case R.id.logout:
                         FirebaseAuth.getInstance().signOut();
-                        startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                        intent = new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.putExtra("main",true);
+                        startActivity(intent);
                         break;
 
                 }
@@ -568,130 +565,132 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
       
     public void tutorialSequence(){
 
+        if(!developer_mode) {
 
-        // sequence example
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500); // half second between each showcase view
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this,"1");
+            // sequence example
+            ShowcaseConfig config = new ShowcaseConfig();
+            config.setDelay(500); // half second between each showcase view
+            MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, "1");
 
-        sequence.setConfig(config);
+            sequence.setConfig(config);
 
-        sequence.addSequenceItem(new View(getApplicationContext()),"WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!","Ok");
+            sequence.addSequenceItem(new View(getApplicationContext()), "WELCOME on board, RUNNER! Let's give you a brief introduction to let you get familiar with this app!", "Ok");
 
-        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
-                .setTarget(new View(getApplicationContext()))
-                .setDismissOnTouch(true)
-                .setContentText("This application measures your calories burned, heart rate performance,"
-                        + "and your average speed of every running session.\n\n"
-                        + "Heart rate performance use an indicator, heart rate performance index,"
-                        + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
-                        + "Heart rate performance index is a relative measurement: performance index number"
-                        + " is larger than previous run means you improved your heart rate performance.")
-                .build()
-        );
+            sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                    .setTarget(new View(getApplicationContext()))
+                    .setDismissOnTouch(true)
+                    .setContentText("This application measures your calories burned, heart rate performance,"
+                            + "and your average speed of every running session.\n\n"
+                            + "Heart rate performance use an indicator, heart rate performance index,"
+                            + "which is calculated by using your bpm at rest and bpm after a run session.\n\n"
+                            + "Heart rate performance index is a relative measurement: performance index number"
+                            + " is larger than previous run means you improved your heart rate performance.")
+                    .build()
+            );
 
-        //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
+            //sequence.addSequenceItem(new View(getApplicationContext()),"Make sure sensor is connected!","GOT IT");
 
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(bpm)
-                        .setDismissOnTouch(true)
-                        .setContentText("Please make sure that the sensor is connected to your device via bluetooth!")
-                        .build()
-        );
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(this)
+                            .setTarget(bpm)
+                            .setDismissOnTouch(true)
+                            .setContentText("Please make sure that the sensor is connected to your device via bluetooth!")
+                            .build()
+            );
 
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                        .setTarget(button1)
-                        .setDismissOnTouch(true)
-                        .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.")
-                        .setListener(new IShowcaseListener() {
-                            @Override
-                            public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(this)
+                            .setTarget(button1)
+                            .setDismissOnTouch(true)
+                            .setContentText("Press this button to start a running session, you need to first use the heart rate sensor to measure your bpm at rest.")
+                            .setListener(new IShowcaseListener() {
+                                @Override
+                                public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
 
-                            }
+                                }
 
-                            @Override
-                            public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                                button1.setText("Getting your bpm");
-                            }
-
-
-                        })
-                        .build()
-                );
+                                @Override
+                                public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                    button1.setText("Getting your bpm");
+                                }
 
 
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                .setTarget(button1)
-                .setDismissOnTouch(true)
-                .setContentText("After press the button for the first time, we are getting your bpm at rest. "
-                        +" Put your finger on the sensor until you see a different message")
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-
-                    }
-
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        button1.setText("Show Performance Index");
-                    }
+                            })
+                            .build()
+            );
 
 
-                })
-                .build()
-                );
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(this)
+                            .setTarget(button1)
+                            .setDismissOnTouch(true)
+                            .setContentText("After press the button for the first time, we are getting your bpm at rest. "
+                                    + " Put your finger on the sensor until you see a different message")
+                            .setListener(new IShowcaseListener() {
+                                @Override
+                                public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                                }
+
+                                @Override
+                                public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                    button1.setText("Show Performance Index");
+                                }
 
 
-        sequence.addSequenceItem(
-                new MaterialShowcaseView.Builder(this)
-                .setTarget(button1)
-                .setDismissOnTouch(true)
-                .setContentText("Now you can run, while you're running we are also recording "
-                        + "your speed and location. We will display your path of this run session")
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-
-                    }
-
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        button1.setText(getResources().getString(R.string.recording_btn_text));
-                    }
+                            })
+                            .build()
+            );
 
 
-                })
-                .build()
-                );
-        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
-                .setTarget(speed_txt)
-                .setDismissOnTouch(true)
-                .setContentText("This is your current speed. Finish the recording to see your average speed of this running session.")
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+            sequence.addSequenceItem(
+                    new MaterialShowcaseView.Builder(this)
+                            .setTarget(button1)
+                            .setDismissOnTouch(true)
+                            .setContentText("Now you can run, while you're running we are also recording "
+                                    + "your speed and location. We will display your path of this run session")
+                            .setListener(new IShowcaseListener() {
+                                @Override
+                                public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
 
-                    }
+                                }
 
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        Intent intent;
-                        button1.setText(getResources().getString(R.string.recording_btn_text));
-                        Log.e("Tag", "<MAIN> entering statistic");
-                        intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
-                        intent.putExtra("tutorial",true);
-                        if(user!=null)
-                            intent.putExtra("email",email);
-                        startActivity(intent);
-                    }
+                                @Override
+                                public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                                    button1.setText(getResources().getString(R.string.recording_btn_text));
+                                }
 
 
-                })
-                .build());
-        sequence.start();
+                            })
+                            .build()
+            );
+            sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                    .setTarget(speed_txt)
+                    .setDismissOnTouch(true)
+                    .setContentText("This is your current speed. Finish the recording to see your average speed of this running session.")
+                    .setListener(new IShowcaseListener() {
+                        @Override
+                        public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                        }
+
+                        @Override
+                        public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                            Intent intent;
+                            button1.setText(getResources().getString(R.string.recording_btn_text));
+                            Log.e("Tag", "<MAIN> entering statistic");
+                            intent = new Intent(MainActivity.this, StatisticsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("tutorial", true);
+                            if (user != null)
+                                intent.putExtra("email", email);
+                            startActivity(intent);
+                        }
+
+
+                    })
+                    .build());
+            sequence.start();
+        }
 
     }
 
@@ -807,7 +806,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener,
                         Intent intent;
                         button1.setText(getResources().getString(R.string.recording_btn_text));
                         Log.e("Tag", "<MAIN> entering statistic");
-                        intent = new Intent(new Intent(MainActivity.this, StatisticsActivity.class));
+                        intent = new Intent(MainActivity.this, StatisticsActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("tutorial",true);
                         if(user!=null)
                             intent.putExtra("email",email);

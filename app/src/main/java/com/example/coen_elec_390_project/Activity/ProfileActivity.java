@@ -240,36 +240,6 @@ public class ProfileActivity extends AppCompatActivity  {
       }
 
 
-
-
-        /**firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        reff = FirebaseDatabase.getInstance().getReference().child("Users").child(firebaseUser.getUid());
-        basicRead();
-
-
-        genderSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectGender=parent.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                Toast.makeText(ProfileActivity.this, "Gender is not selected. ", Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-        profileSaveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                basicWrite();
-
-            }
-        });*/
-
       
     }
 
@@ -385,11 +355,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 String str_heightFeet = String.valueOf(tempHeight);
                 str_height = str_heightFeet;
             }
-//            tempFeet = Integer.parseInt(heightFeet.getText().toString());
-//            tempInch = Integer.parseInt(heightInch.getText().toString());
-//            tempHeight = tempFeet + tempInch/100;
-//            String str_heightFeet = String.valueOf(tempHeight);
-//            str_height = str_heightFeet;
+
         }
 
         switch (checkWeightId){
@@ -458,9 +424,7 @@ public class ProfileActivity extends AppCompatActivity  {
                 } else if (user.getHeightUnit() == 0 && (Double.parseDouble(str_height) <= 4 || Double.parseDouble(str_height) >= 7 || tempInch >= 13)) {
                     Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
                     pd.dismiss();
-//                } else if (tempInch >= 13 || tempFeet <= 4 || tempFeet>= 7) {
-//                    Toast.makeText(ProfileActivity.this, "Height is out of range", Toast.LENGTH_SHORT).show();
-//                    pd.dismiss();
+
                 } else {
                     user.setFullname(str_fullname);
                     user.setGender(str_gender);
@@ -468,8 +432,17 @@ public class ProfileActivity extends AppCompatActivity  {
                     user.setWeight(str_weight);
                     user.setHeight(str_height);
 
+                    /*
                     if(firebaseUser!=null) {
-                        String userid = firebaseUser.getUid();
+
+                        reff.child("Fullnmae").setValue(str_fullname);
+                        reff.child("Gender").setValue(str_gender);
+                        reff.child("Age").setValue(str_age);
+                        reff.child("Weight").setValue(str_weight);
+                        reff.child("Height").setValue(str_height);
+                        reff.child("height unit").setValue(Integer.toString(user.getHeightUnit()));
+                        reff.child("weight unit").setValue(Integer.toString(user.getWeightUnit()));
+
                         HashMap<String, Object> updateresult = new HashMap<>();
                         updateresult.put("Id", userid);
                         updateresult.put("Fullname", str_fullname);
@@ -477,10 +450,14 @@ public class ProfileActivity extends AppCompatActivity  {
                         updateresult.put("Age", str_age);
                         updateresult.put("Weight", str_weight);
                         updateresult.put("Height", str_height);
-                        updateresult.put("height unit", user.getHeightUnit());
-                        updateresult.put("weight unit", user.getWeightUnit());
-                        reff.setValue(updateresult);
+                        updateresult.put("height unit", Integer.toString(user.getHeightUnit()));
+                        updateresult.put("weight unit", Integer.toString(user.getWeightUnit()));
+                        updateresult.put("Password",user.getPassword());
+
+
                     }
+                    */
+
                 }
                 databaseHelper = new DatabaseHelper(this);
                 databaseHelper.updateProfile(user);
@@ -505,7 +482,7 @@ public class ProfileActivity extends AppCompatActivity  {
                             user_weight = Double.parseDouble(user.getWeight()) * 0.45359237;
                             calories = Statistic.getCaloriesBurned(user_weight, (duration) / 1000 / 60, speed);
                         }
-                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,step_counter));
+                        databaseHelper.insertStatistic(new Statistic(user.getId(), str_date, Statistic.getperformanceindex(prebpm, postbpm), (double) speed, calories,step_counter),user);
                     }
                     Temp.clear();
                 }
@@ -615,7 +592,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
                         Intent intent;
                         Log.e("Tag", "<MAIN> entering statistic");
-                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         intent.putExtra("tutorial",true);
                         if(user!=null)
                             intent.putExtra("email",email);
