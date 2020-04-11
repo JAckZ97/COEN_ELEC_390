@@ -93,14 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                 }
 
                 else {
-                    if(checkNetworkConnection()){
-                        registerOnline(str_fullname, str_email, str_password);
-
-                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-                    }
-                    else {
-                        registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
-                    }
+                    registerOffline(str_fullname, str_email, str_password, gender, age, height, weight, heightUnit, weightUnit);
 
                 }
             }
@@ -118,8 +111,8 @@ public class RegisterActivity extends AppCompatActivity {
         return hasAt;
     }
 
-    public void registerOnline(final String fullname, final String email, final String password) {
-        auth.createUserWithEmailAndPassword(email, password)
+    public void registerOnline(final String str_fullname, final String str_email, final String str_password) {
+        auth.createUserWithEmailAndPassword(str_email, str_password)
                 .addOnCompleteListener(RegisterActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
@@ -131,9 +124,9 @@ public class RegisterActivity extends AppCompatActivity {
 
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("Id", userId);
-                            hashMap.put("Email",email);
-                            hashMap.put("Password",password);
-                            hashMap.put("Fullname", fullname);
+                            hashMap.put("Email",str_email);
+                            hashMap.put("Password",str_password);
+                            hashMap.put("Fullname", str_fullname);
                             hashMap.put("Gender", "");
                             hashMap.put("Age", "");
                             hashMap.put("Weight", "");
@@ -163,7 +156,6 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-
     private boolean checkNetworkConnection(){
         pd = new ProgressDialog(RegisterActivity.this);
         boolean wifiConnected;
@@ -192,7 +184,6 @@ public class RegisterActivity extends AppCompatActivity {
         return false;
     }
 
-
     public void registerOffline(final String fullname, String email, String password, String gender, String age, String height, String weight, int heightUnit, int weightUnit) {
         if(databaseHelper.checkIfExisting(email)) {
             Toast.makeText(RegisterActivity.this, "This email is already registered", Toast.LENGTH_SHORT).show();
@@ -200,7 +191,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         else {
-            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight, heightUnit, weightUnit));
+
+            //User(String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
+            databaseHelper.insertUser(new User(fullname, email, password, age, weight, height, gender, heightUnit, weightUnit,0,""));
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);

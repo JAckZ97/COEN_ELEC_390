@@ -2,6 +2,7 @@ package com.example.coen_elec_390_project.Model;
 
 import android.content.Intent;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class Statistic {
@@ -11,7 +12,6 @@ public class Statistic {
     private Double performance_index;
     private Double speed;
     private Double calories;
-    private Integer counter_id;
     public static Integer counter;
 
     public Integer getStep_counter() {
@@ -37,14 +37,13 @@ public class Statistic {
         this.step_counter=step_counter;
     }
 
-    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories,Integer counter,Integer step_counter) {
+    public Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories, Integer step_counter) {
         this.id = id;
         this.user_id = user_id;
         this.date = date;
         this.performance_index = performance_index;
         this.speed = speed;
         this.calories=calories;
-        this.counter_id=counter;
         this.step_counter=step_counter;
     }
 
@@ -84,11 +83,10 @@ public class Statistic {
 
     public void setCalories(Double calories){this.calories=calories;}
 
-    public Integer getCounter_id(){return this.counter_id;}
-
     public static double getperformanceindex(double pre, double post) {
+        DecimalFormat df = new DecimalFormat("#.##");
         if (pre != 0 && post != 0) {
-            return (15.3 * (post / pre));
+            return Double.valueOf(df.format((15.3 * (post / pre))));
         } else
             return 0;
     }

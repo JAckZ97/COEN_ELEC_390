@@ -14,12 +14,32 @@ public class User {
     private int heightUnit;
     private int weightUnit;
 
+    public String getFbuid() {
+        return fbuid;
+    }
+
+    public void setFbuid(String fbuid) {
+        this.fbuid = fbuid;
+    }
+
+    private String fbuid;
+
+    public int getStat_counter() {
+        return stat_counter;
+    }
+
+    public void setStat_counter(int stat_counter) {
+        this.stat_counter = stat_counter;
+    }
+
+    private int stat_counter;
+
     public User() {
 
     }
 
 
-    public User(int id, String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit) {
+    public User(int id, String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
         this.id = id;
         this.fullname = fullname;
         this.email = email;
@@ -30,9 +50,11 @@ public class User {
         this.gender = gender;
         this.heightUnit = heightUnit;
         this.weightUnit = weightUnit;
+        this.stat_counter=stat_counter;
+        this.fbuid=fbuid;
     }
 
-    public User(String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit) {
+    public User(String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
         this.fullname = fullname;
         this.email = email;
         this.password = password;
@@ -42,6 +64,8 @@ public class User {
         this.gender = gender;
         this.heightUnit = heightUnit;
         this.weightUnit = weightUnit;
+        this.stat_counter=stat_counter;
+        this.fbuid=fbuid;
     }
 
     public int getHeightUnit() {
