@@ -47,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Log.e("Tag","<LOGIN> get called");
 
         email = findViewById(R.id.email);
         password = findViewById(R.id.password);
@@ -82,7 +83,6 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                 }
-
             }
         });
     }
@@ -125,33 +125,23 @@ public class LoginActivity extends AppCompatActivity {
         return false;
     }
 
-    public void loginOnline(String str_email, String str_password) {
+    public void loginOnline(final String str_email, String str_password) {
         auth.signInWithEmailAndPassword(str_email, str_password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
+
+                    final String temp_email=str_email;
                     //reading data
                     final FirebaseUser fbuser = FirebaseAuth.getInstance().getCurrentUser();
+
                     Log.e("Tag", "<LOGIN> get user uid " + fbuser.getUid());
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Users").child(fbuser.getUid());
-                    reference.addValueEventListener(new ValueEventListener() {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             Log.e("Tag", "<LOGIN> on DataChange");
-                                    /*
-                                    HashMap<String, Object> hashMap = new HashMap<>();
-                                    hashMap.put("Id", temp_user.getId());
-                                    hashMap.put("Email",temp_user.getEmail());
-                                    hashMap.put("Fullname", temp_user.getFullname());
-                                    hashMap.put("Gender", temp_user.getGender());
-                                    hashMap.put("Age", temp_user.getAge());
-                                    hashMap.put("Weight", temp_user.getWeight());
-                                    hashMap.put("Height", temp_user.getHeight());`
-                                    hashMap.put("height unit",temp_user.getHeightUnit());
-                                    hashMap.put("weight unit", temp_user.getWeightUnit());
-                                    hashMap.put("Password",temp_user.getPassword());
-                                    hashMap.put("Stat_Counter",temp_user.getStat_counter()+stat_counter);
-                                     */
                             String fileName = dataSnapshot.child("Fullname").getValue(String.class);
                             String fileGender = dataSnapshot.child("Gender").getValue(String.class);
                             String fileHeight = dataSnapshot.child("Height").getValue(String.class);
@@ -162,14 +152,17 @@ public class LoginActivity extends AppCompatActivity {
                             String fileEmail = fbuser.getEmail();
                             String filePass = dataSnapshot.child("Password").getValue(String.class);
                             int stat_counter = Integer.parseInt(dataSnapshot.child("Stat_Counter").getValue(String.class));
-                            Log.e("Tag","<LOGIN> "+fileEmail);
+
+                            Log.e("Tag","<LOGIN> gender->"+fileGender+" age->"+fileAge+" weight->"+fileWeight+" height->"+fileHeight);
+                            //public User(String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
                             databaseHelper.insertOldUser(new User(fileName, fileEmail, filePass, fileAge, fileWeight, fileHeight, fileGender, Integer.parseInt(fileHeightunit), Integer.parseInt(fileWeightunit), stat_counter, fbuser.getUid()));
                             Log.e("Tag","<LOGIN> Database success");
 
-                            final User user = databaseHelper.getUser(fileEmail);
+                            final User user = databaseHelper.getUser(temp_email);
+                            Log.e("Tag","<LOGIN> gender->"+user.getGender()+" age->"+user.getAge()+" weight->"+user.getWeight()+" height->"+user.getHeight());
                             Log.e("Tag", "<LOGIN> user email " + user.getEmail());
                             DatabaseReference reff2 = FirebaseDatabase.getInstance().getReference().child("Stats").child(fbuser.getUid());
-                            reff2.addValueEventListener(new ValueEventListener() {
+                            reff2.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     int counter = 0;
@@ -185,7 +178,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     databaseHelper.UpdateStatistic(mystat_list);
                                     Log.e("TAG", "<LOGIN> database finished here");
-
+                                    loginOffline(user.getEmail(), user.getPassword());
                                     //databaseHelper.insertUser(new User(fileName,fileEmail,filePass,fileAge,fileWeight,fileHeight, fileGender, Integer.parseInt(fileHeightunit),  Integer.parseInt(fileWeightunit)));
                                 }
 
@@ -194,10 +187,6 @@ public class LoginActivity extends AppCompatActivity {
                                     // catch error
                                 }
                             });
-
-                            loginOffline(user.getEmail(), user.getPassword());
-
-
                             pd.dismiss();
                         }
 
@@ -207,6 +196,8 @@ public class LoginActivity extends AppCompatActivity {
                             pd.dismiss();
                         }
                     });
+
+
 
                 } else {
                     pd.dismiss();

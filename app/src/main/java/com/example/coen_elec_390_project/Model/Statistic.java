@@ -2,6 +2,7 @@ package com.example.coen_elec_390_project.Model;
 
 import android.content.Intent;
 
+import java.text.DecimalFormat;
 import java.util.Date;
 
 public class Statistic {
@@ -83,8 +84,9 @@ public class Statistic {
     public void setCalories(Double calories){this.calories=calories;}
 
     public static double getperformanceindex(double pre, double post) {
+        DecimalFormat df = new DecimalFormat("#.##");
         if (pre != 0 && post != 0) {
-            return (15.3 * (post / pre));
+            return Double.valueOf(df.format((15.3 * (post / pre))));
         } else
             return 0;
     }

@@ -92,16 +92,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         /**We put the value from the user into the database*/
+
+
+
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
         contentValues.put(Config.COLUMN_USER_GENDER,"Other");
         contentValues.putNull(Config.COLUMN_USER_AGE);
-        contentValues.putNull(Config.COLUMN_USER_HEIGHT);
         contentValues.putNull(Config.COLUMN_USER_WEIGHT);
+        contentValues.putNull(Config.COLUMN_USER_HEIGHT);
         contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, 1);
         contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, 1);
         contentValues.put(Config.COLUMN_USER_STAT_COUNTER, 0);
+        contentValues.putNull(Config.COLUMN_USER_FBUID);
 
         /**We try to insert it*/
         try {
@@ -128,16 +132,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         /**We put the value from the user into the database*/
+
+        Log.e("Tag","<LOGIN> gender->"+user.getGender()+" age->"+user.getAge()+" weight->"+user.getWeight()+" height->"+user.getHeight());
+
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
         contentValues.put(Config.COLUMN_USER_GENDER,user.getGender());
         contentValues.put(Config.COLUMN_USER_AGE,user.getAge());
-        contentValues.put(Config.COLUMN_USER_HEIGHT,user.getHeight());
         contentValues.put(Config.COLUMN_USER_WEIGHT,user.getWeight());
+        contentValues.put(Config.COLUMN_USER_HEIGHT,user.getHeight());
         contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, user.getHeightUnit());
         contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, user.getWeightUnit());
         contentValues.put(Config.COLUMN_USER_STAT_COUNTER, user.getStat_counter());
+        contentValues.put(Config.COLUMN_USER_FBUID,user.getFbuid());
 
         /**We try to insert it*/
         try {
@@ -154,7 +162,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         finally {
             db.close();
         }
-        Log.e("Tag","<LOGIN> finished here");
         return id;
     }
 
@@ -165,16 +172,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
 
         /**We put the value from the user into the database*/
+
+
         contentValues.put(Config.COLUMN_USER_FULLNAME, user.getFullname());
         contentValues.put(Config.COLUMN_USER_EMAIL, user.getEmail());
         contentValues.put(Config.COLUMN_USER_PASSWORD, user.getPassword());
         contentValues.put(Config.COLUMN_USER_GENDER, user.getGender());
         contentValues.put(Config.COLUMN_USER_AGE, user.getAge());
-        contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
         contentValues.put(Config.COLUMN_USER_WEIGHT, user.getWeight());
+        contentValues.put(Config.COLUMN_USER_HEIGHT, user.getHeight());
         contentValues.put(Config.COLUMN_USER_HEIGHT_UNIT, user.getHeightUnit());
         contentValues.put(Config.COLUMN_USER_WEIGHT_UNIT, user.getWeightUnit());
         contentValues.put(Config.COLUMN_USER_STAT_COUNTER, user.getStat_counter());
+        contentValues.put(Config.COLUMN_USER_FBUID,user.getFbuid());
 
         // TODO: FIX UPDATE METHOD:
         //  https://developer.android.com/reference/android/database/sqlite/SQLiteDatabase#update
@@ -230,10 +240,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             user.setPassword(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD)));
                             user.setGender(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_GENDER)));
                             user.setAge(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE)));
-                            user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
                             user.setWeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT)));
+                            user.setHeight(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT)));
                             user.setHeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT_UNIT)));
                             user.setWeightUnit(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT_UNIT)));
+                            user.setStat_counter(cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_STAT_COUNTER)));
+                            user.setFbuid(cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FBUID)));
                             return user;
                         }
                     } while(cursor.moveToNext());
@@ -282,14 +294,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String password = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_PASSWORD));
                         String gender = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_GENDER));
                         String age = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_AGE));
-                        String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
                         String weight = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT));
+                        String height = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT));
                         int heightUnit = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_HEIGHT_UNIT));
                         int weightUnit = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_WEIGHT_UNIT));
                         int stat_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_USER_STAT_COUNTER));
                         String fbuid = cursor.getString(cursor.getColumnIndex(Config.COLUMN_USER_FBUID));
-
-                        users.add(new User(id, fullname, email, password, gender, age, height, weight, heightUnit, weightUnit,stat_counter,fbuid));
+                        //public User(int id, String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
+                        users.add(new User(id, fullname, email, password, age, weight, height, gender, heightUnit, weightUnit,stat_counter,fbuid));
 //                        users.add(new User(id, fullname, email, password, gender, age, height, weight));
                     } while(cursor.moveToNext());
 
@@ -526,6 +538,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     List<Statistic> statistics = new ArrayList<>();
 
                     do {
+
+                        /*
+                        + " (" + Config.COLUMN_STATISTIC_ID + " INTEGER PRIMARY KEY, "
+                + Config.COLUMN_STATISTIC_USER_ID + " INTEGER,"
+                + Config.COLUMN_STATISTIC_DATE + " TEXT NOT NULL,"
+                + Config.COLUMN_STATISTIC_PERF_INDEX + " REAL,"
+                + Config.COLUMN_STATISTIC_SPEED + " REAL,"
+                + Config.COLUMN_STATISTIC_CALORIES + " REAL,"
+                + Config.COLUMN_STATISTIC_STEP_COUNTER + " INTEGER)";
+                         */
                         int id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_ID));
                         int user_id = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_USER_ID));
                         String date = cursor.getString(cursor.getColumnIndex(Config.COLUMN_STATISTIC_DATE));
@@ -533,9 +555,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         double speed = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_SPEED));
                         double calories = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_STATISTIC_CALORIES));
                         int step_counter = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_STATISTIC_STEP_COUNTER));
+
+                        //Statistic(Integer id, Integer user_id, String date, Double performance_index, Double speed,Double calories, Integer step_counter) {
                         statistics.add(new Statistic(id, user_id, date, perf_index, speed,calories,step_counter));
                     } while(cursor.moveToNext());
 
+                    Log.e("Tag","<DB> get stats");
                     return statistics;
                 }
             }

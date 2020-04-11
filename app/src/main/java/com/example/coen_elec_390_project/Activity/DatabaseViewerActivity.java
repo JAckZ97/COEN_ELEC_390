@@ -22,6 +22,7 @@ public class DatabaseViewerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_database_viewer);
 
         usersListView = findViewById(R.id.listview);
+        usersListView.setAdapter(null);
 
         loadListView();
     }
@@ -34,6 +35,7 @@ public class DatabaseViewerActivity extends AppCompatActivity {
         temp = "User table\n";
         for(int i = 0; i < users.size(); i++) {
             temp += "user id: "+ users.get(i).getId() + "\n";
+            temp += "user fbuid: "+ users.get(i).getFbuid() + "\n";
             temp += "user name: "+ users.get(i).getFullname() + "\n";
             temp += "user email: "+ users.get(i).getEmail() + "\n";
             temp += "user password: "+ users.get(i).getPassword()+"\n";
@@ -43,6 +45,7 @@ public class DatabaseViewerActivity extends AppCompatActivity {
             temp += "user weight: "+ users.get(i).getWeight()+"\n";
             temp += "user height unit: "+ users.get(i).getHeightUnit()+"\n";
             temp += "user weight unit: "+ users.get(i).getWeightUnit()+"\n";
+            temp += "user stat counter: " + users.get(i).getStat_counter()+"\n";
             dbListText.add(temp);
         }
 
@@ -50,6 +53,7 @@ public class DatabaseViewerActivity extends AppCompatActivity {
         temp = "Statistic table\n";
         for(int i =0;i<stats.size();i++){
             temp += "stat id: "+ stats.get(i).getId() + "\n";
+            temp += "stat uid: "+ stats.get(i).getUser_id()+"\n";
             temp += "stat date: "+stats.get(i).getDate() +"\n";
             temp += "stat speed: "+stats.get(i).getSpeed() +"\n";
             temp += "stat calory: "+stats.get(i).getCalories() +"\n";

@@ -432,8 +432,17 @@ public class ProfileActivity extends AppCompatActivity  {
                     user.setWeight(str_weight);
                     user.setHeight(str_height);
 
+                    /*
                     if(firebaseUser!=null) {
-                        String userid = firebaseUser.getUid();
+
+                        reff.child("Fullnmae").setValue(str_fullname);
+                        reff.child("Gender").setValue(str_gender);
+                        reff.child("Age").setValue(str_age);
+                        reff.child("Weight").setValue(str_weight);
+                        reff.child("Height").setValue(str_height);
+                        reff.child("height unit").setValue(Integer.toString(user.getHeightUnit()));
+                        reff.child("weight unit").setValue(Integer.toString(user.getWeightUnit()));
+
                         HashMap<String, Object> updateresult = new HashMap<>();
                         updateresult.put("Id", userid);
                         updateresult.put("Fullname", str_fullname);
@@ -441,11 +450,14 @@ public class ProfileActivity extends AppCompatActivity  {
                         updateresult.put("Age", str_age);
                         updateresult.put("Weight", str_weight);
                         updateresult.put("Height", str_height);
-                        updateresult.put("height unit", user.getHeightUnit());
-                        updateresult.put("weight unit", user.getWeightUnit());
+                        updateresult.put("height unit", Integer.toString(user.getHeightUnit()));
+                        updateresult.put("weight unit", Integer.toString(user.getWeightUnit()));
                         updateresult.put("Password",user.getPassword());
-                        reff.setValue(updateresult);
+
+
                     }
+                    */
+
                 }
                 databaseHelper = new DatabaseHelper(this);
                 databaseHelper.updateProfile(user);
@@ -580,7 +592,7 @@ public class ProfileActivity extends AppCompatActivity  {
                     public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
                         Intent intent;
                         Log.e("Tag", "<MAIN> entering statistic");
-                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class));
+                        intent = new Intent(new Intent(ProfileActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
                         intent.putExtra("tutorial",true);
                         if(user!=null)
                             intent.putExtra("email",email);

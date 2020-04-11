@@ -191,7 +191,9 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         else {
-            databaseHelper.insertUser(new User(fullname, email, password, gender, age, height, weight, heightUnit, weightUnit,0,""));
+
+            //User(String fullname, String email, String password, String age, String weight, String height, String gender, int heightUnit, int weightUnit,int stat_counter,String fbuid) {
+            databaseHelper.insertUser(new User(fullname, email, password, age, weight, height, gender, heightUnit, weightUnit,0,""));
             pd.dismiss();
             Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
